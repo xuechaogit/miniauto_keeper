@@ -1,0 +1,18 @@
+{
+  "appName": "车仔助手",
+  "@appName": {
+    "description": "应用的名称"
+  },
+  "homeTitle": "模型车库",
+  "collectStatus": "收藏进度：{count} / {total}",
+  "@collectStatus": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  }
+}

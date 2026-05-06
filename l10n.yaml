@@ -1,0 +1,3 @@
+arb-dir: lib/core/l10n/arb # arb 文件存放路径
+template-arb-file: app_en.arb # 模板文件（通常用中文）
+output-localization-file: app_localizations.dart # 自动生成的代码文件名

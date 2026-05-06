@@ -1,0 +1,18 @@
+{
+  "appName": "MiniAuto Keeper",
+  "@appName": {
+    "description": "应用的名称"
+  },
+  "homeTitle": "Model Garage",
+  "collectStatus": "Progress: {count} / {total}",
+  "@collectStatus": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  }
+}
