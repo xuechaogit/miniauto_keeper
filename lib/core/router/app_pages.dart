@@ -4,7 +4,11 @@ import 'package:get/get.dart';
 import '../../modules/home/view.dart';
 import '../../modules/home/binding.dart';
 
-import 'app_routes.dart'; // 稍后创建
+//路由中间件
+import '../middleware/auth_middleware.dart';
+//路由路径
+import 'app_routes.dart';
+
 // ... 其他页面
 
 class AppPages {
@@ -17,6 +21,7 @@ class AppPages {
       page: () => const HomeView(),
       binding: HomeBinding(), // 这里绑定生命周期
       transition: Transition.fadeIn, // 专业的淡入效果
+      middlewares: [AuthMiddleware()],
     ),
   ];
 }

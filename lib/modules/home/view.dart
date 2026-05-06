@@ -5,12 +5,22 @@ import '../../core/services/settings_service.dart';
 
 import 'controller.dart';
 
+class CountController extends GetxController {
+  int counter = 0;
+
+  void increment() {
+    counter++;
+    update(); // 必须手动调用 update()，UI 才会收到通知
+  }
+}
+
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
 
   @override
   Widget build(BuildContext context) {
     final settings = Get.find<SettingsService>();
+    final count = Get.put(CountController()); // 这里我们放入一个简单的计数器控制器
 
     return Scaffold(
       appBar: AppBar(
@@ -58,16 +68,22 @@ class HomeView extends GetView<HomeController> {
             const SizedBox(height: 16),
             _buildLanguageSelector(settings),
 
-            Obx(() {
-              // 2. 从 controller 中读取响应式变量 (.value)
-              // 这里的 controller 就是 HomeController 的实例
-              return Text(
-                "当前库存：${controller.totalCars.value}",
-                style: TextStyle(fontSize: 24),
-              );
-            }),
+            GetBuilder<CountController>(
+              init: CountController(),
+              builder: (controller) {
+                return Text("Clicks: ${controller.counter}");
+              },
+            ),
+            ElevatedButton(
+              child: Text("Go to Other"),
+              onPressed: () => Get.to(Other()),
+            ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: count.increment,
       ),
     );
   }
@@ -157,5 +173,14 @@ class HomeView extends GetView<HomeController> {
         settings.language = newSelection.first;
       },
     );
+  }
+}
+
+class Other extends StatelessWidget {
+  const Other({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(child: Text('Other'));
   }
 }

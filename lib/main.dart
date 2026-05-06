@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Flutter Demo',
       //国际化
-      locale: const Locale('zh'),
+      locale: Locale(settings.language),
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       //主体化
