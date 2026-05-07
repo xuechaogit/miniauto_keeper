@@ -76,7 +76,7 @@ class HomeView extends GetView<HomeController> {
             ),
             ElevatedButton(
               child: Text("Go to Other"),
-              onPressed: () => Get.to(Other()),
+              onPressed: () => Get.toNamed('brand'),
             ),
           ],
         ),

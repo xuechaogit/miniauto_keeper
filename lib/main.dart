@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
+import 'package:get/get.dart';
+import 'package:mix/mix.dart';
 
 import 'core/services/settings_service.dart';
 import 'core/l10n/arb/app_localizations.dart';
 import 'core/services/storage_service.dart';
 //主题色
+import 'core/theme/app_mix_themes.dart';
 import 'core/theme/app_theme.dart';
 //页面
 import 'modules/home/view.dart';
@@ -14,6 +14,9 @@ import 'modules/home/view.dart';
 import 'core/router/app_pages.dart';
 //网络
 import 'core/network/request_client.dart';
+//mix
+// import 'package:mix/mix.dart';
+import 'core/theme/app_theme_tool.dart'; // 导入我们之前的扩展
 
 void main() async {
   // 1. 必须先初始化 Flutter 绑定
@@ -41,24 +44,30 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final settings = Get.find<SettingsService>();
 
-    return GetMaterialApp(
-      title: 'Flutter Demo',
-      //国际化
-      locale: Locale(settings.language),
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      //主体化
-      darkTheme: AppTheme.dark(Color(settings.themeColorValue)),
-      themeMode: settings.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-      //路由
-      initialRoute: AppPages.initial,
-      getPages: AppPages.routes,
-      // 1. 代理配置
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      // 关键：将内容提取到独立的 Widget 中
-      home: const HomeView(),
-    );
+    return Obx(() {
+      final isDark = settings.isDarkMode;
+      print('isDark $isDark');
+      return MixTheme(
+        data: isDark ? darkTheme : lightTheme,
+        child: GetMaterialApp(
+          title: 'Flutter Demo',
+          //国际化
+          locale: Locale(settings.language),
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          //主体化
+          themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+          theme: convertMixToThemeData(lightTheme, Brightness.light),
+          darkTheme: convertMixToThemeData(darkTheme, Brightness.dark),
+          // theme: ThemeData(brightness: Brightness.light),
+          // darkTheme: ThemeData(brightness: Brightness.dark),
+          //路由
+          initialRoute: AppPages.initial,
+          getPages: AppPages.routes,
+          //
+          home: const HomeView(),
+        ),
+      );
+    });
   }
 }
