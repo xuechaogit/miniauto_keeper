@@ -32,6 +32,14 @@ class MyThemeColorToken {
   ColorToken get brandCardBg => const ColorToken('brand-card-bg');
   ColorToken get brandCardOverlay => const ColorToken('brand-card-overlay');
 
+  // 6. 边框颜色
+  // 标准边框色，用于卡片边框、按钮边框等
+  ColorToken get outline => const ColorToken('outline');
+  // 装饰性边框/分割线，颜色更浅
+  ColorToken get outlineVariant => const ColorToken('outline-variant');
+  // 专注边框，用于输入框获取焦点或选中的主色边框
+  ColorToken get outlinePrimary => const ColorToken('outline-primary');
+
   // 语义色：背景
   ColorToken get primaryContainer => const ColorToken('primary-container');
   ColorToken get infoContainer => const ColorToken('info-container');
@@ -86,6 +94,11 @@ final lightTheme = MixThemeData(
     mxt.color.brandCardBg: const Color(0xFF24292E), // 亮色模式下使用深色卡片形成对比
     mxt.color.brandCardOverlay: const Color(0xFF1A1D21),
 
+    // 边框色定义
+    mxt.color.outline: const Color(0xFFD1D9E5), // 明显的灰色边框
+    mxt.color.outlineVariant: const Color(0xFFE2E8F0), // 极浅的分割线
+    mxt.color.outlinePrimary: const Color(0xFF617AFA), // 使用主色作为高亮边框
+
     mxt.color.onSurface: const Color(0xFF141C24),
     mxt.color.onSurfaceVariant: const Color(0xFF405473),
     mxt.color.primaryContainer: const Color(0xFFE3F2FD),
@@ -106,12 +119,22 @@ final lightTheme = MixThemeData(
       fontWeight: FontWeight.bold,
       // 如果你有本地字体，在这里指定 fontFamily
     ),
-    mxt.textStyle.body: const TextStyle(
+    mxt.textStyle.headline2: const TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+      // 如果你有本地字体，在这里指定 fontFamily
+    ),
+    mxt.textStyle.headline3: const TextStyle(
       fontSize: 16,
+      fontWeight: FontWeight.bold,
+      // 如果你有本地字体，在这里指定 fontFamily
+    ),
+    mxt.textStyle.body: const TextStyle(
+      fontSize: 14,
       fontWeight: FontWeight.normal,
     ),
     mxt.textStyle.caption: const TextStyle(
-      fontSize: 14,
+      fontSize: 12,
       fontWeight: FontWeight.normal,
     ),
   },
@@ -132,12 +155,16 @@ final darkTheme = MixThemeData(
     mxt.color.surfaceVariant: const Color(0xFF2C2C2C), // 输入框填充色
     mxt.color.onSurface: const Color(0xFFFAFAFA),
     mxt.color.onSurfaceVariant: const Color(0xFFD6D6DE),
-    mxt.color.primaryContainer: const Color(0xFF1E2A4A), // 深蓝色背景
-    mxt.color.onPrimaryContainer: const Color(0xFFD1E4FF), // 浅蓝色文字
 
     mxt.color.brandCardBg: const Color(0xFF161616), // 纯净的深碳黑
     mxt.color.brandCardOverlay: const Color(0xFF0D0D0D),
 
+    mxt.color.outline: const Color(0xFF383838), // 深灰色边框
+    mxt.color.outlineVariant: const Color(0xFF2C2C2C), // 非常暗的分割线
+    mxt.color.outlinePrimary: const Color(0xFF8194FF), // 稍微提亮的主色，更适合暗底
+    // 语义色
+    mxt.color.primaryContainer: const Color(0xFF1E2A4A), // 深蓝色背景
+    mxt.color.onPrimaryContainer: const Color(0xFFD1E4FF), // 浅蓝色文字
     // 信息 (Info) - 通常与 Primary 接近，或偏青色
     mxt.color.infoContainer: const Color(0xFF003355), // 深蓝偏青
     mxt.color.onInfoContainer: const Color(0xFFA1E4FF), // 亮青色文字

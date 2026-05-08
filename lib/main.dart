@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mix/mix.dart';
@@ -16,7 +18,8 @@ import 'core/router/app_pages.dart';
 import 'core/network/request_client.dart';
 //mix
 // import 'package:mix/mix.dart';
-import 'core/theme/app_theme_tool.dart'; // 导入我们之前的扩展
+import 'core/theme/app_theme_tool.dart';
+import 'modules/main/view.dart'; // 导入我们之前的扩展
 
 void main() async {
   // 1. 必须先初始化 Flutter 绑定
@@ -51,6 +54,15 @@ class MyApp extends StatelessWidget {
         data: isDark ? darkTheme : lightTheme,
         child: GetMaterialApp(
           title: 'Flutter Demo',
+          //开启
+          scrollBehavior: const MaterialScrollBehavior().copyWith(
+            dragDevices: {
+              PointerDeviceKind.touch,
+              PointerDeviceKind.mouse,
+              PointerDeviceKind.trackpad,
+              PointerDeviceKind.stylus,
+            },
+          ),
           //国际化
           locale: Locale(settings.language),
           localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -65,7 +77,7 @@ class MyApp extends StatelessWidget {
           initialRoute: AppPages.initial,
           getPages: AppPages.routes,
           //
-          home: const HomeView(),
+          // home: const MainView(),
         ),
       );
     });

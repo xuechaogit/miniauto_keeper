@@ -1,12 +1,14 @@
 //定义实际的页面映射和对应的 Binding（自动管理生命周期）
 
 import 'package:get/get.dart';
-import '../../modules/brand/binding.dart';
-import '../../modules/brand/view.dart';
-import '../../modules/home/view.dart';
-import '../../modules/home/binding.dart';
 
 //路由中间件
+import '../../modules/brand/brand_list/binding.dart';
+import '../../modules/brand/brand_list/view.dart';
+import '../../modules/login/binding.dart';
+import '../../modules/login/view.dart';
+import '../../modules/main/binding.dart';
+import '../../modules/main/view.dart';
 import '../middleware/auth_middleware.dart';
 //路由路径
 import 'app_routes.dart';
@@ -15,22 +17,41 @@ import 'app_routes.dart';
 
 class AppPages {
   // 初始页面
-  static const initial = AppRoutes.brand;
+  static const initial = AppRoutes.initial;
 
   static final routes = [
     GetPage(
-      name: AppRoutes.home,
-      page: () => const HomeView(),
-      binding: HomeBinding(), // 这里绑定生命周期
-      transition: Transition.fadeIn, // 专业的淡入效果
+      name: AppRoutes.initial,
+      page: () => const MainView(),
+      binding: MainBinding(),
+      transition: Transition.fadeIn,
       middlewares: [AuthMiddleware()],
     ),
     GetPage(
-      name: AppRoutes.brand,
-      page: () => const BrandView(),
-      binding: BrandBinding(), // 这里绑定生命周期
-      transition: Transition.fadeIn, // 专业的淡入效果
+      name: AppRoutes.brandDetail,
+      page: () => const BrandDetailView(),
+      binding: BrandDetailBinding(), // 记得创建对应的 Binding
+      transition: Transition.fadeIn,
       middlewares: [AuthMiddleware()],
     ),
+    GetPage(
+      name: AppRoutes.login,
+      page: () => const LoginView(),
+      binding: LoginBinding(),
+    ),
+    // GetPage(
+    //   name: AppRoutes.home,
+    //   page: () => const HomeView(),
+    //   binding: HomeBinding(), // 这里绑定生命周期
+    //   transition: Transition.fadeIn, // 专业的淡入效果
+    //   middlewares: [AuthMiddleware()],
+    // ),
+    // GetPage(
+    //   name: AppRoutes.brand,
+    //   page: () => const BrandView(),
+    //   binding: BrandBinding(), // 这里绑定生命周期
+    //   transition: Transition.fadeIn, // 专业的淡入效果
+    //   middlewares: [AuthMiddleware()],
+    // ),
   ];
 }

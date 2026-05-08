@@ -74,9 +74,10 @@ class HomeView extends GetView<HomeController> {
                 return Text("Clicks: ${controller.counter}");
               },
             ),
+            SizedBox(height: 16),
             ElevatedButton(
-              child: Text("Go to Other"),
-              onPressed: () => Get.toNamed('brand'),
+              child: Text("Go to Login"),
+              onPressed: () => Get.toNamed('/login'),
             ),
           ],
         ),

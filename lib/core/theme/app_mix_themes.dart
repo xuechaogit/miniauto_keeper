@@ -44,51 +44,6 @@ class AppMixStyles {
     $text.fontWeight.w600(), // 标签文字通常稍微加粗
   );
 
-  // 主题标签 (蓝)
-  static Style get primaryTag => Style.combine([
-    _tagBase,
-    Style(
-      $box.color.ref(mxt.color.primaryContainer),
-      $text.color.ref(mxt.color.onPrimaryContainer),
-    ),
-  ]);
-
-  // 信息标签 (灰)
-  static Style get infoTag => Style.combine([
-    _tagBase,
-    Style(
-      $box.color.ref(mxt.color.infoContainer),
-      $text.color.ref(mxt.color.onInfoContainer),
-    ),
-  ]);
-
-  // 成功标签 (绿)
-  static Style get successTag => Style.combine([
-    _tagBase,
-    Style(
-      $box.color.ref(mxt.color.successContainer),
-      $text.color.ref(mxt.color.onSuccessContainer),
-    ),
-  ]);
-
-  // 警告标签 (黄)
-  static Style get warningTag => Style.combine([
-    _tagBase,
-    Style(
-      $box.color.ref(mxt.color.warningContainer),
-      $text.color.ref(mxt.color.onWarningContainer),
-    ),
-  ]);
-
-  // 错误标签 (红)
-  static Style get errorTag => Style.combine([
-    _tagBase,
-    Style(
-      $box.color.ref(mxt.color.errorContainer),
-      $text.color.ref(mxt.color.onErrorContainer),
-    ),
-  ]);
-
   // 轮廓标签 (无背景，有边框)
   static Style get outlineTag => Style.combine([
     _tagBase,
