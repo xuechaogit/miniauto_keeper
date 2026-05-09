@@ -5,6 +5,10 @@ import 'package:get/get.dart';
 //路由中间件
 import '../../modules/brand/brand_list/binding.dart';
 import '../../modules/brand/brand_list/view.dart';
+import '../../modules/forgot_password/binding.dart';
+import '../../modules/forgot_password/reset_view.dart';
+import '../../modules/forgot_password/verify_view.dart';
+import '../../modules/forgot_password/view.dart';
 import '../../modules/login/binding.dart';
 import '../../modules/login/view.dart';
 import '../../modules/main/binding.dart';
@@ -38,6 +42,17 @@ class AppPages {
       name: AppRoutes.login,
       page: () => const LoginView(),
       binding: LoginBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.forgotPassword,
+      page: () => const ForgotPasswordView(),
+      binding: ForgotPasswordBinding(), // 注入控制器
+      children: [
+        // 验证码页 (实际路径为 /forgot-password/verify)
+        GetPage(name: '/verify', page: () => const VerifyIdentityView()),
+        // 重置密码页 (实际路径为 /forgot-password/reset)
+        GetPage(name: '/reset', page: () => const SetNewPasswordView()),
+      ],
     ),
     // GetPage(
     //   name: AppRoutes.home,

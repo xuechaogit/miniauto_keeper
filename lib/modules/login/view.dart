@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mix/mix.dart';
+import '../../core/router/app_routes.dart';
 import '../../core/theme/app_theme.dart';
+import '../../core/widgets/input/input.dart';
 import 'controller.dart';
-import 'widgets/login_input/login_input.dart';
+
 import 'widgets/login_label/login_label.dart';
 import 'widgets/social_button/social_button.dart';
 
@@ -113,7 +115,7 @@ class LoginView extends GetView<LoginController> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const LoginLabel('Email Address'),
-                        LoginInput(
+                        CustomInput(
                           controller: controller.emailController,
                           hint: 'collector@precision.com',
                           icon: Icons.email_outlined,
@@ -127,7 +129,7 @@ class LoginView extends GetView<LoginController> {
                           ],
                         ),
                         Obx(
-                          () => LoginInput(
+                          () => CustomInput(
                             controller: controller.passwordController,
                             hint: '••••••••',
                             icon: Icons.lock_outline_rounded,
@@ -228,7 +230,7 @@ class LoginView extends GetView<LoginController> {
       child: GestureDetector(
         onTap: () {
           // 这里跳转到忘记密码页面，或者弹出提示
-          Get.toNamed('/forgot-password');
+          Get.toNamed(AppRoutes.forgotPassword);
         },
         child: StyledText(
           'Forgot Password?',

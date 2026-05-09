@@ -1,16 +1,14 @@
-import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../core/l10n/l10n_util.dart'; // 导入我们之前的扩展
+
 import '../../core/router/app_routes.dart';
 import '../../core/services/settings_service.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_theme_tool.dart';
 import '../../core/widgets/tag/tag.dart';
-import '../../core/widgets/tag/tag.style.dart';
-import '../../models/brand_stats.dart';
+
+import '../../core/widgets/tag/tag.variant.dart';
 import 'controller.dart';
 // 导入MIX
 import 'package:mix/mix.dart';
