@@ -6,8 +6,8 @@ import 'filter_chips.variant.dart'; // 假设你的 mxt 引用
 
 class FilterChipStyles {
   /// 容器样式
-  static Style get container =>
-      Style($box.padding.vertical.ref(mxt.space.medium));
+  // static Style get container =>
+  //     Style($box.padding.vertical.ref(mxt.space.medium));
 
   /// 基础 Chip 样式
   static Style chipStyle(bool isSelected, BuildContext context) {

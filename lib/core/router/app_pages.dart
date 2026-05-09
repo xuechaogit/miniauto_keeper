@@ -1,6 +1,8 @@
 //定义实际的页面映射和对应的 Binding（自动管理生命周期）
 
 import 'package:get/get.dart';
+import 'package:miniauto_keeper/modules/calendar/binding.dart';
+import 'package:miniauto_keeper/modules/calendar/view.dart';
 
 //路由中间件
 import '../../modules/brand/brand_list/binding.dart';
@@ -13,6 +15,8 @@ import '../../modules/login/binding.dart';
 import '../../modules/login/view.dart';
 import '../../modules/main/binding.dart';
 import '../../modules/main/view.dart';
+import '../../modules/calendar/binding.dart';
+import '../../modules/calendar/view.dart';
 import '../middleware/auth_middleware.dart';
 //路由路径
 import 'app_routes.dart';
@@ -42,17 +46,34 @@ class AppPages {
       name: AppRoutes.login,
       page: () => const LoginView(),
       binding: LoginBinding(),
+      transition: Transition.fadeIn,
     ),
     GetPage(
       name: AppRoutes.forgotPassword,
       page: () => const ForgotPasswordView(),
       binding: ForgotPasswordBinding(), // 注入控制器
+      transition: Transition.fadeIn,
       children: [
         // 验证码页 (实际路径为 /forgot-password/verify)
-        GetPage(name: '/verify', page: () => const VerifyIdentityView()),
+        GetPage(
+          name: '/verify',
+          page: () => const VerifyIdentityView(),
+          transition: Transition.fadeIn,
+        ),
         // 重置密码页 (实际路径为 /forgot-password/reset)
-        GetPage(name: '/reset', page: () => const SetNewPasswordView()),
+        GetPage(
+          name: '/reset',
+          page: () => const SetNewPasswordView(),
+          transition: Transition.fadeIn,
+        ),
       ],
+    ),
+    GetPage(
+      name: AppRoutes.calender,
+      page: () => const CalendarView(),
+      binding: CalendarBinding(),
+      transition: Transition.fadeIn,
+      middlewares: [AuthMiddleware()],
     ),
     // GetPage(
     //   name: AppRoutes.home,

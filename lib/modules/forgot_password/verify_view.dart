@@ -74,7 +74,7 @@ class VerifyIdentityView extends GetView<ForgotPasswordController> {
               "We've sent a 6-digit code to your email",
               style: TextStyle(fontSize: 16),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: 32),
             Text(
               controller.emailController.text,
               style: const TextStyle(
@@ -82,7 +82,7 @@ class VerifyIdentityView extends GetView<ForgotPasswordController> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 16),
 
             // --- 优化后的验证码输入组件 ---
             Center(
@@ -99,11 +99,11 @@ class VerifyIdentityView extends GetView<ForgotPasswordController> {
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             const Center(
               child: Text(
                 'Check your spam folder if you don\'t see it.',
-                style: TextStyle(color: Colors.white38, fontSize: 13),
+                style: TextStyle(fontSize: 13),
               ),
             ),
             const Spacer(),

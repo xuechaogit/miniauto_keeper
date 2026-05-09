@@ -3,6 +3,7 @@ class AppRoutes {
   static const initial = '/';
   static const brandDetail = '/brand-detail';
   static const login = '/login';
+  static const calender = '/calender';
 
   // --- 忘记密码模块 ---
   static const forgotPassword = '/forgot-password';
