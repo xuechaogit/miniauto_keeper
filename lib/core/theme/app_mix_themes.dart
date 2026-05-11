@@ -74,22 +74,3 @@ class AppMixStyles {
   static Style get progressBarStyle =>
       Style($box.height(6), $box.borderRadius(3), $box.color(Colors.white10));
 }
-
-ThemeData convertMixToThemeData(MixThemeData mixData, Brightness brightness) {
-  // 从 Mix 的 Token 中提取颜色
-  final primaryColor = mixData.colors[mxt.color.primary]!;
-  final surfaceColor = mixData.colors[mxt.color.surface]!;
-
-  return ThemeData(
-    brightness: brightness,
-    useMaterial3: true,
-    // 核心：使用 colorScheme.fromSeed 自动生成一套完整的 Material 颜色
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: primaryColor,
-      surface: surfaceColor,
-      brightness: brightness,
-    ),
-    // 同步 Scaffold 背景色
-    scaffoldBackgroundColor: surfaceColor,
-  );
-}

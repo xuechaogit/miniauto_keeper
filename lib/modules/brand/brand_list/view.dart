@@ -39,24 +39,30 @@ class BrandDetailView extends GetView<BrandDetailController> {
             padding: const EdgeInsets.all(16.0),
             child: _buildSearchBar(context),
           ),
-
           // 2. 筛选标签流
-          FilterChips(
-            // 数据源：List<String>
-            filters: controller.filters,
-            // 选中的状态：RxString
-            selectedFilter: controller.selectedFilter,
-            // 点击回调：将点击的值传递给控制器逻辑
-            onSelected: (value) => controller.changeFilter(value),
-            // type: FilterChipType.underlined, // 你可以切换成 link 模式试试
-            type: FilterChipType.outlined, // 你可以切换成 link 模式试试
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+              bottom: 16.0,
+            ),
+            child: FilterChips(
+              // 数据源：List<String>
+              filters: controller.filters,
+              // 选中的状态：RxString
+              selectedFilter: controller.selectedFilter,
+              // 点击回调：将点击的值传递给控制器逻辑
+              onSelected: (value) => controller.changeFilter(value),
+              // type: FilterChipType.underlined, // 你可以切换成 link 模式试试
+              type: FilterChipType.outlined, // 你可以切换成 link 模式试试
+            ),
           ),
 
           // 3. 商品列表
           Expanded(
             child: Obx(
               () => MasonryGridView.count(
-                padding: const EdgeInsets.all(16),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 crossAxisCount: 2, // 两列
                 mainAxisSpacing: 16,
                 crossAxisSpacing: 16,

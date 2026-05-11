@@ -1,18 +1,18 @@
 import 'package:get/get.dart';
 
-import '../../core/network/request_client.dart';
+import '../../core/network/api_response.dart';
+import '../../core/network/http_service.dart';
 import '../../models/home_stats.dart';
 
 class HomeRepository {
   final _http = Get.find<HttpService>();
 
-  Future<HomeStats?> fetchHomeData() async {
-    // 发起请求
-    final response = await _http.request<Map<String, dynamic>>('/home');
-
-    if (response.isSuccess && response.data != null) {
-      return HomeStats.fromJson(response.data!);
-    }
-    return null;
+  Future<ApiResponse<HomeStats>> fetchHomeData() async {
+    return await _http.request<HomeStats>(
+      '/home',
+      method: 'GET',
+      // 这里处理 List 类型的泛型转换
+      fromJsonT: (data) => HomeStats.fromJson(data),
+    );
   }
 }

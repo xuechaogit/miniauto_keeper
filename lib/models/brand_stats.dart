@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../core/network/api_response.dart';
+
 class BrandModel {
   final String name;
   final int collectedCount;
@@ -17,6 +19,21 @@ class BrandModel {
     this.category = 'Standard',
   });
 
+  // BrandModel.fromJson(Map<String, dynamic> json) : name = json['brand_name'] ?? '';
+
   // 计算百分比的辅助属性
   double get progress => totalCount > 0 ? collectedCount / totalCount : 0.0;
 }
+
+// class BrandRepository {
+//   final HttpService _http = HttpService.to;
+
+//   Future<ApiResponse<List<BrandModel>>> getHotBrands() async {
+//     return await _http.request<List<BrandModel>>(
+//       '/brands/hot',
+//       method: 'GET',
+//       // 这里处理 List 类型的泛型转换
+//       fromJsonT: (data) => (data as List).map((e) => BrandModel.fromJson(e)).toList(),
+//     );
+//   }
+// }

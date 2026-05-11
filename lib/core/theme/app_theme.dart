@@ -55,7 +55,9 @@ class MyThemeColorToken {
   ColorToken get onErrorContainer => const ColorToken('on-error-container');
 
   // 内容颜色
+  //标题、正文、图标
   ColorToken get onSurface => const ColorToken('on-surface');
+  //说明文字、输入框的占位符、不活跃的图标
   ColorToken get onSurfaceVariant => const ColorToken('on-surface-variant');
 }
 
@@ -200,3 +202,22 @@ final darkTheme = MixThemeData(
   }, // 暗色模式通常更硬朗
   spaces: {mxt.space.large: 24, mxt.space.medium: 16, mxt.space.small: 8},
 );
+
+ThemeData convertMixToThemeData(MixThemeData mixData, Brightness brightness) {
+  // 从 Mix 的 Token 中提取颜色
+  final primaryColor = mixData.colors[mxt.color.primary]!;
+  final surfaceColor = mixData.colors[mxt.color.surface]!;
+
+  return ThemeData(
+    brightness: brightness,
+    useMaterial3: true,
+    // 核心：使用 colorScheme.fromSeed 自动生成一套完整的 Material 颜色
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: primaryColor,
+      surface: surfaceColor,
+      brightness: brightness,
+    ),
+    // 同步 Scaffold 背景色
+    scaffoldBackgroundColor: surfaceColor,
+  );
+}

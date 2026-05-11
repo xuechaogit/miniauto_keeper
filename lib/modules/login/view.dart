@@ -49,175 +49,177 @@ class LoginView extends GetView<LoginController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          // 顶部背景氛围装饰（可选：增加一点红色光晕）
-          Positioned(
-            top: -100,
-            left: context.width * 0.2,
-            child: Container(
-              width: 300,
-              height: 300,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFFE52E1D).withOpacity(0.05),
+    return SafeArea(
+      child: Scaffold(
+        body: Stack(
+          children: [
+            // 顶部背景氛围装饰（可选：增加一点红色光晕）
+            Positioned(
+              top: -100,
+              left: context.width * 0.2,
+              child: Container(
+                width: 300,
+                height: 300,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFFE52E1D).withOpacity(0.05),
+                ),
               ),
             ),
-          ),
 
-          SafeArea(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Column(
-                children: [
-                  const SizedBox(height: 60),
+            SafeArea(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 60),
 
-                  // --- Logo 区域 ---
-                  Box(
-                    style: Style(
-                      $box.width(86),
-                      $box.height(86),
-                      $box.borderRadius(20),
-                      $box.color.black.withOpacity(0.6),
-                      $box.border.all(
-                        color: Colors.white.withOpacity(0.1),
-                        width: 1,
+                    // --- Logo 区域 ---
+                    Box(
+                      style: Style(
+                        $box.width(86),
+                        $box.height(86),
+                        $box.borderRadius(20),
+                        $box.color.black.withOpacity(0.6),
+                        $box.border.all(
+                          color: Colors.white.withOpacity(0.1),
+                          width: 1,
+                        ),
+                        $box.alignment.center(),
                       ),
-                      $box.alignment.center(),
+                      child: const Icon(
+                        Icons.precision_manufacturing_rounded,
+                        color: Color(0xFFE52E1D),
+                        size: 44,
+                      ),
                     ),
-                    child: const Icon(
-                      Icons.precision_manufacturing_rounded,
-                      color: Color(0xFFE52E1D),
-                      size: 44,
+                    const SizedBox(height: 24),
+                    StyledText(
+                      'PRECISION HUB',
+                      style: Style(
+                        $text.style.fontSize(34),
+                        $text.style.fontWeight.w900(),
+                        $text.style.letterSpacing(1.5),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 24),
-                  StyledText(
-                    'PRECISION HUB',
-                    style: Style(
-                      $text.style.fontSize(34),
-                      $text.style.fontWeight.w900(),
-                      $text.style.letterSpacing(1.5),
+                    StyledText(
+                      'Elevate Your Collection',
+                      style: Style($text.style.fontSize(15)),
                     ),
-                  ),
-                  StyledText(
-                    'Elevate Your Collection',
-                    style: Style($text.style.fontSize(15)),
-                  ),
 
-                  const SizedBox(height: 48),
+                    const SizedBox(height: 48),
 
-                  // --- 登录卡片区域 ---
-                  Box(
-                    style: LoginMixStyles.loginCard,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const LoginLabel('Email Address'),
-                        CustomInput(
-                          controller: controller.emailController,
-                          hint: 'collector@precision.com',
-                          icon: Icons.email_outlined,
-                        ),
-                        const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const LoginLabel('Password'),
-                            _buildForgotButton(), // 忘记密码按钮
-                          ],
-                        ),
-                        Obx(
-                          () => CustomInput(
-                            controller: controller.passwordController,
-                            hint: '••••••••',
-                            icon: Icons.lock_outline_rounded,
-                            obscureText: !controller.isPasswordVisible.value,
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                controller.isPasswordVisible.value
-                                    ? Icons.visibility_rounded
-                                    : Icons.visibility_off_rounded,
+                    // --- 登录卡片区域 ---
+                    Box(
+                      style: LoginMixStyles.loginCard,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const LoginLabel('Email Address'),
+                          CustomInput(
+                            controller: controller.emailController,
+                            hint: 'collector@precision.com',
+                            icon: Icons.email_outlined,
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const LoginLabel('Password'),
+                              _buildForgotButton(), // 忘记密码按钮
+                            ],
+                          ),
+                          Obx(
+                            () => CustomInput(
+                              controller: controller.passwordController,
+                              hint: '••••••••',
+                              icon: Icons.lock_outline_rounded,
+                              obscureText: !controller.isPasswordVisible.value,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  controller.isPasswordVisible.value
+                                      ? Icons.visibility_rounded
+                                      : Icons.visibility_off_rounded,
 
-                                size: 20,
+                                  size: 20,
+                                ),
+                                onPressed: controller.togglePasswordVisibility,
                               ),
-                              onPressed: controller.togglePasswordVisibility,
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 32),
+                          const SizedBox(height: 32),
 
-                        // 登录按钮 (带加载状态)
-                        _buildLoginButton(),
+                          // 登录按钮 (带加载状态)
+                          _buildLoginButton(),
 
-                        const SizedBox(height: 28),
-                        const Center(
-                          child: Text(
-                            'OR CONTINUE WITH',
-                            style: TextStyle(
-                              fontSize: 12,
-                              letterSpacing: 1.2,
-                              fontWeight: FontWeight.bold,
+                          const SizedBox(height: 28),
+                          const Center(
+                            child: Text(
+                              'OR CONTINUE WITH',
+                              style: TextStyle(
+                                fontSize: 12,
+                                letterSpacing: 1.2,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 24),
+                          const SizedBox(height: 24),
 
-                        // 第三方登录按钮组
-                        Row(
-                          children: [
-                            Expanded(
-                              child: SocialButton(
-                                icon: Icons.g_mobiledata_rounded,
-                                label: 'Google',
-                                onTap: () => controller
-                                    .loginWithGoogle(), // 在 controller 里实现
+                          // 第三方登录按钮组
+                          Row(
+                            children: [
+                              Expanded(
+                                child: SocialButton(
+                                  icon: Icons.g_mobiledata_rounded,
+                                  label: 'Google',
+                                  onTap: () => controller
+                                      .loginWithGoogle(), // 在 controller 里实现
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: SocialButton(
-                                icon: Icons.apple_rounded,
-                                label: 'Apple',
-                                onTap: () => controller.loginWithApple(),
+                              const SizedBox(width: 16),
+                              Expanded(
+                                child: SocialButton(
+                                  icon: Icons.apple_rounded,
+                                  label: 'Apple',
+                                  onTap: () => controller.loginWithApple(),
+                                ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
 
-                  const SizedBox(height: 32),
-                  // 底部注册跳转
-                  _buildBottomLink('New collector? ', 'Create Account', () {
-                    Get.toNamed('/register');
-                  }),
-                  // const SizedBox(height: 40),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     _buildFooterLink('Privacy Policy'),
-                  //     const SizedBox(width: 32),
-                  //     _buildFooterLink('Terms of Service'),
-                  //   ],
-                  // ),
-                  // const SizedBox(height: 24),
-                ],
+                    const SizedBox(height: 32),
+                    // 底部注册跳转
+                    _buildBottomLink('New collector? ', 'Create Account', () {
+                      Get.toNamed('/register');
+                    }),
+                    // const SizedBox(height: 40),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     _buildFooterLink('Privacy Policy'),
+                    //     const SizedBox(width: 32),
+                    //     _buildFooterLink('Terms of Service'),
+                    //   ],
+                    // ),
+                    // const SizedBox(height: 24),
+                  ],
+                ),
               ),
             ),
-          ),
 
-          Positioned(
-            top: 10, // 根据需要微调
-            left: 10,
-            child: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_rounded),
-              onPressed: () => Get.back(), // 使用 GetX 返回
+            Positioned(
+              top: 10, // 根据需要微调
+              left: 10,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                onPressed: () => Get.back(), // 使用 GetX 返回
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

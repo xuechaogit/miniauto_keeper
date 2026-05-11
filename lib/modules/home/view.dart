@@ -75,6 +75,8 @@ class HomeView extends GetView<HomeController> {
               },
             ),
             SizedBox(height: 16),
+            Obx(() => Text("totalCars: ${controller.totalCars}")),
+            SizedBox(height: 16),
             ElevatedButton(
               child: Text("Go to Login"),
               onPressed: () => Get.toNamed('/login'),

@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+
 import '../../core/services/settings_service.dart';
 import 'repository.dart'; // 导入仓库
 
@@ -24,12 +25,12 @@ class HomeController extends GetxController {
 
     try {
       // 执行网络请求
-      final stats = await _repository.fetchHomeData();
+      final res = await _repository.fetchHomeData();
 
-      if (stats != null) {
+      if (res.data != null) {
         // 请求成功，更新响应式变量
-        totalCars.value = stats.totalCars;
-        recentAddedCount.value = stats.recentAdded;
+        totalCars.value = res.data!.totalCars;
+        recentAddedCount.value = res.data!.recentAdded;
       }
     } finally {
       // 无论成功还是失败，最后都关掉加载状态

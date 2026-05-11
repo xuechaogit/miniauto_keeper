@@ -15,7 +15,7 @@ import 'modules/home/view.dart';
 //路由
 import 'core/router/app_pages.dart';
 //网络
-import 'core/network/request_client.dart';
+import 'core/network/http_service.dart';
 //mix
 // import 'package:mix/mix.dart';
 import 'core/theme/app_theme_tool.dart';
