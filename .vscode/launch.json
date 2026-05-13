@@ -1,0 +1,10 @@
+{
+  "configurations": [
+    {
+      "name": "Flutter (lib\\modules\\stats\\widgets\\monthly_spending_trend\\monthly_spending_trend.style.dart)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib\\modules\\stats\\widgets\\monthly_spending_trend\\monthly_spending_trend.style.dart"
+    }
+  ]
+}

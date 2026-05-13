@@ -9,17 +9,12 @@ class BrandDetailController extends GetxController {
 
   // 筛选标签状态
   final selectedFilter = 'All'.obs;
-  final filters = [
-    'All MODELS',
-    '1:18 SCALE',
-    '1:43 SCALE',
-    'Limited1',
-    'In Stock2',
-    'All MODELS3',
-    '1:18 SCALE4',
-    '1:43 SCALE5',
-    'Limited6',
-    'In Stock7',
+  final List<Map<String, dynamic>> filters = [
+    {'label': 'ALL BRANDS', 'value': 'ALL'},
+    {'label': 'MINI GT', 'value': 'MINI GT'},
+    {'label': 'KAIDO HOUSE', 'value': 'KAIDO HOUSE'},
+    {'label': 'INNO64', 'value': 'INNO64'},
+    {'label': 'TARMAC', 'value': 'TARMAC'},
   ];
 
   // 如果你担心参数为空导致崩溃，可以加个兜底：
@@ -109,8 +104,7 @@ class BrandDetailController extends GetxController {
     Get.snackbar('Success', '${product.title} added to Garage');
   }
 
-  void changeFilter(String filter) {
-    selectedFilter.value = filter;
-    // 这里可以写实际的过滤逻辑
+  void changeFilter(Map<String, dynamic> brandItem) {
+    selectedFilter.value = brandItem['value']!;
   }
 }

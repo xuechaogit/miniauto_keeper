@@ -89,20 +89,23 @@ class MyThemeSpaceToken {
 final lightTheme = MixThemeData(
   colors: {
     mxt.color.primary: const Color(0xFF617AFA),
-    mxt.color.background: const Color(0xFFF0F2F5), // 整个页面的浅灰色底
-    mxt.color.surface: const Color(0xFFFFFFFF), // 卡片用的纯白色
+    mxt.color.background: const Color(0xFFF5F5F5), // 带一点点暖/冷调的白
+    mxt.color.surface: const Color(0xFFFFFFFF),
     mxt.color.surfaceVariant: const Color(0xFFE4E9F2), // 输入框用的淡蓝色/灰色
 
     mxt.color.brandCardBg: const Color(0xFF24292E), // 亮色模式下使用深色卡片形成对比
     mxt.color.brandCardOverlay: const Color(0xFF1A1D21),
 
     // 边框色定义
-    mxt.color.outline: const Color(0xFFD1D9E5), // 明显的灰色边框
-    mxt.color.outlineVariant: const Color(0xFFE2E8F0), // 极浅的分割线
+    mxt.color.outline: const Color(0xFF74777F),
+    mxt.color.outlineVariant: const Color(0xFFC4C6D0),
     mxt.color.outlinePrimary: const Color(0xFF617AFA), // 使用主色作为高亮边框
+    // 文字：
+    // 1. OnSurface: 接近黑但不是纯黑，非常有质感
+    mxt.color.onSurface: const Color(0xFF1A1C1E),
+    // 2. OnSurfaceVariant: 用于次要信息
+    mxt.color.onSurfaceVariant: const Color(0xFF44474E),
 
-    mxt.color.onSurface: const Color(0xFF141C24),
-    mxt.color.onSurfaceVariant: const Color(0xFF405473),
     mxt.color.primaryContainer: const Color(0xFFE3F2FD),
     mxt.color.infoContainer: const Color(0xFFE3F2FD),
     mxt.color.successContainer: const Color(0xFFE8F5E9),
@@ -152,17 +155,17 @@ final lightTheme = MixThemeData(
 final darkTheme = MixThemeData(
   colors: {
     mxt.color.primary: const Color(0xFF617AFA),
-    mxt.color.background: const Color(0xFF000000), // 真正的纯黑底
-    mxt.color.surface: const Color(0xFF1E1E1E), // 稍微提亮的深灰色卡片
-    mxt.color.surfaceVariant: const Color(0xFF2C2C2C), // 输入框填充色
-    mxt.color.onSurface: const Color(0xFFFAFAFA),
-    mxt.color.onSurfaceVariant: const Color(0xFFD6D6DE),
+    mxt.color.background: const Color(0xFF1A1C1E), // 极深蓝灰，比纯黑更高级
+    mxt.color.surface: const Color(0xFF222427), // 稍微提亮的卡片色
+    mxt.color.surfaceVariant: const Color(0xFF44474E), // 输入框等容器色
+    mxt.color.onSurface: const Color(0xFFE2E2E6),
+    mxt.color.onSurfaceVariant: const Color(0xFFC4C6D0),
 
     mxt.color.brandCardBg: const Color(0xFF161616), // 纯净的深碳黑
     mxt.color.brandCardOverlay: const Color(0xFF0D0D0D),
 
-    mxt.color.outline: const Color(0xFF383838), // 深灰色边框
-    mxt.color.outlineVariant: const Color(0xFF2C2C2C), // 非常暗的分割线
+    mxt.color.outline: const Color(0xFF8E9199),
+    mxt.color.outlineVariant: const Color(0xFF44474E),
     mxt.color.outlinePrimary: const Color(0xFF8194FF), // 稍微提亮的主色，更适合暗底
     // 语义色
     mxt.color.primaryContainer: const Color(0xFF1E2A4A), // 深蓝色背景
@@ -184,7 +187,17 @@ final darkTheme = MixThemeData(
     mxt.textStyle.headline1: const TextStyle(
       fontSize: 22,
       fontWeight: FontWeight.bold,
-      color: Colors.white, // 可以预设颜色
+      // 如果你有本地字体，在这里指定 fontFamily
+    ),
+    mxt.textStyle.headline2: const TextStyle(
+      fontSize: 18,
+      fontWeight: FontWeight.bold,
+      // 如果你有本地字体，在这里指定 fontFamily
+    ),
+    mxt.textStyle.headline3: const TextStyle(
+      fontSize: 16,
+      fontWeight: FontWeight.bold,
+      // 如果你有本地字体，在这里指定 fontFamily
     ),
     mxt.textStyle.body: const TextStyle(
       fontSize: 16,
@@ -204,20 +217,30 @@ final darkTheme = MixThemeData(
 );
 
 ThemeData convertMixToThemeData(MixThemeData mixData, Brightness brightness) {
-  // 从 Mix 的 Token 中提取颜色
   final primaryColor = mixData.colors[mxt.color.primary]!;
+  final backgroundColor = mixData.colors[mxt.color.background]!;
   final surfaceColor = mixData.colors[mxt.color.surface]!;
+  final onSurfaceColor = mixData.colors[mxt.color.onSurface]!;
 
   return ThemeData(
     brightness: brightness,
     useMaterial3: true,
-    // 核心：使用 colorScheme.fromSeed 自动生成一套完整的 Material 颜色
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: primaryColor,
-      surface: surfaceColor,
-      brightness: brightness,
-    ),
-    // 同步 Scaffold 背景色
-    scaffoldBackgroundColor: surfaceColor,
+    colorScheme:
+        ColorScheme.fromSeed(
+          seedColor: primaryColor,
+          brightness: brightness,
+        ).copyWith(
+          // 核心：强制同步 Mix 的背景定义
+          surface: surfaceColor,
+          onSurface: onSurfaceColor,
+          // 在 M3 中，background 已经逐渐被 surface 家族取代
+          // 但为了兼容 Scaffold，这里必须明确赋值
+          background: backgroundColor,
+          onBackground: onSurfaceColor,
+        ),
+    // 关键：解决 Scaffold 不跟随 Mix 设计的问题
+    scaffoldBackgroundColor: backgroundColor,
+    // 影响弹窗、菜单的背景
+    canvasColor: surfaceColor,
   );
 }

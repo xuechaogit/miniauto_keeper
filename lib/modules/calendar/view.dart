@@ -102,7 +102,7 @@ class CalendarView extends GetView<CalendarController> {
       return HorizontalCalendar(
         dateList: controller.dateList,
         selectedDateStr: controller.selectedDateStr,
-        onDateSelected: (value) => controller.onDateChipSelected(value),
+        onDateSelected: (value) => controller.onDateSelected(value),
       );
     });
   }

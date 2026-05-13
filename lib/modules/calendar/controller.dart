@@ -6,15 +6,19 @@ import '../../models/product_model.dart';
 class CalendarController extends GetxController {
   // 品牌筛选：RxString
   final selectedBrand = 'ALL BRANDS'.obs;
-  final brands = ['ALL BRANDS', 'MINI GT', 'KAIDO HOUSE', 'INNO64', 'TARMAC'];
+  final List<Map<String, dynamic>> brands = [
+    {'label': 'ALL BRANDS', 'value': 'ALL'},
+    {'label': 'MINI GT', 'value': 'MINI GT'},
+    {'label': 'KAIDO HOUSE', 'value': 'KAIDO HOUSE'},
+    {'label': 'INNO64', 'value': 'INNO64'},
+    {'label': 'TARMAC', 'value': 'TARMAC'},
+  ];
 
   // 日期筛选：将日期转换为字符串列表以便 FilterChips 使用
   // 格式例如: "MON 11", "TUE 12"
-  final RxString selectedDateStr = ''.obs;
-  final dateList = <String>[].obs;
-
-  // 实际存储的 DateTime 对象，用于逻辑计算
-  final currentSelectedDate = DateTime.now().obs;
+  final RxString selectedDateStr = ''.obs; // 当前选中的日期字符串
+  final dateList = <Map<String, dynamic>>[].obs; // 日期列表
+  final currentSelectedDate = DateTime.now().obs; // 当前选中的日期
 
   final releases = <ProductModel>[].obs;
 
@@ -29,8 +33,16 @@ class CalendarController extends GetxController {
   void _generateDates() {
     final base = currentSelectedDate.value;
     dateList.value = List.generate(15, (index) {
-      final date = base.add(Duration(days: index - 7));
-      return DateFormat('EEE d').format(date).toUpperCase();
+      final date = DateTime(
+        base.year,
+        base.month,
+        base.day,
+      ).add(Duration(days: index - 7));
+      // 存储 label 用于 UI，value 用于逻辑
+      return {
+        'label': DateFormat('EEE d').format(date).toUpperCase(),
+        'value': date,
+      };
     });
     _updateSelectedDateStr();
   }
@@ -42,15 +54,22 @@ class CalendarController extends GetxController {
   }
 
   // 处理横向日历点击
-  void onDateChipSelected(String dateStr) {
-    selectedDateStr.value = dateStr;
-    // 反向推算 DateTime (实际建议直接在列表存储 Model，这里简化处理)
-    final index = dateList.indexOf(dateStr);
-    if (index != -1) {
-      currentSelectedDate.value = currentSelectedDate.value.add(
-        Duration(days: index - 7),
-      );
-    }
+  void onDateSelected(Map<String, dynamic> item) {
+    DateTime selectedDate = item['value'];
+    if (isSameDay(currentSelectedDate.value, selectedDate)) return;
+
+    currentSelectedDate.value = selectedDate;
+    selectedDateStr.value = item['label']; // 直接从 item 拿 label
+
+    // 如果需要点击后重新居中，取消注释下面这行
+    // _generateDates();
+  }
+
+  /// 辅助方法：判断是否为同一天（排除时间干扰）
+  bool isSameDay(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
   }
 
   // 弹出 Material 日历选择器
@@ -90,5 +109,7 @@ class CalendarController extends GetxController {
     ]);
   }
 
-  void changeBrand(String brand) => selectedBrand.value = brand;
+  void changeBrand(Map<String, dynamic> brandItem) {
+    selectedBrand.value = brandItem['value']!;
+  }
 }

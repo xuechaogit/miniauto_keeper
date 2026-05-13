@@ -19,125 +19,161 @@ class BrandDetailView extends GetView<BrandDetailController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(controller.brand.name.toUpperCase()),
-        actions: [
-          Builder(
-            builder: (context) {
-              return IconButton(
-                icon: const Icon(Icons.tune),
-                onPressed: () => Scaffold.of(context).openEndDrawer(),
-              );
-            },
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          // 1. 搜索框 (复用你的搜索框样式)
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: _buildSearchBar(context),
-          ),
-          // 2. 筛选标签流
-          Padding(
-            padding: const EdgeInsets.only(
-              left: 16.0,
-              right: 16.0,
-              bottom: 16.0,
-            ),
-            child: FilterChips(
-              // 数据源：List<String>
-              filters: controller.filters,
-              // 选中的状态：RxString
-              selectedFilter: controller.selectedFilter,
-              // 点击回调：将点击的值传递给控制器逻辑
-              onSelected: (value) => controller.changeFilter(value),
-              // type: FilterChipType.underlined, // 你可以切换成 link 模式试试
-              type: FilterChipType.outlined, // 你可以切换成 link 模式试试
-            ),
-          ),
-
-          // 3. 商品列表
-          Expanded(
-            child: Obx(
-              () => MasonryGridView.count(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                crossAxisCount: 2, // 两列
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
-                itemCount: controller.products.length,
-                itemBuilder: (context, index) =>
-                    _buildProductCard(context, controller.products[index]),
+      appBar: AppBar(title: Text(controller.brand.name.toUpperCase())),
+      body: NestedScrollView(
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
+          return [
+            // 1. 初始搜索框：随滚动正常消失
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                child: _buildSearchBar(context),
               ),
             ),
+            // 2. 增强型吸顶 Header
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: _SliverAppBarDelegate(
+                minHeight: 64.0, // 稍微加高一点，留给 padding 空间
+                maxHeight: 64.0,
+                builder: (context, shrinkOffset, isCollapsed) {
+                  return Container(
+                    color: Theme.of(context).scaffoldBackgroundColor,
+                    // 这里就是你的 Padding
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    alignment: Alignment.center,
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      child: isCollapsed
+                          ? _buildCollapsedRow(context)
+                          : _buildExpandedRow(context),
+                    ),
+                  );
+                },
+              ),
+            ),
+          ];
+        },
+        // 4. 商品列表：保持 MasonryGridView
+        body: Obx(
+          () => MasonryGridView.count(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16), // 顶部间距缩小
+            crossAxisCount: 2,
+            mainAxisSpacing: 16,
+            crossAxisSpacing: 16,
+            itemCount: controller.products.length,
+            itemBuilder: (context, index) =>
+                _buildProductCard(context, controller.products[index]),
           ),
-        ],
-      ),
-      endDrawer: Drawer(
-        child: Column(
-          children: [
-            DrawerHeader(
-              child: Center(
-                child: StyledText(
-                  'FILTER SETTINGS',
-                  style: AppMixStyles.titleStyle,
-                ),
-              ),
-            ),
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-                  const Text(
-                    'Categories',
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const Divider(),
-                  // 这里放纵向滚动的筛选列表
-                  ...controller.filters
-                      .map(
-                        (f) => Obx(
-                          () => CheckboxListTile(
-                            title: Text(f),
-                            value: controller.selectedFilter.value == f,
-                            onChanged: (_) => controller.changeFilter(f),
-                            activeColor: context.color(mxt.color.primary),
-                          ),
-                        ),
-                      )
-                      .toList(),
-                ],
-              ),
-            ),
-          ],
         ),
+      ),
+      endDrawer: _buildEndDrawer(context),
+    );
+  }
+
+  Widget _buildTuneButton(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.tune, size: 20),
+      onPressed: () => Scaffold.of(context).openEndDrawer(),
+    );
+  }
+
+  // 情况 A：吸顶后的布局 (Key 用于 AnimatedSwitcher 识别变化)
+  Widget _buildCollapsedRow(BuildContext context) {
+    return Row(
+      key: const ValueKey('collapsed'),
+      children: [
+        Expanded(child: _buildSearchBar(context)),
+        const SizedBox(width: 8),
+        _buildTuneButton(context),
+      ],
+    );
+  }
+
+  // 情况 B：正常展开时的布局
+  Widget _buildExpandedRow(BuildContext context) {
+    return Row(
+      key: const ValueKey('expanded'),
+      children: [
+        Expanded(
+          child: FilterChips(
+            filters: controller.filters.take(5).toList(),
+            selectedFilter: controller.selectedFilter,
+            onSelected: (v) => controller.changeFilter(v),
+            type: FilterChipType.outlined,
+          ),
+        ),
+        const SizedBox(width: 8),
+        _buildTuneButton(context),
+      ],
+    );
+  }
+
+  Widget _buildEndDrawer(BuildContext context) {
+    return Drawer(
+      child: Column(
+        children: [
+          DrawerHeader(
+            child: Center(
+              child: StyledText(
+                'FILTER SETTINGS',
+                style: AppMixStyles.titleStyle,
+              ),
+            ),
+          ),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                const Text(
+                  'Categories',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const Divider(),
+                // 这里放纵向滚动的筛选列表
+                ...controller.filters
+                    .map(
+                      (f) => Obx(
+                        () => CheckboxListTile(
+                          title: Text(f['label']),
+                          value: controller.selectedFilter.value == f,
+                          onChanged: (_) => controller.changeFilter(f),
+                          activeColor: context.color(mxt.color.primary),
+                        ),
+                      ),
+                    )
+                    .toList(),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildSearchBar(BuildContext context) {
-    return TextField(
-      style: context.textStyle(mxt.textStyle.body),
-      // 这里的 controller 可以根据需要绑定到 BrandDetailController
-      onChanged: (value) => /* controller.search(value) */ null,
-      decoration: InputDecoration(
-        hintText: 'Search products in ${controller.brand.name}...',
-        filled: true,
-        fillColor: context.color(mxt.color.surfaceVariant),
-        prefixIcon: Icon(
-          Icons.search,
-          color: context.color(mxt.color.primary),
-          size: 20,
-        ),
-        // 使用你的 Token 圆角
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(context.radius(mxt.radius.large)),
-          borderSide: BorderSide.none,
-        ),
-        contentPadding: EdgeInsets.symmetric(
-          vertical: context.space(mxt.space.small),
-          horizontal: context.space(mxt.space.medium),
+    return SizedBox(
+      // 显式约束高度，确保和 FilterChips 在视觉上分量相当
+      height: 40,
+      child: TextField(
+        textAlignVertical: TextAlignVertical.center, // 确保文字居中
+        style: context.textStyle(mxt.textStyle.body),
+        onChanged: (value) => null,
+        decoration: InputDecoration(
+          hintText: 'Search products...',
+          filled: true,
+          fillColor: context.color(mxt.color.surfaceVariant),
+          prefixIcon: Icon(
+            Icons.search,
+            color: context.color(mxt.color.primary),
+            size: 20,
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.all(context.radius(mxt.radius.large)),
+            borderSide: BorderSide.none,
+          ),
+          // 关键：减少垂直 Padding，因为外部已经有 SizedBox 限制高度了
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
         ),
       ),
     );
@@ -227,5 +263,49 @@ class BrandDetailView extends GetView<BrandDetailController> {
         ),
       ),
     );
+  }
+}
+
+// 辅助类：用于实现 Sliver 吸顶效果
+typedef SliverHeaderBuilder =
+    Widget Function(
+      BuildContext context, // 第1个
+      double shrinkOffset, // 第2个
+      bool isCollapsed, // 第3个
+    );
+
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate({
+    required this.minHeight,
+    required this.maxHeight,
+    required this.builder,
+  });
+
+  final double minHeight;
+  final double maxHeight;
+  final SliverHeaderBuilder builder;
+
+  @override
+  double get minExtent => minHeight;
+  @override
+  double get maxExtent => maxHeight;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    // 稍微滚动（比如超过 10 像素）就触发内容切换
+    final bool isCollapsed = shrinkOffset > 10;
+
+    return SizedBox.expand(child: builder(context, shrinkOffset, isCollapsed));
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return maxHeight != oldDelegate.maxHeight ||
+        minHeight != oldDelegate.minHeight ||
+        builder != oldDelegate.builder;
   }
 }

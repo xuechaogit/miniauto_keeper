@@ -59,6 +59,9 @@ dependencies:
   # 验证码输入框
   pinput: ^5.0.0
 
+  # chart 统计图
+  fl_chart: ^0.66.0
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8

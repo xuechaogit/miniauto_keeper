@@ -14,9 +14,9 @@ class HorizontalCalendar extends StatelessWidget {
     required this.onDateSelected,
   });
 
-  final List<String> dateList;
+  final List<Map<String, dynamic>> dateList;
   final RxString selectedDateStr;
-  final Function(String) onDateSelected;
+  final Function(Map<String, dynamic>) onDateSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +32,8 @@ class HorizontalCalendar extends StatelessWidget {
         onSelected: onDateSelected,
         itemBuilder: (context, index, isSelected) {
           // 解析日期数据，例如 "MON 11"
-          final parts = dateList[index].split(' ');
+          final String label = dateList[index]['label'];
+          final parts = label.split(' ');
           final weekDay = parts[0];
           final day = parts[1];
           // 根据选中状态合并样式

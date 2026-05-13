@@ -10,6 +10,7 @@ import '../../core/theme/app_theme_tool.dart';
 import '../home/view.dart';
 import '../brand/view.dart';
 import '../profile/view.dart';
+import '../stats/view.dart';
 
 import 'controller.dart';
 
@@ -26,7 +27,7 @@ class MainView extends GetView<MainController> {
           children: const [
             HomeView(), // Index 0
             BrandView(), // Index 1
-            Placeholder(), // Index 2 (收藏页占位)
+            StatsView(), // Index 2 (收藏页占位)
             ProfileView(), // Index 3 (个人页占位)
           ],
         ),

@@ -9,9 +9,9 @@ typedef FilterChipBuilder =
 
 class FilterChips extends StatefulWidget {
   // 修改为 StatefulWidget 以管理 ScrollController
-  List<String> filters;
+  final List<Map<String, dynamic>> filters;
   RxString selectedFilter;
-  final Function(String) onSelected;
+  final Function(Map<String, dynamic>) onSelected; // 返回整个对象
   final bool uppercase;
   final FilterChipType type;
 
@@ -51,44 +51,23 @@ class _FilterChipsState extends State<FilterChips> {
   void initState() {
     super.initState();
     _scrollController = ScrollController();
-    // _setupWorker(); // 抽离出监听逻辑
     // 1. 初始位置滚动
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _handleInitialScroll();
     });
   }
 
-  // 关键：当父组件重新构建并传入新的 filters 时触发
-  // @override
-  // void didUpdateWidget(covariant FilterChips oldWidget) {
-  //   super.didUpdateWidget(oldWidget);
-
-  //   // 关键点：如果 filters 列表内容变了
-  //   if (oldWidget.filters != widget.filters ||
-  //       oldWidget.selectedFilter != widget.selectedFilter) {
-  //     _worker?.dispose();
-  //     _setupWorker(); // 重新绑定
-
-  //     WidgetsBinding.instance.addPostFrameCallback((_) {
-  //       _handleInitialScroll();
-  //     });
-  //   }
-  // }
-
-  void _setupWorker() {
-    _worker = ever(widget.selectedFilter, (String value) {
-      // 现在的 widget.filters 保证是最新的
-      final index = widget.filters.indexOf(value);
-      if (index != -1) {
-        _scrollToIndex(index);
-      }
-    });
-  }
-
   void _handleInitialScroll() {
-    final index = widget.filters.indexOf(widget.selectedFilter.value);
+    // 在 Map 列表中查找 label 等于当前选中值的索引
+    final index = widget.filters.indexWhere(
+      (item) => item['label'] == widget.selectedFilter.value,
+    );
+
     if (index != -1) {
-      _scrollToIndex(index);
+      // 延迟一小会儿执行，确保 ListView 已经完全加载
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollToIndex(index);
+      });
     }
   }
 
@@ -143,16 +122,17 @@ class _FilterChipsState extends State<FilterChips> {
           itemCount: widget.filters.length,
           separatorBuilder: (context, index) => const SizedBox(width: 12),
           itemBuilder: (context, index) {
-            final filter = widget.filters[index];
+            final item = widget.filters[index];
+            final label = item['label'].toString();
 
             return Obx(() {
-              final isSelected = widget.selectedFilter.value == filter;
+              final isSelected = widget.selectedFilter.value == label;
 
               // --- 核心改动：插槽逻辑 ---
               if (widget.itemBuilder != null) {
                 return GestureDetector(
                   onTap: () {
-                    widget.onSelected(filter);
+                    widget.onSelected(item);
                     _scrollToIndex(index);
                   },
                   child: widget.itemBuilder!(context, index, isSelected),
@@ -161,10 +141,10 @@ class _FilterChipsState extends State<FilterChips> {
               // --- 默认逻辑 ---
               return GestureDetector(
                 onTap: () {
-                  widget.onSelected(filter);
+                  widget.onSelected(item);
                   _scrollToIndex(index);
                 },
-                child: _buildDefaultChip(filter, isSelected),
+                child: _buildDefaultChip(label, isSelected),
               );
             });
           },
