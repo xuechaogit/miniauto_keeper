@@ -15,7 +15,7 @@ class MonthlySpendingStyle {
   /// 顶部标题样式
   static Style get headerTextStyle => Style(
     $text.style.color.ref(mxt.color.onSurface),
-    $text.style.ref(mxt.textStyle.headline2),
+    $text.style.ref(mxt.textStyle.headline3),
     $text.style.fontWeight.bold(),
   );
 

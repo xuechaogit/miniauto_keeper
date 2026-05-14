@@ -3,11 +3,13 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/theme/app_mix_themes.dart';
 import 'package:mix/mix.dart';
+import 'package:shimmer/shimmer.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/app_theme_tool.dart';
 import '../../../core/widgets/filter_chips/filter_chips.dart';
 import '../../../core/widgets/filter_chips/filter_chips.variant.dart';
+import '../../../core/widgets/image/image.dart';
 import '../../../core/widgets/tag/tag.dart';
 import '../../../core/widgets/tag/tag.style.dart';
 import '../../../models/product_model.dart';
@@ -200,12 +202,10 @@ class BrandDetailView extends GetView<BrandDetailController> {
             // 商品图片 - 瀑布流的关键：不限制 Expanded，改用比例或自适应高度
             Stack(
               children: [
-                Image.network(
-                  item.imageUrl,
-                  fit: BoxFit.cover,
-                  // 这里如果不设置高度，Masonry 会根据图片下载后的尺寸自动排版
-                  errorBuilder: (c, e, s) =>
-                      Container(height: 150, color: Colors.grey),
+                CustomImage(
+                  imageUrl: item.imageUrl,
+                  aspectRatio: 1, // 如果后端有比例，可以传 item.width / item.height
+                  // borderRadius: 16, // 如果需要圆角
                 ),
               ],
             ),

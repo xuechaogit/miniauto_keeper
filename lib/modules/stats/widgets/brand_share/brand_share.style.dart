@@ -14,7 +14,7 @@ class BrandShareStyle {
 
   // 标题样式
   static Style get title => Style(
-    $text.style.fontSize(18),
+    $text.style.ref(mxt.textStyle.headline3),
     $text.style.fontWeight.bold(),
     $text.style.letterSpacing(0.5),
   );
@@ -22,13 +22,13 @@ class BrandShareStyle {
   // 品牌名称标签
   static Style get label => Style(
     $text.style.color.ref(mxt.color.onSurface),
-    $text.style.fontSize(13),
+    $text.style.ref(mxt.textStyle.caption),
   );
 
   // 数值样式
   static Style get valueText => Style(
     $text.style.color.ref(mxt.color.onSurface),
-    $text.style.fontSize(13),
+    $text.style.ref(mxt.textStyle.caption),
     $text.style.fontWeight.bold(),
   );
 

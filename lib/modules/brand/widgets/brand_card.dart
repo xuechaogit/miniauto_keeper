@@ -46,7 +46,7 @@ class BrandCard extends StatelessWidget {
           top: 0,
           bottom: 0,
           child: Opacity(
-            opacity: 0.05,
+            opacity: 0.2,
             child: ShaderMask(
               shaderCallback: (rect) => const LinearGradient(
                 begin: Alignment.centerLeft,
@@ -66,7 +66,7 @@ class BrandCard extends StatelessWidget {
           bottom: 0,
           width: 320,
           child: Opacity(
-            opacity: 0.7,
+            opacity: 0.9,
             child: CustomPaint(painter: _GTCartPainter(brandColor: brandColor)),
           ),
         ),

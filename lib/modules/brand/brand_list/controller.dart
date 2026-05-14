@@ -1,6 +1,8 @@
 // lib/modules/brand/brand_detail/controller.dart
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../models/product_model.dart';
+import '../../../core/utils/snackbar_util.dart';
 import '../../../models/brand_stats.dart';
 
 class BrandDetailController extends GetxController {
@@ -77,31 +79,38 @@ class BrandDetailController extends GetxController {
               'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=800',
           tags: ['1:43', 'In Stock'],
         ),
-        // ProductModel(
-        //   id: '4',
-        //   title: 'BMW M4 CSL (G82) - Frozen Grey',
-        //   brandName: 'BMW',
-        //   price: 180.0,
-        //   imageUrl:
-        //       'https://images.unsplash.com/photo-1555215695-3004980ad94e?q=80&w=800',
-        //   tags: ['1:18', 'New'],
-        // ),
-        // ProductModel(
-        //   id: '5',
-        //   title: 'Audi RS6 Avant - Nardo Grey Custom',
-        //   brandName: 'Audi',
-        //   price: 150.0,
-        //   imageUrl:
-        //       'https://images.unsplash.com/photo-1606152421660-0e7829762957?q=80&w=800',
-        //   tags: ['1:43', 'Classic'],
-        // ),
+        ProductModel(
+          id: '6',
+          title: 'BMW M4 CSL (G82) - Frozen Grey',
+          brandName: 'BMW',
+          price: 180.0,
+          imageUrl:
+              'https://images.unsplash.com/photo-1555215695-3004980ad94e?q=80&w=800',
+          tags: ['1:18', 'New'],
+        ),
+        ProductModel(
+          id: '7',
+          title: 'Audi RS6 Avant - Nardo Grey Custom',
+          brandName: 'Audi',
+          price: 150.0,
+          imageUrl:
+              'https://images.unsplash.com/photo-1606152421660-0e7829762957?q=80&w=800',
+          tags: ['1:43', 'Classic'],
+        ),
       ];
     });
   }
 
   void addToGarage(ProductModel product) {
     // 加入车库逻辑
-    Get.snackbar('Success', '${product.title} added to Garage');
+    SnackBarUtil.primary('${product.title} added to Garage');
+    // Get.snackbar(
+    //   'Success',
+    //   '${product.title} added to Garage',
+    //   snackPosition: SnackPosition.TOP,
+    //   margin: const EdgeInsets.all(16),
+    //   duration: const Duration(seconds: 2),
+    // );
   }
 
   void changeFilter(Map<String, dynamic> brandItem) {

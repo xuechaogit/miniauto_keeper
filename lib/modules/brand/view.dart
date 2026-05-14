@@ -37,35 +37,36 @@ class BrandView extends GetView<BrandsController> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // 搜索框
-                TextField(
-                  // 1. 同步文字样式
-                  style: context.textStyle(mxt.textStyle.body),
-
-                  decoration: InputDecoration(
-                    // A. 默认状态的边框（未选中时）
-                    hintText: 'Search Your collection...',
-                    // 💡 关键：必须设为 true
-                    filled: true,
-                    // 使用 context 扩展引用 Token
-                    fillColor: context.color(mxt.color.surfaceVariant),
-                    // 3. 使用 Token 圆角
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(
-                        context.radius(mxt.radius.large),
+                SizedBox(
+                  // 显式约束高度，确保和 FilterChips 在视觉上分量相当
+                  height: 40,
+                  child: TextField(
+                    // 1. 同步文字样式
+                    style: context.textStyle(mxt.textStyle.body),
+                    onChanged: (value) => null,
+                    decoration: InputDecoration(
+                      hintText: 'Search products...',
+                      filled: true,
+                      fillColor: context.color(mxt.color.surfaceVariant),
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: context.color(mxt.color.primary),
+                        size: 20,
                       ),
-                      borderSide: BorderSide.none,
-                    ),
-                    // 4. 使用 Token 间距
-                    contentPadding: EdgeInsets.all(
-                      context.space(mxt.space.large),
-                    ),
-
-                    prefixIcon: Icon(
-                      Icons.search,
-                      color: context.color(mxt.color.primary),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(
+                          context.radius(mxt.radius.large),
+                        ),
+                        borderSide: BorderSide.none,
+                      ),
+                      // 关键：减少垂直 Padding，因为外部已经有 SizedBox 限制高度了
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                      ),
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 32),
 
                 // 标题行

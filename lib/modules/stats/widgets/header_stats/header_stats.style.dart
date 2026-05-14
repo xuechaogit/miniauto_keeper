@@ -6,7 +6,7 @@ import '../../../../core/theme/app_theme.dart';
 class HeaderStatsStyles {
   // 基础卡片容器
   static final container = Style(
-    $box.padding(20),
+    $box.padding(16),
     $box.color.ref(mxt.color.surface),
     $box.decoration.borderRadius(16),
   );
