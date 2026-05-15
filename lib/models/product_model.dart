@@ -7,6 +7,7 @@ class ProductModel {
   final String imageUrl;
   final List<String> tags; // 比如：1:18, Limited, Diecast
   final String description;
+  final String purchaseDate;
 
   ProductModel({
     required this.id,
@@ -15,6 +16,7 @@ class ProductModel {
     required this.price,
     required this.imageUrl,
     required this.tags,
+    this.purchaseDate = '',
     this.description = '',
   });
 }
