@@ -3,10 +3,13 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:mix/mix.dart';
 import '../../core/theme/app_mix_themes.dart';
+import '../../core/theme/app_theme.dart';
+import '../../core/theme/app_theme_tool.dart';
 import '../../core/widgets/filter_chips/filter_chips.dart';
 import '../../core/widgets/filter_chips/filter_chips.variant.dart';
 import '../../core/widgets/product/product.dart';
 import 'controller.dart';
+import 'widget/stats_dashboard/stats_dashboard.dart';
 
 class GarageView extends GetView<GarageController> {
   const GarageView({super.key});
@@ -51,9 +54,7 @@ class GarageView extends GetView<GarageController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0A0A), // 极黑背景
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
         elevation: 0,
         title: StyledText('MY GARAGE', style: AppMixStyles.titleStyle),
         // actions: [IconButton(icon: const Icon(Icons.search), onPressed: () {})],
@@ -62,25 +63,32 @@ class GarageView extends GetView<GarageController> {
         children: [
           CustomScrollView(
             slivers: [
-              // 2. 统计面板
-              _buildStatsDashboard(),
+              // 1. 统计面板
+              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Obx(
+                    () => StatsDashboard(
+                      modelsCount:
+                          "${controller.filteredModels.length}", // 举例：动态拿到当前的长度
+                      brandsCount: "32",
+                      valuation: "\$14.2K",
+                    ),
+                  ),
+                ),
+              ),
 
-              // 4. The Vault 展示
+              // 2. The Vault 展示
               // _buildTheVaultHeader(),
               // _buildMainCard(),
 
-              // 5.筛选
-              _buildSearchAndFilterActions(),
-              _buildExpandedRow(context),
+              // 3.筛选
+              _buildStickyFilterPanel(context),
 
-              // 7. 底部占位
-              const SliverToBoxAdapter(child: SizedBox(height: 32)),
-
-              // 6. Shelf View 宫格
+              // 4. Shelf View 宫格
               _buildShelfHeader(),
 
-              // _buildShelfGrid(),
-              // _buildGridView(),
               Obx(() {
                 return controller.isListMode.value
                     ? _buildListView()
@@ -90,6 +98,69 @@ class GarageView extends GetView<GarageController> {
             ],
           ),
         ],
+      ),
+    );
+  }
+
+  // 🌟 将搜索和筛选合并为一个吸顶组件
+  Widget _buildStickyFilterPanel(BuildContext context) {
+    return SliverPersistentHeader(
+      pinned: true, // 关键：设置为 true 开启吸顶效果
+      delegate: _SliverHeaderDelegate(
+        height: 128, // 严格计算后的总面板高度
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // 1. 搜索框部分 (去掉了原本多余的 vertical padding，改为精准控制)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              child: SizedBox(
+                height: 40,
+                child: TextField(
+                  style: context.textStyle(mxt.textStyle.body),
+                  onChanged: (value) {},
+                  decoration: InputDecoration(
+                    hintText: 'Search products...',
+                    filled: true,
+                    fillColor: context.color(mxt.color.surfaceVariant),
+                    prefixIcon: Icon(
+                      Icons.search,
+                      color: context.color(mxt.color.primary),
+                      size: 20,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(
+                        context.radius(mxt.radius.large),
+                      ),
+                      borderSide: BorderSide.none,
+                    ),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                  ),
+                ),
+              ),
+            ),
+
+            // 2. 筛选 Chips 部分
+            HBox(
+              style: Style(
+                $box.padding.horizontal(16),
+                $box.padding.vertical(8),
+              ),
+              children: [
+                Expanded(
+                  child: FilterChips(
+                    filters: controller.filters.take(5).toList(),
+                    selectedFilter: controller.selectedFilter,
+                    onSelected: (v) => controller.changeFilter(v),
+                    type: FilterChipType.outlined,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                _buildTuneButton(context),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -124,250 +195,12 @@ class GarageView extends GetView<GarageController> {
     );
   }
 
-  // 情况 B：正常展开时的布局
-  Widget _buildExpandedRow(BuildContext context) {
-    return SliverToBoxAdapter(
-      child: HBox(
-        style: Style($box.padding.horizontal(16)),
-        children: [
-          Expanded(
-            child: FilterChips(
-              filters: controller.filters.take(5).toList(),
-              selectedFilter: controller.selectedFilter,
-              onSelected: (v) => controller.changeFilter(v),
-              type: FilterChipType.outlined,
-            ),
-          ),
-          const SizedBox(width: 8),
-          _buildTuneButton(context),
-        ],
-      ),
-    );
-  }
-
   Widget _buildTuneButton(BuildContext context) {
     return IconButton(
       icon: const Icon(Icons.tune, size: 20),
       onPressed: () => Scaffold.of(context).openEndDrawer(),
     );
   }
-
-  Widget _actionButton({
-    required IconData icon,
-    required VoidCallback onTap,
-    bool isPrimary = false, // 是否使用强调色（红色系）
-  }) {
-    // 定义 Mix 样式
-    final buttonStyle = Style(
-      $box.width(48),
-      $box.height(48),
-      $box.borderRadius.all(12),
-      // 根据是否为 Primary 切换背景色
-      $box.color(
-        isPrimary
-            ? const Color(0xFFE54335).withOpacity(0.1)
-            : const Color(0xFF161616),
-      ),
-      // 细微的边框，增强工业感
-      $box.border.all.color(
-        isPrimary
-            ? const Color(0xFFE54335).withOpacity(0.4)
-            : Colors.white.withOpacity(0.05),
-      ),
-    );
-
-    return Pressable(
-      onPress: onTap,
-      child: Box(
-        style: buttonStyle,
-        child: Center(
-          child: Icon(
-            icon,
-            // 图标颜色也随状态切换
-            color: isPrimary ? const Color(0xFFE54335) : Colors.white70,
-            size: 22,
-          ),
-        ),
-      ),
-    );
-  }
-
-  // 弹出排序菜单
-  void _showSortMenu() {
-    Get.bottomSheet(
-      Box(
-        style: Style(
-          $box.color(const Color(0xFF161616)),
-          $box.borderRadius.top(20),
-          $box.padding.all(24),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "SORT BY",
-              style: TextStyle(
-                color: Colors.white38,
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-                letterSpacing: 1.5,
-              ),
-            ),
-            const SizedBox(height: 20),
-            _sortOption(
-              "Price: High to Low",
-              SortType.priceDesc,
-              Icons.arrow_downward,
-            ),
-            _sortOption(
-              "Price: Low to High",
-              SortType.priceAsc,
-              Icons.arrow_upward,
-            ),
-            const Divider(color: Colors.white10, height: 32),
-            _sortOption(
-              "Date: Newest First",
-              SortType.dateDesc,
-              Icons.calendar_today,
-            ),
-            _sortOption("Date: Oldest First", SortType.dateAsc, Icons.history),
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _sortOption(String label, SortType type, IconData icon) {
-    return Obx(() {
-      final isSelected = controller.currentSort.value == type;
-      return Pressable(
-        onPress: () => controller.updateSort(type),
-        child: Box(
-          style: Style(
-            $box.padding.vertical(12),
-            $box.padding.horizontal(8),
-            $box.borderRadius.all(8),
-            // 选中时给一个微弱的红色背景
-            // ifCondition(
-            //   isSelected,
-            //   Style(
-            //     $box.backgroundColor.color(
-            //       const Color(0xFFE54335).withOpacity(0.1),
-            //     ),
-            //   ),
-            // ),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                icon,
-                size: 18,
-                color: isSelected ? const Color(0xFFE54335) : Colors.white38,
-              ),
-              const SizedBox(width: 16),
-              Text(
-                label.toUpperCase(),
-                style: TextStyle(
-                  color: isSelected ? Colors.white : Colors.white70,
-                  fontSize: 14,
-                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                ),
-              ),
-              const Spacer(),
-              if (isSelected)
-                const Icon(Icons.check, color: Color(0xFFE54335), size: 18),
-            ],
-          ),
-        ),
-      );
-    });
-  }
-
-  // 2. 统计面板 (还原：MODELS, BRANDS, VALUATION)
-  Widget _buildStatsDashboard() {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-        child: Row(
-          children: [
-            _statItem("MODELS", "256"),
-            _divider(),
-            _statItem("BRANDS", "32"),
-            _divider(),
-            _statItem("VALUATION", "\$14.2k", isRed: true),
-            const Spacer(),
-            // 占位，留给右侧的浮动按钮空间
-            const SizedBox(width: 60),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // 3. 搜索与排序 (实现你要求的 1 和 2)
-  Widget _buildSearchAndFilterActions() {
-    return SliverToBoxAdapter(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        child: Row(
-          children: [
-            Expanded(
-              child: Box(
-                style: searchBarBoxStyle,
-                child: TextField(
-                  style: const TextStyle(color: Colors.white, fontSize: 14),
-                  decoration: InputDecoration(
-                    hintText: "SEARCH MODELS...",
-                    hintStyle: const TextStyle(
-                      color: Colors.white24,
-                      fontSize: 12,
-                    ),
-                    icon: Icon(Icons.manage_search, color: Colors.white38),
-                    border: InputBorder.none,
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 12),
-            // 2. 排序按钮 (普通状态)
-            _actionButton(
-              icon: Icons.unfold_more_rounded,
-              onTap: () => _showSortMenu(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // 辅助组件：统计项
-  Widget _statItem(String label, String value, {bool isRed = false}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        StyledText(label, style: labelStyle),
-        const SizedBox(height: 4),
-        Text(
-          value,
-          style: TextStyle(
-            color: isRed ? const Color(0xFFE54335) : Colors.white,
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            letterSpacing: -0.5,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _divider() => Container(
-    margin: const EdgeInsets.symmetric(horizontal: 20),
-    width: 0.5,
-    height: 30,
-    color: Colors.white10,
-  );
 
   Widget _buildTheVaultHeader() {
     return SliverToBoxAdapter(
@@ -525,23 +358,114 @@ class GarageView extends GetView<GarageController> {
   }
 
   Widget _buildShelfHeader() {
+    final FocusNode dropdownFocus = FocusNode();
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(
           children: [
-            StyledText("SHELF VIEW", style: sectionTitleStyle),
-            const Spacer(),
+            // 🌟 1. 用 DropdownButton 替代原本的 "SHELF VIEW" 标题
             Obx(() {
-              return controller.isListMode.value
-                  ? IconButton(
-                      icon: const Icon(Icons.list_rounded, size: 20),
-                      onPressed: controller.toggleViewMode,
-                    )
-                  : IconButton(
-                      icon: const Icon(Icons.grid_view_rounded, size: 20),
-                      onPressed: controller.toggleViewMode,
+              return DropdownButtonHideUnderline(
+                child: DropdownButton<SortType>(
+                  focusNode: dropdownFocus,
+                  value: controller.currentSort.value,
+                  alignment: Alignment.centerLeft,
+                  onChanged: (SortType? newValue) {
+                    dropdownFocus.unfocus();
+                    if (newValue != null) {
+                      controller.updateSortWithoutPop(newValue);
+                    }
+                  },
+                  // 🌟 关键优化：定制按钮闭合时在主界面上展示的纯净外观
+                  selectedItemBuilder: (BuildContext context) {
+                    return controller.sortOptions.map((item) {
+                      return Box(
+                        child: HBox(
+                          children: [
+                            StyledIcon(
+                              item['icon'] as IconData,
+                              style: Style(
+                                $icon.color.ref(mxt.color.onSurface),
+                                $icon.size(14),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            StyledText(
+                              (item['label'] as String).toUpperCase(),
+                              style: Style(
+                                $text.color.ref(mxt.color.onSurface),
+                                $text.style.ref(mxt.textStyle.caption),
+                                $text.letterSpacing(1.2),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList();
+                  },
+                  // 展开后的菜单项样式优化
+                  items: controller.sortOptions.map((item) {
+                    final itemValue = item['value'] as SortType;
+                    final isSelected =
+                        controller.currentSort.value == itemValue;
+
+                    return DropdownMenuItem<SortType>(
+                      value: itemValue,
+                      child: Container(
+                        // 填满包裹，并给一丁点内边距
+                        width: double.infinity,
+                        height: double.infinity,
+                        padding: const EdgeInsets.symmetric(vertical: 2),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            StyledIcon(
+                              item['icon'] as IconData,
+                              style: Style(
+                                $icon.color.ref(
+                                  isSelected
+                                      ? mxt.color.primary
+                                      : mxt.color.onSurface,
+                                ),
+                                $icon.size(14),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            StyledText(
+                              item['label'] as String,
+                              style: Style(
+                                $text.color.ref(
+                                  isSelected
+                                      ? mxt.color.primary
+                                      : mxt.color.onSurface,
+                                ),
+                                $text.style.ref(mxt.textStyle.caption),
+                                $text.letterSpacing(1.2),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     );
+                  }).toList(),
+                ),
+              );
+            }),
+            const Spacer(),
+
+            // 2. 右侧保持原有的 列表/网格 切换按钮
+            Obx(() {
+              return IconButton(
+                icon: Icon(
+                  controller.isListMode.value
+                      ? Icons.list_rounded
+                      : Icons.grid_view_rounded,
+                  size: 20,
+                  color: Colors.white70,
+                ),
+                onPressed: controller.toggleViewMode,
+              );
             }),
           ],
         ),
@@ -571,4 +495,42 @@ class TagClipper extends CustomClipper<Path> {
 
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) => false;
+}
+
+class _SliverHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final Widget child;
+  final double height;
+
+  _SliverHeaderDelegate({required this.child, required this.height});
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    // 使用 Material 阻断背景穿透，并强制子组件占满系统给予的当前实际高度空间
+    return Material(
+      color: Theme.of(context).scaffoldBackgroundColor,
+      elevation: overlapsContent ? 2 : 0,
+      child: SizedBox.expand(
+        child: SingleChildScrollView(
+          // 防止极端情况下出现像素溢出，允许微弱的内部滑动或者直接截断
+          physics: const NeverScrollableScrollPhysics(),
+          child: child,
+        ),
+      ),
+    );
+  }
+
+  @override
+  double get maxExtent => height;
+
+  @override
+  double get minExtent => height;
+
+  @override
+  bool shouldRebuild(covariant _SliverHeaderDelegate oldDelegate) {
+    return oldDelegate.height != height || oldDelegate.child != child;
+  }
 }

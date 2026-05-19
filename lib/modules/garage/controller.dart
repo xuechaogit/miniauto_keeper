@@ -34,6 +34,25 @@ class GarageController extends GetxController {
     {'label': 'TARMAC', 'value': 'TARMAC'},
   ];
 
+  final List<Map<String, dynamic>> sortOptions = [
+    {
+      'label': 'PRICE: HIGH-LOW',
+      'value': SortType.priceDesc,
+      'icon': Icons.arrow_downward,
+    },
+    {
+      'label': 'PRICE: LOW-HIGH',
+      'value': SortType.priceAsc,
+      'icon': Icons.arrow_upward,
+    },
+    {
+      'label': 'DATE: NEWEST',
+      'value': SortType.dateDesc,
+      'icon': Icons.calendar_today,
+    },
+    {'label': 'DATE: OLDEST', 'value': SortType.dateAsc, 'icon': Icons.history},
+  ];
+
   // --- 界面展示用的流 (计算属性) ---
   // 当搜索、排序或筛选发生变化时，filteredModels 会自动更新
   List<ProductModel> get filteredModels {
@@ -81,6 +100,10 @@ class GarageController extends GetxController {
   }
 
   // --- 交互方法 ---
+  void updateSortWithoutPop(SortType type) {
+    currentSort.value = type;
+    // 不再调用 Get.back()，因为 Dropdown 选完会自动收起
+  }
 
   void toggleViewMode() {
     isListMode.value = !isListMode.value;
