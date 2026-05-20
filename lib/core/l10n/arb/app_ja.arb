@@ -1,0 +1,18 @@
+{
+  "appName": "車仔アシスタント",
+  "@appName": {
+    "description": "アプリの名前"
+  },
+  "homeTitle": "モデルガレージ",
+  "collectStatus": "コレクション進捗：{count} / {total}",
+  "@collectStatus": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "total": {
+        "type": "String"
+      }
+    }
+  }
+}

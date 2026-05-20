@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../models/product_model.dart';
+import '../../../core/router/app_routes.dart';
 import '../../../core/utils/snackbar_util.dart';
 import '../../../models/brand_stats.dart';
 
@@ -115,5 +116,10 @@ class BrandDetailController extends GetxController {
 
   void changeFilter(Map<String, dynamic> brandItem) {
     selectedFilter.value = brandItem['value']!;
+  }
+
+  void toProductDetailPage(ProductModel product) {
+    print('product.id: ${product.id}');
+    Get.toNamed(AppRoutes.productDetail, parameters: {'id': product.id});
   }
 }

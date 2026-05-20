@@ -9,8 +9,8 @@ class StatsDashboardStyles {
     $box.padding.all.ref(mxt.space.medium),
     $box.color.ref(mxt.color.surface),
     $box.borderRadius.all.ref(mxt.radius.medium),
-    $box.border.all.color.ref(mxt.color.outlineVariant),
-    $box.border.all.width(1),
+    // $box.border.all.color.ref(mxt.color.outlineVariant),
+    // $box.border.all.width(1),
   );
 
   // 内嵌 FlexBox 的样式：核心加入了 `$box.width.full()` 确保百分百占满父元素宽度

@@ -36,30 +36,30 @@ class MonthlySpendingTrend extends GetView<StatsController> {
         ),
         const Spacer(),
         // 使用 Material 3 SegmentedButton
-        Obx(
-          () => SegmentedButton<int>(
-            showSelectedIcon: false,
-            // 选中的索引，必须是 Set 类型
-            selected: {controller.isFirstHalf.value ? 0 : 1},
-            // 选项配置
-            segments: const [
-              ButtonSegment<int>(value: 0, label: Text('H1')),
-              ButtonSegment<int>(value: 1, label: Text('H2')),
-            ],
-            // 选中回调
-            onSelectionChanged: (Set<int> newSelection) {
-              controller.isFirstHalf.value = (newSelection.first == 0);
-            },
-            style: SegmentedButton.styleFrom(
-              // 这里的 side 如果报错，请检查是否传入了 BorderSide.none 或具体的 BorderSide
-              side: const BorderSide(color: Colors.transparent),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              visualDensity: VisualDensity.comfortable,
-            ),
-          ),
-        ),
+        // Obx(
+        //   () => SegmentedButton<int>(
+        //     showSelectedIcon: false,
+        //     // 选中的索引，必须是 Set 类型
+        //     selected: {controller.isFirstHalf.value ? 0 : 1},
+        //     // 选项配置
+        //     segments: const [
+        //       ButtonSegment<int>(value: 0, label: Text('H1')),
+        //       ButtonSegment<int>(value: 1, label: Text('H2')),
+        //     ],
+        //     // 选中回调
+        //     onSelectionChanged: (Set<int> newSelection) {
+        //       controller.isFirstHalf.value = (newSelection.first == 0);
+        //     },
+        //     style: SegmentedButton.styleFrom(
+        //       // 这里的 side 如果报错，请检查是否传入了 BorderSide.none 或具体的 BorderSide
+        //       side: const BorderSide(color: Colors.transparent),
+        //       shape: RoundedRectangleBorder(
+        //         borderRadius: BorderRadius.circular(8),
+        //       ),
+        //       visualDensity: VisualDensity.comfortable,
+        //     ),
+        //   ),
+        // ),
         const SizedBox(width: 12),
         _buildYearPicker(),
       ],

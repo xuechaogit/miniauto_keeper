@@ -8,6 +8,7 @@ import 'package:miniauto_keeper/modules/calendar/view.dart';
 
 //路由路径
 import '../../modules/modules.dart';
+import '../../modules/product_detail/index.dart';
 import '../middleware/auth_middleware.dart';
 import 'app_routes.dart';
 
@@ -24,6 +25,7 @@ class AppPages {
     _forgotPasswordRoute(), // 提取子路由逻辑
     _calendarRoute(),
     _brandDetailRoute(),
+    _productDetailRoute(),
   ];
 
   // 模块化路由定义，避免 AppPages 类过长
@@ -53,6 +55,14 @@ class AppPages {
     name: AppRoutes.login,
     page: () => const ProfileView(),
     binding: ProfileBinding(),
+    transition: Transition.fadeIn,
+    middlewares: [AuthMiddleware()],
+  );
+
+  static GetPage _productDetailRoute() => GetPage(
+    name: AppRoutes.productDetail,
+    page: () => const ProductDetailView(),
+    binding: ProductDetailBinding(),
     transition: Transition.fadeIn,
     middlewares: [AuthMiddleware()],
   );

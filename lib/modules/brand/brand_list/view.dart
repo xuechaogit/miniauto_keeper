@@ -3,15 +3,12 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/theme/app_mix_themes.dart';
 import 'package:mix/mix.dart';
-import 'package:shimmer/shimmer.dart';
 
 import '../../../core/theme/app_theme.dart';
 import '../../../core/theme/app_theme_tool.dart';
 import '../../../core/widgets/filter_chips/filter_chips.dart';
 import '../../../core/widgets/filter_chips/filter_chips.variant.dart';
 import '../../../core/widgets/image/image.dart';
-import '../../../core/widgets/tag/tag.dart';
-import '../../../core/widgets/tag/tag.style.dart';
 import '../../../models/product_model.dart';
 import 'controller.dart';
 
@@ -64,8 +61,11 @@ class BrandDetailView extends GetView<BrandDetailController> {
             mainAxisSpacing: 16,
             crossAxisSpacing: 16,
             itemCount: controller.products.length,
-            itemBuilder: (context, index) =>
-                _buildProductCard(context, controller.products[index]),
+            itemBuilder: (context, index) => PressableBox(
+              onPress: () =>
+                  controller.toProductDetailPage(controller.products[index]),
+              child: _buildProductCard(context, controller.products[index]),
+            ),
           ),
         ),
       ),

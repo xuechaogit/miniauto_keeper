@@ -4,15 +4,7 @@ import '../../core/l10n/l10n_util.dart'; // 导入我们之前的扩展
 import '../../core/services/settings_service.dart';
 
 import 'controller.dart';
-
-class CountController extends GetxController {
-  int counter = 0;
-
-  void increment() {
-    counter++;
-    update(); // 必须手动调用 update()，UI 才会收到通知
-  }
-}
+import 'widget/personalization_drawer/personalization_drawer.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -20,24 +12,22 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     final settings = Get.find<SettingsService>();
-    final count = Get.put(CountController()); // 这里我们放入一个简单的计数器控制器
 
     return Scaffold(
       appBar: AppBar(
         title: Text(context.l10n.appName), // 使用国际化
         centerTitle: false,
         actions: [
-          // 深色模式切换开关
-          Obx(
-            () => IconButton(
-              icon: Icon(
-                settings.isDarkMode ? Icons.light_mode : Icons.dark_mode,
-              ),
-              onPressed: () => settings.toggleDarkMode(!settings.isDarkMode),
+          Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.settings),
+              onPressed: () => Scaffold.of(context).openEndDrawer(),
             ),
           ),
         ],
       ),
+      // 3. 配置右侧抽屉
+      endDrawer: PersonalizationDrawer(context),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -58,24 +48,6 @@ class HomeView extends GetView<HomeController> {
             _buildColorPicker(settings),
             const SizedBox(height: 32),
 
-            // 语言切换测试
-            Text(
-              "语言设置",
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            _buildLanguageSelector(settings),
-
-            GetBuilder<CountController>(
-              init: CountController(),
-              builder: (controller) {
-                return Text("Clicks: ${controller.counter}");
-              },
-            ),
-            SizedBox(height: 16),
-            Obx(() => Text("totalCars: ${controller.totalCars}")),
             SizedBox(height: 16),
             ElevatedButton(
               child: Text("Go to Login"),
@@ -91,7 +63,7 @@ class HomeView extends GetView<HomeController> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: count.increment,
+        onPressed: () {},
       ),
     );
   }
@@ -166,20 +138,6 @@ class HomeView extends GetView<HomeController> {
           ),
         );
       }).toList(),
-    );
-  }
-
-  // 语言选择器
-  Widget _buildLanguageSelector(SettingsService settings) {
-    return SegmentedButton<String>(
-      segments: const [
-        ButtonSegment(value: 'zh', label: Text("简体中文")),
-        ButtonSegment(value: 'en', label: Text("English")),
-      ],
-      selected: {settings.language},
-      onSelectionChanged: (newSelection) {
-        settings.language = newSelection.first;
-      },
     );
   }
 }

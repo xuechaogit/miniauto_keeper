@@ -51,7 +51,11 @@ class CustomImage extends StatelessWidget {
           // 关键点 3：错误处理
           errorBuilder: (context, error, stackTrace) => Container(
             color: Colors.grey[200],
-            child: const Icon(Icons.broken_image, color: Colors.grey),
+            child: Icon(
+              Icons.directions_car_filled,
+              size: 72,
+              color: Color(0xFF3A3A3A),
+            ),
           ),
         ),
       ),

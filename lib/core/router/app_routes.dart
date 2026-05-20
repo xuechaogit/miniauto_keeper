@@ -1,10 +1,11 @@
 //定义路由名称常量
 class AppRoutes {
   static const initial = '/';
-  static const brandDetail = '/brand-detail';
   static const login = '/login';
   static const calender = '/calender';
 
+  static const brandDetail = '/brand-detail';
+  static const productDetail = '/detail';
   // --- 忘记密码模块 ---
   static const forgotPassword = '/forgot-password';
   // 子页面路径
