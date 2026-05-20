@@ -1,0 +1,19 @@
+密钥口令：macnn123
+您的名字与姓氏是什么?
+  [Unknown]:  Pan Sen
+您的组织单位名称是什么?
+  [Unknown]:  Macnn
+您的组织名称是什么?
+  [Unknown]:  Macnn
+您所在的城市或区域名称是什么?
+  [Unknown]:  Su Zhou
+您所在的省/市/自治区名称是什么?
+  [Unknown]:  Jiang Su
+该单位的双字母国家/地区代码是什么?
+  [Unknown]:  China
+CN=Pan Sen, OU=Macnn, O=Macnn, L=Su Zhou, ST=Jiang Su, C=China
+[正在存储C:\Users\Administrator\upload-keystore.jks]
+
+Warning:
+JKS 密钥库使用专用格式。
+建议使用 "keytool -importkeystore -srckeystore C:\Users\Administrator\upload-keystore.jks -destkeystore C:\Users\Administrator\upload-keystore.jks -deststoretype pkcs12" 迁移到行业标准格式 PKCS12。
