@@ -59,6 +59,10 @@ class MyThemeColorToken {
   ColorToken get onSurface => const ColorToken('on-surface');
   //说明文字、输入框的占位符、不活跃的图标
   ColorToken get onSurfaceVariant => const ColorToken('on-surface-variant');
+
+  // 7. Shimmer 骨架屏专属颜色
+  ColorToken get shimmerBase => const ColorToken('shimmer-base');
+  ColorToken get shimmerHighlight => const ColorToken('shimmer-highlight');
 }
 
 class MyThemeTextStyleToken {
@@ -116,6 +120,9 @@ final lightTheme = MixThemeData(
     mxt.color.onSuccessContainer: const Color(0xFF388E3C),
     mxt.color.onWarningContainer: const Color(0xFFFF8F00),
     mxt.color.onErrorContainer: const Color(0xFFD32F2F),
+    // Shimmer 基础配置
+    mxt.color.shimmerBase: const Color(0xFFE0E3EB), // 偏向你 surfaceVariant 的淡灰蓝色
+    mxt.color.shimmerHighlight: const Color(0xFFF0F2F6), // 极淡的高亮闪烁
   },
   textStyles: {
     // 使用原生 TextStyle，不再依赖 GoogleFonts
@@ -182,6 +189,9 @@ final darkTheme = MixThemeData(
     // 错误 (Error)
     mxt.color.errorContainer: const Color(0xFF621B16), // 深酒红
     mxt.color.onErrorContainer: const Color(0xFFFFDAD6), // 浅粉红
+    // Shimmer 基础配置
+    mxt.color.shimmerBase: const Color(0xFF2A2C30), // 深灰底色
+    mxt.color.shimmerHighlight: const Color(0xFF35383F), // 微亮闪烁
   },
   textStyles: {
     mxt.textStyle.headline1: const TextStyle(

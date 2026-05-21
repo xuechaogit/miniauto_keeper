@@ -3,11 +3,13 @@
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/modules/calendar/binding.dart';
 import 'package:miniauto_keeper/modules/calendar/view.dart';
+import 'package:miniauto_keeper/modules/notice/notice_detail/view.dart';
 
 //路由中间件
 
 //路由路径
 import '../../modules/modules.dart';
+import '../../modules/notice/index.dart';
 import '../../modules/product_detail/index.dart';
 import '../middleware/auth_middleware.dart';
 import 'app_routes.dart';
@@ -26,6 +28,7 @@ class AppPages {
     _calendarRoute(),
     _brandDetailRoute(),
     _productDetailRoute(),
+    _noticeRoute(), // 公告
   ];
 
   // 模块化路由定义，避免 AppPages 类过长
@@ -82,6 +85,23 @@ class AppPages {
     children: [
       GetPage(name: '/verify', page: () => const VerifyIdentityView()),
       GetPage(name: '/reset', page: () => const SetNewPasswordView()),
+    ],
+  );
+
+  //公告
+  static GetPage _noticeRoute() => GetPage(
+    name: AppRoutes.notice,
+    page: () => const NoticeListView(),
+    binding: NoticeBinding(),
+    transition: Transition.fadeIn,
+    middlewares: [AuthMiddleware()],
+    children: [
+      GetPage(
+        name: '/detail',
+        page: () => const NoticeDetailView(),
+        binding: NoticeDetailBinding(),
+        transition: Transition.fadeIn,
+      ),
     ],
   );
 }

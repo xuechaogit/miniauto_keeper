@@ -58,6 +58,11 @@ class HomeView extends GetView<HomeController> {
               child: Text("Go to Calender"),
               onPressed: () => Get.toNamed('/calender'),
             ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              child: Text("Go to Notice"),
+              onPressed: () => Get.toNamed('/notice'),
+            ),
           ],
         ),
       ),

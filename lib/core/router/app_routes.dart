@@ -4,8 +4,14 @@ class AppRoutes {
   static const login = '/login';
   static const calender = '/calender';
 
+  //品牌
   static const brandDetail = '/brand-detail';
   static const productDetail = '/detail';
+
+  //公告
+  static const notice = '/notice';
+  static const noticeDetail = '/notice/detail';
+
   // --- 忘记密码模块 ---
   static const forgotPassword = '/forgot-password';
   // 子页面路径

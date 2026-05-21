@@ -462,7 +462,6 @@ class GarageView extends GetView<GarageController> {
                       ? Icons.list_rounded
                       : Icons.grid_view_rounded,
                   size: 20,
-                  color: Colors.white70,
                 ),
                 onPressed: controller.toggleViewMode,
               );

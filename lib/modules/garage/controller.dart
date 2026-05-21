@@ -106,6 +106,7 @@ class GarageController extends GetxController {
   }
 
   void toggleViewMode() {
+    print('isListMode.value ${isListMode.value}');
     isListMode.value = !isListMode.value;
   }
 

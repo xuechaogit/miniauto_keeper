@@ -3,6 +3,7 @@ import 'package:shimmer/shimmer.dart';
 
 import '../../theme/app_theme.dart';
 import '../../theme/app_theme_tool.dart';
+import '../custom_shimmer/custom_shimmer.dart';
 
 class CustomImage extends StatelessWidget {
   final String imageUrl;
@@ -64,11 +65,9 @@ class CustomImage extends StatelessWidget {
 
   // 内部封装的骨架屏样式
   Widget _buildShimmer(BuildContext context) {
-    return Shimmer.fromColors(
-      baseColor: context.color(mxt.color.onSurface).withOpacity(0.1),
-      highlightColor: context.color(mxt.color.onSurface).withOpacity(0.05),
+    return CustomShimmer(
       child: Container(
-        color: Colors.white, // 这里的颜色会被 Shimmer 覆盖
+        color: context.color(mxt.color.shimmerBase), // 这里的颜色会被 Shimmer 覆盖
       ),
     );
   }
