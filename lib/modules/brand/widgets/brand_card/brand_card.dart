@@ -1,7 +1,7 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-import '../../../../models/brand_stats.dart';
+import '../../../../../models/brand_stats.dart';
 import 'brand_card.style.dart';
 
 class BrandCard extends StatelessWidget {

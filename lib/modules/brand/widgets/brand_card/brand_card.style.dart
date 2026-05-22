@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
-import '../../../../core/theme/app_mix_themes.dart';
-import '../../../core/theme/app_theme.dart';
+import '../../../../../core/theme/app_mix_themes.dart';
+import '../../../../core/theme/app_theme.dart';
 
 class BrandCardStyle {
   /// 1. 卡片外层容器
   static Style get container => Style(
     $box.height(180),
     $box.borderRadius.all.ref(mxt.radius.medium),
-
     $box.clipBehavior.antiAlias(),
     $box.color.ref(mxt.color.surface),
     $box.border.color.ref(mxt.color.outlineVariant),

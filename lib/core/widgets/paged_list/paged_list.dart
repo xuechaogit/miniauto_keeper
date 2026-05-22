@@ -13,6 +13,8 @@ class AppPagedListView<T> extends StatefulWidget {
   itemBuilder; // 单项渲染器
   final Widget skeletonList; // 全局加载时的骨架屏占位
   final EdgeInsetsGeometry? padding; // 列表内边距
+  final bool _isSliver; // 内部标记位
+  final double gap; // 内部标记位
 
   const AppPagedListView({
     Key? key,
@@ -23,66 +25,102 @@ class AppPagedListView<T> extends StatefulWidget {
     required this.onLoadMore,
     required this.itemBuilder,
     required this.skeletonList,
+    this.gap = 16,
     this.padding,
-  }) : super(key: key);
+  }) : _isSliver = false,
+       super(key: key);
+
+  // 注意：在 sliver 模式下，外部必须传入一个 ScrollController 给 CustomScrollView
+  const AppPagedListView.sliver({
+    Key? key,
+    required this.data,
+    required this.isLoading,
+    required this.isLoadingMore,
+    required this.hasMore,
+    required this.itemBuilder,
+    required this.skeletonList, // 这里要求传入一个 Sliver 组件，比如 SliverList
+    this.gap = 16,
+  }) : padding = null,
+       _isSliver = true,
+       onLoadMore = _emptyCallback,
+       super(key: key);
+  // 2. 在类内部定义一个静态的空函数常量
+  static Future<void> _emptyCallback() async {}
 
   @override
   State<AppPagedListView<T>> createState() => _AppPagedListViewState<T>();
 }
 
 class _AppPagedListViewState<T> extends State<AppPagedListView<T>> {
-  final ScrollController _scrollController = ScrollController();
+  // 普通模式才需要内部控制器
+  ScrollController? _internalScrollController;
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
+    // 如果是 sliver 模式，监听就由外部的 CustomScrollView 搞定，这里不用自己监听触底
+    if (!widget._isSliver) {
+      _internalScrollController = ScrollController()..addListener(_onScroll);
+    }
   }
 
   void _onScroll() {
-    // 触底前 50 像素触发加载更多
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent - 50) {
+    if (_internalScrollController!.position.pixels >=
+        _internalScrollController!.position.maxScrollExtent - 50) {
       widget.onLoadMore();
     }
   }
 
   @override
   void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose(); // 自动释放控制器，防止内存占用
+    _internalScrollController?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      // 1. 初次进入时的全局骨架屏
       if (widget.isLoading.value) {
+        //// 如果是 sliver 模式，确保外部传进来的是 SliverToBoxAdapter(child: Skeleton) 或者是 SliverList
         return widget.skeletonList;
       }
 
-      // 2. 空状态
       if (widget.data.isEmpty) {
-        return const Center(
+        // 如果是 sliver 模式，空状态也得包裹在 SliverToBoxAdapter 里
+        Widget emptyWidget = const Center(
           child: Text(
             'NO DATA',
             style: TextStyle(color: Color(0xFF666666), fontFamily: 'Courier'),
           ),
         );
+        return widget._isSliver
+            ? SliverToBoxAdapter(child: emptyWidget)
+            : emptyWidget;
       }
 
-      // 3. 数据展示主列表
-      return ListView.builder(
-        controller: _scrollController,
-        padding: widget.padding ?? const EdgeInsets.only(top: 16, bottom: 24),
+      // 💥 如果是 Sliver 模式，直接返回 SliverList
+      if (widget._isSliver) {
+        return SliverList.separated(
+          itemCount: widget.data.length + 1,
+          // 🌟 每一项卡片的渲染器
+          itemBuilder: (context, index) {
+            if (index == widget.data.length) return _buildFooterIndicator();
+            return widget.itemBuilder(context, widget.data[index], index);
+          },
+          // 🌟 这里就是你要的 Item 之间的间距！要多大给多大
+          separatorBuilder: (context, index) => SizedBox(height: widget.gap),
+        );
+      }
+
+      // 普通模式保持原样
+      return ListView.separated(
+        controller: _internalScrollController,
         itemCount: widget.data.length + 1,
         itemBuilder: (context, index) {
-          if (index == widget.data.length) {
-            return _buildFooterIndicator();
-          }
+          if (index == widget.data.length) return _buildFooterIndicator();
           return widget.itemBuilder(context, widget.data[index], index);
         },
+        separatorBuilder: (context, index) => SizedBox(height: widget.gap),
       );
     });
   }

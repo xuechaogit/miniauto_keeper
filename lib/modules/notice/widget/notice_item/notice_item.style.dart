@@ -9,8 +9,6 @@ class NoticeItemStyles {
     $box.color.ref(mxt.color.surface),
     $box.borderRadius.all.ref(mxt.radius.medium),
     $box.padding(16),
-    $box.margin.bottom(12),
-    $box.margin.horizontal(16),
     $box.border.color.ref(mxt.color.outlineVariant),
     $box.border.width(1),
     $box.border.style(BorderStyle.solid),

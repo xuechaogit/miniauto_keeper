@@ -39,25 +39,28 @@ class NoticeListView extends GetView<NoticeController> {
           ),
         ],
       ),
-      body: AppPagedListView<NoticeModel>(
-        data: controller.notices,
-        isLoading: controller.isLoading,
-        isLoadingMore: controller.isLoadingMore,
-        hasMore: controller.hasMore,
-        onLoadMore: controller.fetchMoreNotices,
-        // 全局初次加载时显示的骨架屏结构
-        skeletonList: ListView.builder(
-          padding: const EdgeInsets.only(top: 16),
-          itemCount: 5,
-          itemBuilder: (context, index) => const NoticeSkeletonItem(),
+      body: Padding(
+        padding: EdgeInsetsGeometry.all(16),
+        child: AppPagedListView<NoticeModel>(
+          data: controller.notices,
+          isLoading: controller.isLoading,
+          isLoadingMore: controller.isLoadingMore,
+          hasMore: controller.hasMore,
+          onLoadMore: controller.fetchMoreNotices,
+          // 全局初次加载时显示的骨架屏结构
+          skeletonList: ListView.separated(
+            itemCount: 5,
+            separatorBuilder: (context, index) => const SizedBox(height: 16),
+            itemBuilder: (context, index) => const NoticeSkeletonItem(),
+          ),
+          // 单项如何渲染的声明
+          itemBuilder: (context, notice, index) {
+            return NoticeItem(
+              notice: notice,
+              onTap: () => controller.viewDetails(notice),
+            );
+          },
         ),
-        // 单项如何渲染的声明
-        itemBuilder: (context, notice, index) {
-          return NoticeItem(
-            notice: notice,
-            onTap: () => controller.viewDetails(notice),
-          );
-        },
       ),
     );
   }

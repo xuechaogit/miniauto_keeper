@@ -25,7 +25,7 @@ class MainView extends GetView<MainController> {
       body: Obx(
         () => IndexedStack(
           index: controller.currentIndex,
-          children: const [
+          children: [
             HomeView(), // Index 0
             BrandView(), // Index 1
             GarageView(), // Index 2 (收藏页占位)

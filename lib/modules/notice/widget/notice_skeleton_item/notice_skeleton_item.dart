@@ -6,7 +6,7 @@ import '../../../../core/widgets/custom_shimmer/custom_shimmer.dart';
 import 'notice_skeleton_item.style.dart';
 
 class NoticeSkeletonItem extends StatelessWidget {
-  const NoticeSkeletonItem({Key? key}) : super(key: key);
+  const NoticeSkeletonItem({super.key});
 
   @override
   Widget build(BuildContext context) {
