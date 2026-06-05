@@ -8,8 +8,9 @@ import '../product.variant.dart';
 
 class ProductGridLayout extends StatelessWidget {
   final ProductModel product;
+  final Widget? details;
 
-  const ProductGridLayout(this.product, {super.key});
+  const ProductGridLayout(this.product, {super.key, this.details});
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +35,13 @@ class ProductGridLayout extends StatelessWidget {
 
           ZBox(
             children: [
-              StyledText(
-                product.title,
-                style: ProductStyle.title.applyVariant(ProductMode.gridMode),
-              ),
+              details ??
+                  StyledText(
+                    product.title,
+                    style: ProductStyle.title.applyVariant(
+                      ProductMode.gridMode,
+                    ),
+                  ),
             ],
           ),
         ],

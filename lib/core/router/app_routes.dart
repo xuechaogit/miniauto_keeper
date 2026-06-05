@@ -3,6 +3,7 @@ class AppRoutes {
   static const initial = '/';
   static const login = '/login';
   static const calender = '/calender';
+  static const Splash = '/splash';
 
   //品牌
   static const brandDetail = '/brand-detail';

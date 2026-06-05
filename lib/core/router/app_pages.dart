@@ -11,6 +11,7 @@ import 'package:miniauto_keeper/modules/notice/notice_detail/view.dart';
 import '../../modules/modules.dart';
 import '../../modules/notice/index.dart';
 import '../../modules/product_detail/index.dart';
+import '../../modules/splash/index.dart';
 import '../middleware/auth_middleware.dart';
 import 'app_routes.dart';
 
@@ -18,10 +19,11 @@ import 'app_routes.dart';
 
 class AppPages {
   // 初始页面
-  static const initial = AppRoutes.initial;
+  static const initial = AppRoutes.Splash;
 
   static final routes = [
     _mainRoute(),
+    _splashRoute(),
     _loginRoute(),
     _profileRoute(),
     _forgotPasswordRoute(), // 提取子路由逻辑
@@ -51,6 +53,13 @@ class AppPages {
     name: AppRoutes.login,
     page: () => const LoginView(),
     binding: LoginBinding(),
+    transition: Transition.fadeIn,
+  );
+
+  static GetPage _splashRoute() => GetPage(
+    name: AppRoutes.Splash,
+    page: () => const SplashView(),
+    binding: SplashBinding(),
     transition: Transition.fadeIn,
   );
 

@@ -51,11 +51,11 @@ class CustomImage extends StatelessWidget {
           },
           // 关键点 3：错误处理
           errorBuilder: (context, error, stackTrace) => Container(
-            color: Colors.grey[200],
+            color: context.color(mxt.color.shimmerBase),
             child: Icon(
               Icons.directions_car_filled,
               size: 72,
-              color: Color(0xFF3A3A3A),
+              color: context.color(mxt.color.onSurfaceVariant),
             ),
           ),
         ),

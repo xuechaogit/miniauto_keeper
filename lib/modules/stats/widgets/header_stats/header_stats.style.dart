@@ -18,14 +18,6 @@ class HeaderStatsStyles {
     $text.style.color.ref(mxt.color.onSurface),
   );
 
-  // 资产数值 (大橘红)
-  static final assetValue = Style(
-    $text.style.fontWeight(FontWeight.bold),
-    $text.style.height(1.2),
-    $text.style.color.ref(mxt.color.primary),
-    $text.style.fontSize(32),
-  );
-
   // 收藏数值 (主色)
   static final collectionValue = Style(
     $text.style.fontWeight(FontWeight.bold),

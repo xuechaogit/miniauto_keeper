@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:get/get.dart';
 import 'package:mix/mix.dart';
 import 'paged_list.style.dart';
@@ -105,7 +106,26 @@ class _AppPagedListViewState<T> extends State<AppPagedListView<T>> {
           // 🌟 每一项卡片的渲染器
           itemBuilder: (context, index) {
             if (index == widget.data.length) return _buildFooterIndicator();
-            return widget.itemBuilder(context, widget.data[index], index);
+            // return widget.itemBuilder(context, widget.data[index], index);
+
+            // 🏎️ 注入动画：配合工业机械感，采用快切入、轻微回弹的滑入与渐现
+            return RepaintBoundary(
+              child: widget
+                  .itemBuilder(context, widget.data[index], index)
+                  .animate(
+                    // 🌟 2. 关键：用数据的唯一特征（比如ID或HashCode）作为Key
+                    // 只要这个Key不变，Flutter 就会复用它，绝不重新触发动画！
+                    key: ValueKey('car_card_${widget.data[index].hashCode}'),
+                  )
+                  // 🏎️ 3. 凌厉的工业风配置：120ms 快进快出，40ms 极短交错
+                  .fade(duration: 120.ms, delay: (index * 40).ms)
+                  .slideY(
+                    begin: 0.1, // 稍微降低初始偏移量（从10%高度开始），减少高速滑动时的布局跨度
+                    end: 0,
+                    curve: Curves.easeOutQuad, // 使用稍平缓的减速曲线，减轻 GPU 渲染负担
+                    duration: 120.ms,
+                  ),
+            );
           },
           // 🌟 这里就是你要的 Item 之间的间距！要多大给多大
           separatorBuilder: (context, index) => SizedBox(height: widget.gap),
@@ -118,7 +138,26 @@ class _AppPagedListViewState<T> extends State<AppPagedListView<T>> {
         itemCount: widget.data.length + 1,
         itemBuilder: (context, index) {
           if (index == widget.data.length) return _buildFooterIndicator();
-          return widget.itemBuilder(context, widget.data[index], index);
+          // return widget.itemBuilder(context, widget.data[index], index);
+
+          // 🏎️ 注入动画
+          return RepaintBoundary(
+            child: widget
+                .itemBuilder(context, widget.data[index], index)
+                .animate(
+                  // 🌟 2. 关键：用数据的唯一特征（比如ID或HashCode）作为Key
+                  // 只要这个Key不变，Flutter 就会复用它，绝不重新触发动画！
+                  key: ValueKey('car_card_${widget.data[index].hashCode}'),
+                )
+                // 🏎️ 3. 凌厉的工业风配置：120ms 快进快出，40ms 极短交错
+                .fade(duration: 120.ms, delay: (index * 40).ms)
+                .slideY(
+                  begin: 0.1, // 稍微降低初始偏移量（从10%高度开始），减少高速滑动时的布局跨度
+                  end: 0,
+                  curve: Curves.easeOutQuad, // 使用稍平缓的减速曲线，减轻 GPU 渲染负担
+                  duration: 120.ms,
+                ),
+          );
         },
         separatorBuilder: (context, index) => SizedBox(height: widget.gap),
       );

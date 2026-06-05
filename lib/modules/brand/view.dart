@@ -56,6 +56,7 @@ class BrandView extends GetView<BrandsController> {
         ],
       ),
       body: CustomScrollView(
+        cacheExtent: 1000,
         controller: _pageScrollController,
         // 控制整个页面的内边距，顺便为你底部的卡片预留 120 的安全空间
         slivers: [

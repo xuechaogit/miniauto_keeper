@@ -75,6 +75,15 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
 
+  # 按位独立滚动的机械里程表动效（资产数值增长）
+  animated_digit: ^3.3.3
+
+  # 矢量机械动画核心（炫酷仪表盘/轮毂）
+  rive: ^0.14.7
+
+  # 现代微互动动画库（加入收藏的果冻弹跳）
+  flutter_animate: ^4.5.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -105,6 +114,7 @@ flutter:
   assets:
     - assets/images/checker_flag.webp
     - assets/images/
+    - assets/animations/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

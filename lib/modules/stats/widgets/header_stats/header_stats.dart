@@ -1,8 +1,11 @@
+import 'package:animated_digit/animated_digit.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/widgets/tag/tag.dart';
 import 'package:mix/mix.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/theme/app_theme_tool.dart';
+import '../../../main/controller.dart';
 import 'header_stats.style.dart';
 
 class HeaderStats extends StatelessWidget {
@@ -17,18 +20,10 @@ class HeaderStats extends StatelessWidget {
     required this.growthRate,
   });
 
-  // 数字格式化私有方法
-  String _formatNumber(double value) {
-    return value
-        .toStringAsFixed(0)
-        .replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (Match m) => '${m[1]},',
-        );
-  }
-
   @override
   Widget build(BuildContext context) {
+    final mainController = Get.find<MainController>();
+    final int currentIndex = mainController.currentIndex; // 当前选中的tab索引
     return Box(
       style: HeaderStatsStyles.container,
       child: Column(
@@ -46,9 +41,25 @@ class HeaderStats extends StatelessWidget {
                     style: HeaderStatsStyles.label,
                   ),
                   const SizedBox(height: 4),
-                  StyledText(
-                    '\$${_formatNumber(totalValue)}',
-                    style: HeaderStatsStyles.assetValue,
+                  // =================== 动画数字组件 ===================
+                  AnimatedDigitWidget(
+                    key: ValueKey('stats_animate_${currentIndex == 3}'),
+                    value: currentIndex == 3 ? totalValue : 0,
+                    prefix: '\$',
+                    enableSeparator: true,
+                    fractionDigits: 0,
+                    curve: Curves.easeOutExpo,
+                    duration: const Duration(milliseconds: 1500),
+                    textStyle: TextStyle(
+                      // 💡 从解析后的样式中直接读取具体的颜色、字号等
+                      color: context.color(mxt.color.primary),
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      height: 1.2,
+                      fontFeatures: const [
+                        FontFeature.tabularFigures(),
+                      ], // 保持等宽
+                    ),
                   ),
                 ],
               ),

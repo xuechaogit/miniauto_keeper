@@ -7,8 +7,9 @@ import '../product.variant.dart';
 
 class ProductListLayout extends StatelessWidget {
   final ProductModel product;
+  final Widget? details;
 
-  const ProductListLayout(this.product, {super.key});
+  const ProductListLayout(this.product, {super.key, this.details});
 
   @override
   Widget build(BuildContext context) {
@@ -28,23 +29,27 @@ class ProductListLayout extends StatelessWidget {
 
           // 右侧内容
           Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  product.brandName,
-                  style: const TextStyle(
-                    color: Colors.blueAccent,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
+            child:
+                details ??
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.brandName,
+                      style: const TextStyle(
+                        color: Colors.blueAccent,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    ),
+                    StyledText(
+                      product.title,
+                      style: ProductStyle.title.applyVariant(
+                        ProductMode.listMode,
+                      ),
+                    ),
+                  ],
                 ),
-                StyledText(
-                  product.title,
-                  style: ProductStyle.title.applyVariant(ProductMode.listMode),
-                ),
-              ],
-            ),
           ),
         ],
       ),

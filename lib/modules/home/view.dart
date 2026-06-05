@@ -1,10 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mix/mix.dart';
 import '../../core/l10n/l10n_util.dart'; // 导入我们之前的扩展
 import '../../core/services/settings_service.dart';
 
+import '../../core/theme/app_theme.dart';
+import '../../core/theme/app_theme_tool.dart';
+import '../../core/widgets/product/product.dart';
+import '../../core/widgets/tag/tag.dart';
+import '../../core/widgets/tag/tag.variant.dart';
 import 'controller.dart';
 import 'widget/personalization_drawer/personalization_drawer.dart';
+
+class buildTitleStyle {
+  static Style get titleStyle => Style(
+    $text.color.ref(mxt.color.onSurface),
+    $text.style.ref(mxt.textStyle.headline3),
+  );
+
+  static Style get moreStyle => Style(
+    $text.color.ref(mxt.color.onSurfaceVariant),
+    $text.style.ref(mxt.textStyle.body),
+  );
+
+  static Style get moreIconStyle =>
+      Style($icon.color.ref(mxt.color.onSurfaceVariant), $icon.size(14));
+}
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -28,130 +49,222 @@ class HomeView extends GetView<HomeController> {
       ),
       // 3. 配置右侧抽屉
       endDrawer: PersonalizationDrawer(context),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 欢迎卡片
-            _buildWelcomeCard(context),
-            const SizedBox(height: 32),
+      body: CustomScrollView(
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+            sliver: SliverMainAxisGroup(
+              slivers: [
+                //公告
+                SliverToBoxAdapter(child: Text('公告')),
 
-            // 主题色选择区
-            Text(
-              "品牌色配置",
-              style: Theme.of(
-                context,
-              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            _buildColorPicker(settings),
-            const SizedBox(height: 32),
+                SliverToBoxAdapter(child: SizedBox(height: 24)),
 
-            SizedBox(height: 16),
-            ElevatedButton(
-              child: Text("Go to Login"),
-              onPressed: () => Get.toNamed('/login'),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              child: Text("Go to Calender"),
-              onPressed: () => Get.toNamed('/calender'),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              child: Text("Go to Notice"),
-              onPressed: () => Get.toNamed('/notice'),
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {},
-      ),
-    );
-  }
+                //热门车车型
+                _buildHeader('热门车型'),
+                SliverToBoxAdapter(child: SizedBox(height: 8)),
+                SliverToBoxAdapter(child: hotCarList()),
 
-  // 欢迎卡片（未来可以用 Mix 重构）
-  Widget _buildWelcomeCard(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primaryContainer,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            context.l10n.homeTitle, // 国际化标题
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.onPrimaryContainer,
+                SliverToBoxAdapter(child: SizedBox(height: 24)),
+
+                //新品预告
+                _buildHeader(
+                  '新品预告',
+                  onMoreTap: () {
+                    Get.toNamed('/calender');
+                  },
+                ),
+                SliverToBoxAdapter(child: SizedBox(height: 8)),
+                SliverToBoxAdapter(child: newCarList()),
+              ],
             ),
           ),
-          const SizedBox(height: 8),
-          const Text("欢迎使用车仔助手，您的专业模型车库管家。"),
         ],
       ),
     );
   }
 
-  // 主题色选择器
-  Widget _buildColorPicker(SettingsService settings) {
-    final colors = [
-      const Color(0xFF003366), // 专业深蓝
-      const Color(0xFF1B5E20), // 森林绿
-      const Color(0xFFB71C1C), // 赛道红
-      const Color(0xFFE65100), // 活力橙
-    ];
+  Widget _buildHeader(String title, {VoidCallback? onMoreTap}) {
+    return SliverToBoxAdapter(
+      child: HBox(
+        style: Style($flex.mainAxisAlignment.spaceBetween()),
+        children: [
+          StyledText(title, style: buildTitleStyle.titleStyle),
 
-    return Wrap(
-      spacing: 12,
-      children: colors.map((color) {
-        return Obx(
-          () => GestureDetector(
-            onTap: () => settings.updateThemeColor(color.value),
-            child: Container(
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color: color,
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: settings.themeColorValue == color.value
-                      ? Colors.white
-                      : Colors.transparent,
-                  width: 3,
+          PressableBox(
+            onPress: onMoreTap,
+            child: HBox(
+              children: [
+                StyledText('More', style: buildTitleStyle.moreStyle),
+                const SizedBox(width: 4),
+                StyledIcon(
+                  Icons.arrow_forward_ios,
+                  style: buildTitleStyle.moreIconStyle,
                 ),
-                boxShadow: [
-                  if (settings.themeColorValue == color.value)
-                    BoxShadow(
-                      color: color.withOpacity(0.4),
-                      blurRadius: 8,
-                      spreadRadius: 2,
-                    ),
-                ],
-              ),
-              child: settings.themeColorValue == color.value
-                  ? const Icon(Icons.check, color: Colors.white)
-                  : null,
+              ],
             ),
           ),
-        );
-      }).toList(),
+        ],
+      ),
     );
   }
-}
 
-class Other extends StatelessWidget {
-  const Other({super.key});
+  Widget hotCarList() {
+    return Obx(
+      () => SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: HBox(
+          children: controller.hotProducts.map((p) {
+            return Padding(
+              padding: const EdgeInsets.only(right: 8),
+              child: SizedBox(
+                width: 160,
+                child: ProductItem(
+                  p,
+                  details: VBox(
+                    children: [
+                      StyledText(
+                        '${p.title}',
+                        style: Style(
+                          $text.color.ref(mxt.color.onSurface),
+                          $text.style.ref(mxt.textStyle.body),
+                          $text.maxLines(1),
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      HBox(
+                        children: [
+                          StyledIcon(
+                            Icons.star,
+                            style: Style(
+                              $icon.color.ref(mxt.color.onSurfaceVariant),
+                              $icon.size(14),
+                            ),
+                          ),
+                          StyledText(
+                            '${123} 人收藏',
+                            style: Style(
+                              $text.color.ref(mxt.color.onSurface),
+                              $text.style.ref(mxt.textStyle.caption),
+                              $text.maxLines(1),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(child: Text('Other'));
+  Widget newCarList() {
+    return Obx(
+      () => VBox(
+        children: controller.hotProducts.map((p) {
+          return Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: ProductItem(
+              p,
+              isListMode: true,
+              details: HBox(
+                children: [
+                  Expanded(
+                    child: FlexBox(
+                      direction: Axis.vertical,
+                      style: Style(
+                        $flex.gap(4),
+                        $flex.crossAxisAlignment.start(),
+                      ),
+                      children: [
+                        HBox(
+                          style: Style($flex.gap(8)),
+                          children: [
+                            StyledText(
+                              '${p.brandName}',
+                              style: Style(
+                                $text.color.ref(mxt.color.onSurface),
+                                $text.style.ref(mxt.textStyle.body),
+                                $text.fontWeight.bold(),
+                              ),
+                            ),
+                            CustomTag(label: '新品上新', size: CustomTagSize.small),
+                          ],
+                        ),
+                        StyledText(
+                          '${p.title}',
+                          style: Style(
+                            $text.color.ref(mxt.color.onSurface),
+                            $text.style.ref(mxt.textStyle.body),
+                            $text.maxLines(2),
+                            $text.overflow(TextOverflow.ellipsis),
+                          ),
+                        ),
+                        StyledText(
+                          '预计发售：2025年7月',
+                          style: Style(
+                            $text.color.ref(mxt.color.onSurfaceVariant),
+                            $text.style.ref(mxt.textStyle.caption),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(width: 40),
+
+                  Box(
+                    style: Style($box.width(80)),
+                    child: VBox(
+                      style: Style(
+                        $flex.mainAxisAlignment.center(),
+                        $flex.gap(4),
+                      ),
+                      children: [
+                        StyledText(
+                          '距发售还有',
+                          style: Style(
+                            $text.color.ref(mxt.color.onSurfaceVariant),
+                            $text.style.ref(mxt.textStyle.caption),
+                          ),
+                        ),
+                        HBox(
+                          style: Style(
+                            $flex.mainAxisAlignment.center(),
+                            $flex.crossAxisAlignment.baseline(),
+                            $flex.textBaseline.alphabetic(), // ← 这个
+                            $flex.gap(4),
+                          ),
+                          children: [
+                            StyledText(
+                              '${12}',
+                              style: Style(
+                                $text.color.ref(mxt.color.primary),
+                                $text.style.ref(mxt.textStyle.headline1),
+                              ),
+                            ),
+                            StyledText(
+                              '天',
+                              style: Style(
+                                $text.color.ref(mxt.color.onSurfaceVariant),
+                                $text.style.ref(mxt.textStyle.caption),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
   }
 }
