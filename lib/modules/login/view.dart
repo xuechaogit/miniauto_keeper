@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:get/get.dart';
 import 'package:mix/mix.dart';
 import '../../core/router/app_routes.dart';
@@ -58,8 +59,8 @@ class LoginView extends GetView<LoginController> {
               top: -100,
               left: context.width * 0.2,
               child: Container(
-                width: 300,
-                height: 300,
+                width: w(300),
+                height: h(300),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: const Color(0xFFE52E1D).withOpacity(0.05),
@@ -69,10 +70,10 @@ class LoginView extends GetView<LoginController> {
 
             SafeArea(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                padding: EdgeInsets.symmetric(horizontal: w(24)),
                 child: Column(
                   children: [
-                    const SizedBox(height: 60),
+                    SizedBox(height: h(60)),
 
                     // --- Logo 区域 ---
                     Box(
@@ -87,13 +88,13 @@ class LoginView extends GetView<LoginController> {
                         ),
                         $box.alignment.center(),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.precision_manufacturing_rounded,
                         color: Color(0xFFE52E1D),
-                        size: 44,
+                        size: r(44),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    SizedBox(height: h(24)),
                     StyledText(
                       'PRECISION HUB',
                       style: Style(
@@ -107,7 +108,7 @@ class LoginView extends GetView<LoginController> {
                       style: Style($text.style.fontSize(15)),
                     ),
 
-                    const SizedBox(height: 48),
+                    SizedBox(height: h(48)),
 
                     // --- 登录卡片区域 ---
                     Box(
@@ -121,7 +122,7 @@ class LoginView extends GetView<LoginController> {
                             hint: 'collector@precision.com',
                             icon: Icons.email_outlined,
                           ),
-                          const SizedBox(height: 20),
+                          SizedBox(height: h(20)),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -141,18 +142,18 @@ class LoginView extends GetView<LoginController> {
                                       ? Icons.visibility_rounded
                                       : Icons.visibility_off_rounded,
 
-                                  size: 20,
+                                  size: r(20),
                                 ),
                                 onPressed: controller.togglePasswordVisibility,
                               ),
                             ),
                           ),
-                          const SizedBox(height: 32),
+                          SizedBox(height: h(32)),
 
                           // 登录按钮 (带加载状态)
                           _buildLoginButton(),
 
-                          const SizedBox(height: 28),
+                          SizedBox(height: h(28)),
                           const Center(
                             child: Text(
                               'OR CONTINUE WITH',
@@ -163,7 +164,7 @@ class LoginView extends GetView<LoginController> {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 24),
+                          SizedBox(height: h(24)),
 
                           // 第三方登录按钮组
                           Row(
@@ -176,7 +177,7 @@ class LoginView extends GetView<LoginController> {
                                       .loginWithGoogle(), // 在 controller 里实现
                                 ),
                               ),
-                              const SizedBox(width: 16),
+                              SizedBox(width: w(16)),
                               Expanded(
                                 child: SocialButton(
                                   icon: Icons.apple_rounded,
@@ -190,7 +191,7 @@ class LoginView extends GetView<LoginController> {
                       ),
                     ),
 
-                    const SizedBox(height: 32),
+                    SizedBox(height: h(32)),
                     // 底部注册跳转
                     _buildBottomLink('New collector? ', 'Create Account', () {
                       Get.toNamed('/register');
@@ -254,20 +255,20 @@ class LoginView extends GetView<LoginController> {
         () => Box(
           style: LoginMixStyles.loginButton,
           child: controller.isLoading.value
-              ? const SizedBox(
-                  width: 24,
-                  height: 24,
+              ? SizedBox(
+                  width: w(24),
+                  height: h(24),
                   child: CircularProgressIndicator(strokeWidth: 2.5),
                 )
-              : const Row(
+              : Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     StyledText('Login to Hub'),
-                    SizedBox(width: 10),
+                    SizedBox(width: w(10)),
                     Icon(
                       Icons.arrow_forward_rounded,
                       color: Colors.white,
-                      size: 20,
+                      size: r(20),
                     ),
                   ],
                 ),

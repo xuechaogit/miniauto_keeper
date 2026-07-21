@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:mix/mix.dart';
 import 'paged_list.style.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class AppPagedListView<T> extends StatefulWidget {
   final List<T> data; // 数据源
   final RxBool isLoading; // 首次/刷新的全局加载状态
@@ -168,11 +170,10 @@ class _AppPagedListViewState<T> extends State<AppPagedListView<T>> {
   Widget _buildFooterIndicator() {
     return Obx(() {
       if (widget.isLoadingMore.value) {
-        return const Padding(
-          padding: EdgeInsets.symmetric(vertical: 20),
+        return Padding(
+          padding: EdgeInsets.symmetric(vertical: h(20)),
           child: Center(
-            child: SizedBox(
-              width: 18,
+            child: SizedBox(width: w(18),
               height: 18,
               child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFE54335)),
@@ -185,7 +186,7 @@ class _AppPagedListViewState<T> extends State<AppPagedListView<T>> {
 
       if (!widget.hasMore.value) {
         return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 24),
+          padding: EdgeInsets.symmetric(vertical: h(24)),
           child: Center(
             child: StyledText(
               '// END OF CODES. NO MORE DATA //',

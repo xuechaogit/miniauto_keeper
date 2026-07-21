@@ -3,6 +3,8 @@ import 'package:mix/mix.dart';
 import '../../../../core/theme/app_theme.dart';
 import 'stats_dashboard.style.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class StatsDashboard extends StatelessWidget {
   final String modelsCount;
   final String brandsCount;
@@ -62,7 +64,7 @@ class StatsDashboard extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         StyledText(label, style: StatsDashboardStyles.labelText),
-        const SizedBox(height: 6),
+        SizedBox(height: h(6)),
         FittedBox(
           fit: BoxFit.scaleDown,
           alignment: Alignment.centerLeft,

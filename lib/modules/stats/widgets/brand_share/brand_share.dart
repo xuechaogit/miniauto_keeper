@@ -5,6 +5,8 @@ import 'package:mix/mix.dart';
 import '../../controller.dart';
 import 'brand_share.style.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class BrandShare extends GetView<StatsController> {
   const BrandShare({super.key});
 
@@ -17,11 +19,11 @@ class BrandShare extends GetView<StatsController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           StyledText('Brand Share', style: BrandShareStyle.title),
-          const SizedBox(height: 16),
+          SizedBox(height: h(16)),
           Row(
             children: [
               _buildChartSection(),
-              const SizedBox(width: 30),
+              SizedBox(width: w(30)),
               _buildLegendSection(),
             ],
           ),
@@ -60,7 +62,7 @@ class BrandShare extends GetView<StatsController> {
         () => Column(
           children: controller.summarizedBrands.map((brand) {
             return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 6),
+              padding: EdgeInsets.symmetric(vertical: h(6)),
               child: Row(
                 children: [
                   // 小圆点也可以用 Box 快速构建
@@ -72,7 +74,7 @@ class BrandShare extends GetView<StatsController> {
                       $box.color(brand['color'] as Color),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  SizedBox(width: w(10)),
                   Expanded(
                     child: StyledText(
                       brand['name'] as String,

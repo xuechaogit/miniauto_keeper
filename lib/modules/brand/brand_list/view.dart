@@ -12,6 +12,8 @@ import '../../../core/widgets/image/image.dart';
 import '../../../models/product_model.dart';
 import 'controller.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class BrandDetailView extends GetView<BrandDetailController> {
   const BrandDetailView({super.key});
 
@@ -25,7 +27,7 @@ class BrandDetailView extends GetView<BrandDetailController> {
             // 1. 初始搜索框：随滚动正常消失
             SliverToBoxAdapter(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                padding: EdgeInsets.fromLTRB(w(16), h(8), w(16), h(0)),
                 child: _buildSearchBar(context),
               ),
             ),
@@ -39,7 +41,7 @@ class BrandDetailView extends GetView<BrandDetailController> {
                   return Container(
                     color: Theme.of(context).scaffoldBackgroundColor,
                     // 这里就是你的 Padding
-                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+                    padding: EdgeInsets.fromLTRB(w(16), h(8), w(16), h(8)),
                     alignment: Alignment.center,
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 200),
@@ -56,7 +58,7 @@ class BrandDetailView extends GetView<BrandDetailController> {
         // 4. 商品列表：保持 MasonryGridView
         body: Obx(
           () => MasonryGridView.count(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16), // 顶部间距缩小
+            padding: EdgeInsets.fromLTRB(w(16), h(8), w(16), h(16)), // 顶部间距缩小
             crossAxisCount: 2,
             mainAxisSpacing: 16,
             crossAxisSpacing: 16,
@@ -75,7 +77,7 @@ class BrandDetailView extends GetView<BrandDetailController> {
 
   Widget _buildTuneButton(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.tune, size: 20),
+      icon: Icon(Icons.tune, size: r(20)),
       onPressed: () => Scaffold.of(context).openEndDrawer(),
     );
   }
@@ -86,7 +88,7 @@ class BrandDetailView extends GetView<BrandDetailController> {
       key: const ValueKey('collapsed'),
       children: [
         Expanded(child: _buildSearchBar(context)),
-        const SizedBox(width: 8),
+        SizedBox(width: w(8)),
         _buildTuneButton(context),
       ],
     );
@@ -105,7 +107,7 @@ class BrandDetailView extends GetView<BrandDetailController> {
             type: FilterChipType.outlined,
           ),
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: w(8)),
         _buildTuneButton(context),
       ],
     );
@@ -125,7 +127,7 @@ class BrandDetailView extends GetView<BrandDetailController> {
           ),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(r(16)),
               children: [
                 const Text(
                   'Categories',
@@ -175,7 +177,7 @@ class BrandDetailView extends GetView<BrandDetailController> {
             borderSide: BorderSide.none,
           ),
           // 关键：减少垂直 Padding，因为外部已经有 SizedBox 限制高度了
-          contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+          contentPadding: EdgeInsets.symmetric(horizontal: w(12)),
         ),
       ),
     );
@@ -189,13 +191,13 @@ class BrandDetailView extends GetView<BrandDetailController> {
     return Container(
       decoration: BoxDecoration(
         color: context.color(mxt.color.surfaceVariant).withOpacity(0.4),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(r(16)),
         border: Border.all(
           color: context.color(mxt.color.surface).withOpacity(0.1),
         ),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(r(16)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -211,7 +213,7 @@ class BrandDetailView extends GetView<BrandDetailController> {
             ),
 
             Padding(
-              padding: const EdgeInsets.all(12),
+              padding: EdgeInsets.all(r(12)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -223,7 +225,7 @@ class BrandDetailView extends GetView<BrandDetailController> {
                       $text.maxLines(2),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: h(8)),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -240,7 +242,7 @@ class BrandDetailView extends GetView<BrandDetailController> {
                       GestureDetector(
                         onTap: () => controller.addToGarage(item),
                         child: Container(
-                          padding: const EdgeInsets.all(6),
+                          padding: EdgeInsets.all(r(6)),
                           decoration: BoxDecoration(
                             color: context
                                 .color(mxt.color.primary)

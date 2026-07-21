@@ -1,3 +1,4 @@
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:mix/mix.dart';
 
 import '../../theme/app_theme.dart';
@@ -24,13 +25,13 @@ class CustomTagStyle {
     CustomTagShape.square(
       $box.borderRadius(8), // 默认方角值
       // 嵌套判定：如果是 square 且是 small
-      CustomTagSize.small($box.borderRadius(4)),
+      CustomTagSize.small($box.borderRadius(w(4))),
       // 嵌套判定：如果是 square 且是 large
-      CustomTagSize.large($box.borderRadius(12)),
+      CustomTagSize.large($box.borderRadius(w(12))),
     ),
-    CustomTagSize.small($box.padding(4, 8)),
-    CustomTagSize.medium($box.padding(6, 12)),
-    CustomTagSize.large($box.padding(8, 16)),
+    CustomTagSize.small($box.padding(w(4), w(8))),
+    CustomTagSize.medium($box.padding(w(6), w(12))),
+    CustomTagSize.large($box.padding(w(8), w(16))),
   ).applyVariants([type, size, shape]);
 
   Style label() => Style(
@@ -39,8 +40,8 @@ class CustomTagStyle {
     CustomTagType.info($text.color.ref(mxt.color.onInfoContainer)),
     CustomTagType.warning($text.color.ref(mxt.color.onWarningContainer)),
     CustomTagType.error($text.color.ref(mxt.color.onErrorContainer)),
-    CustomTagSize.small($text.fontSize(12)),
-    CustomTagSize.medium($text.fontSize(14)),
-    CustomTagSize.large($text.fontSize(16)),
+    CustomTagSize.small($text.style.ref(mxt.textStyle.caption)),
+    CustomTagSize.medium($text.style.ref(mxt.textStyle.body)),
+    CustomTagSize.large($text.style.ref(mxt.textStyle.headline3)),
   ).applyVariants([type, size, shape]);
 }

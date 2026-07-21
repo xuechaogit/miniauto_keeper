@@ -5,6 +5,8 @@ import 'package:mix/mix.dart';
 import '../../../../core/widgets/custom_shimmer/custom_shimmer.dart';
 import 'notice_skeleton_item.style.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class NoticeSkeletonItem extends StatelessWidget {
   const NoticeSkeletonItem({super.key});
 
@@ -20,24 +22,24 @@ class NoticeSkeletonItem extends StatelessWidget {
             // 模拟标题
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
+              children: [
                 Expanded(
                   child: CustomShimmerBlock(height: 18, width: double.infinity),
                 ),
-                SizedBox(width: 40),
+                SizedBox(width: w(40)),
                 CustomShimmerBlock(height: 18, width: 36),
               ],
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: h(12)),
             // 模拟正文第一行
             const CustomShimmerBlock(height: 14, width: double.infinity),
-            const SizedBox(height: 8),
+            SizedBox(height: h(8)),
             // 模拟正文第二行
             const FractionallySizedBox(
               widthFactor: 0.6,
               child: CustomShimmerBlock(height: 14, width: double.infinity),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: h(16)),
             // 模拟底部元数据
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

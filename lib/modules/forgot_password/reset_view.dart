@@ -6,6 +6,8 @@ import '../login/view.dart';
 import '../login/widgets/login_label/login_label.dart';
 import 'controller.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class SetNewPasswordView extends GetView<ForgotPasswordController> {
   const SetNewPasswordView({super.key});
 
@@ -25,65 +27,65 @@ class SetNewPasswordView extends GetView<ForgotPasswordController> {
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
+        padding: EdgeInsets.all(r(24.0)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Security Update',
-              style: TextStyle(fontSize: 26, fontWeight: FontWeight.w800),
+              style: TextStyle(fontSize: sp(26), fontWeight: FontWeight.w800),
             ),
             const Text(
               'Create a strong, secure password to protect your collection.',
             ),
-            const SizedBox(height: 40),
+            SizedBox(height: h(40)),
             const LoginLabel('New Password'),
-            const SizedBox(height: 8),
+            SizedBox(height: h(8)),
             CustomInput(
               controller: controller.newPwdController,
               hint: 'New Password',
               icon: Icons.lock_outline,
             ),
 
-            const SizedBox(height: 24),
+            SizedBox(height: h(24)),
             const LoginLabel('Confirm New Password'),
 
-            const SizedBox(height: 8),
+            SizedBox(height: h(8)),
             CustomInput(
               controller: controller.confirmPwdController,
               hint: 'Confirm New Password',
               icon: Icons.refresh_rounded,
             ),
 
-            const SizedBox(height: 40),
-            const Text(
+            SizedBox(height: h(40)),
+            Text(
               'SECURITY REQUIREMENTS',
               style: TextStyle(
-                fontSize: 12,
-                letterSpacing: 1.2,
+                fontSize: sp(12),
+                letterSpacing: w(1.2),
                 color: Colors.white38,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            // const SizedBox(height: 16),
+            // SizedBox(height: h(16)),
 
             // _buildReqItem('At least 8 characters long', true),
             // _buildReqItem('Include at least one number', false),
             // _buildReqItem('Include one special character (!@#)', false),
-            // const SizedBox(height: 60),
+            // SizedBox(height: h(60)),
             Pressable(
               onPress: controller.updatePassword,
               child: Box(
                 style: LoginMixStyles.loginButton,
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     StyledText('Update Password'),
-                    SizedBox(width: 8),
+                    SizedBox(width: w(8)),
                     Icon(
                       Icons.verified_user_outlined,
                       color: Colors.white,
-                      size: 18,
+                      size: r(18),
                     ),
                   ],
                 ),
@@ -97,15 +99,15 @@ class SetNewPasswordView extends GetView<ForgotPasswordController> {
 
   Widget _buildReqItem(String text, bool isMet) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: h(12)),
       child: Row(
         children: [
           Icon(
             isMet ? Icons.check_circle : Icons.circle_outlined,
-            size: 18,
+            size: r(18),
             color: isMet ? Colors.greenAccent : Colors.white24,
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: w(12)),
           Text(
             text,
             style: TextStyle(color: isMet ? Colors.white : Colors.white24),

@@ -8,6 +8,8 @@ import '../../../../core/theme/app_theme_tool.dart';
 import '../../controller.dart';
 import 'monthly_spending_trend.style.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class MonthlySpendingTrend extends GetView<StatsController> {
   const MonthlySpendingTrend({super.key});
 
@@ -19,7 +21,7 @@ class MonthlySpendingTrend extends GetView<StatsController> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeader(),
-          const SizedBox(height: 16),
+          SizedBox(height: h(16)),
           _buildChartCard(context),
         ],
       ),
@@ -60,7 +62,7 @@ class MonthlySpendingTrend extends GetView<StatsController> {
         //     ),
         //   ),
         // ),
-        const SizedBox(width: 12),
+        SizedBox(width: w(12)),
         _buildYearPicker(),
       ],
     );
@@ -79,8 +81,7 @@ class MonthlySpendingTrend extends GetView<StatsController> {
           : (allData.length >= 12 ? allData.sublist(6, 12) : []);
 
       return Box(
-        child: SizedBox(
-          height: 200,
+        child: SizedBox(height: h(200),
           child: BarChart(
             BarChartData(
               alignment: BarChartAlignment.spaceAround,
@@ -108,9 +109,9 @@ class MonthlySpendingTrend extends GetView<StatsController> {
           child: DropdownButton<String>(
             focusNode: dropdownFocusNode,
             value: controller.selectedYear.value,
-            icon: const Padding(
-              padding: EdgeInsets.only(left: 12), // 控制左侧间距
-              child: Icon(Icons.keyboard_arrow_down, size: 16),
+            icon: Padding(
+              padding: EdgeInsets.only(left: w(12)), // 控制左侧间距
+              child: Icon(Icons.keyboard_arrow_down, size: r(16)),
             ),
             onChanged: (val) {
               dropdownFocusNode.unfocus();
@@ -167,10 +168,10 @@ class MonthlySpendingTrend extends GetView<StatsController> {
           int i = value.toInt();
           if (i < 0 || i >= data.length) return const SizedBox();
           return Padding(
-            padding: const EdgeInsets.only(top: 8),
+            padding: EdgeInsets.only(top: h(8)),
             child: Text(
               data[i].month,
-              style: const TextStyle(color: Colors.grey, fontSize: 11),
+              style: TextStyle(color: Colors.grey, fontSize: sp(11)),
             ),
           );
         },

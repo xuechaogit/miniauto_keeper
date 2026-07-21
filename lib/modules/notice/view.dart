@@ -6,6 +6,8 @@ import 'controller.dart';
 import 'widget/notice_item/notice_item.dart';
 import 'widget/notice_skeleton_item/notice_skeleton_item.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 // ==========================================
 // 视图页面：公告列表
 // ==========================================
@@ -50,7 +52,7 @@ class NoticeListView extends GetView<NoticeController> {
           // 全局初次加载时显示的骨架屏结构
           skeletonList: ListView.separated(
             itemCount: 5,
-            separatorBuilder: (context, index) => const SizedBox(height: 16),
+            separatorBuilder: (context, index) => SizedBox(height: h(16)),
             itemBuilder: (context, index) => const NoticeSkeletonItem(),
           ),
           // 单项如何渲染的声明

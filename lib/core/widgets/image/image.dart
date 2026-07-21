@@ -5,6 +5,8 @@ import '../../theme/app_theme.dart';
 import '../../theme/app_theme_tool.dart';
 import '../custom_shimmer/custom_shimmer.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class CustomImage extends StatelessWidget {
   final String imageUrl;
   final double aspectRatio;
@@ -54,7 +56,7 @@ class CustomImage extends StatelessWidget {
             color: context.color(mxt.color.shimmerBase),
             child: Icon(
               Icons.directions_car_filled,
-              size: 72,
+              size: r(72),
               color: context.color(mxt.color.onSurfaceVariant),
             ),
           ),

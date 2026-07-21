@@ -7,6 +7,8 @@ import 'controller.dart';
 import 'style.dart';
 import 'widget/gallery/gallery.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class ProductDetailView extends GetView<ProductDetailController> {
   const ProductDetailView({Key? key}) : super(key: key);
 
@@ -17,21 +19,20 @@ class ProductDetailView extends GetView<ProductDetailController> {
       body: Obx(() {
         final data = controller.product.value;
         if (data == null) {
-          return const Center(
+          return Center(
             child: CircularProgressIndicator(color: Color(0xFFE54335)),
           );
         }
         return Stack(
           children: [
             SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: 90),
+              padding: EdgeInsets.only(bottom: h(90)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ProductImageGallery(data: data),
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
+                    padding: EdgeInsets.symmetric(horizontal: w(12),
                       vertical: 8,
                     ),
                     child: Column(
@@ -71,19 +72,19 @@ class ProductDetailView extends GetView<ProductDetailController> {
                 crossAxisAlignment: CrossAxisAlignment.baseline,
                 textBaseline: TextBaseline.alphabetic,
                 children: [
-                  const Text(
+                  Text(
                     "¥ ",
                     style: TextStyle(
                       color: Color(0xFFE54335),
-                      fontSize: 16,
+                      fontSize: sp(16),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
                     "${data.price}",
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Color(0xFFE54335),
-                      fontSize: 28,
+                      fontSize: sp(28),
                       fontWeight: FontWeight.bold,
                       fontFamily: 'monospace',
                     ),
@@ -94,73 +95,73 @@ class ProductDetailView extends GetView<ProductDetailController> {
                 style: ProductDetailStyle.statusTagRed,
                 child: Text(
                   data.status,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 10,
+                    fontSize: sp(10),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: h(14)),
           Row(
             children: [
-              const Text(
+              Text(
                 "// ",
                 style: TextStyle(
                   color: Color(0xFFE54335),
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                  fontSize: sp(16),
                 ),
               ),
               Text(
                 data.brand,
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
-                  fontSize: 14,
+                  fontSize: sp(14),
                   fontWeight: FontWeight.bold,
-                  letterSpacing: 1,
+                  letterSpacing: w(1),
                 ),
               ),
               const Spacer(),
               Text(
                 "SCALE ${data.scale}",
-                style: const TextStyle(
+                style: TextStyle(
                   color: Color(0xFF8E8E93),
-                  fontSize: 12,
+                  fontSize: sp(12),
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: h(8)),
           Text(
             data.name,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
-              fontSize: 18,
+              fontSize: sp(18),
               fontWeight: FontWeight.bold,
               height: 1.3,
             ),
           ),
-          const Divider(color: Color(0xFF2C2C2C), height: 24),
+          Divider(color: Color(0xFF2C2C2C), height: 24),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 "REF NO: ${data.itemNumber}",
-                style: const TextStyle(
+                style: TextStyle(
                   color: Color(0xFF8E8E93),
-                  fontSize: 12,
+                  fontSize: sp(12),
                   fontFamily: 'monospace',
                 ),
               ),
               Text(
                 "STOCK: ${data.stock} Pcs",
-                style: const TextStyle(
+                style: TextStyle(
                   color: Colors.white,
-                  fontSize: 12,
+                  fontSize: sp(12),
                   fontFamily: 'monospace',
                 ),
               ),
@@ -179,16 +180,16 @@ class ProductDetailView extends GetView<ProductDetailController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             "DATA ANALYSIS / 规格看板",
             style: TextStyle(
               color: Colors.white,
-              fontSize: 12,
+              fontSize: sp(12),
               fontWeight: FontWeight.bold,
-              letterSpacing: 1,
+              letterSpacing: w(1),
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: h(12)),
           GridView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -209,17 +210,17 @@ class ProductDetailView extends GetView<ProductDetailController> {
                   children: [
                     Text(
                       key,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Color(0xFF8E8E93),
-                        fontSize: 11,
+                        fontSize: sp(11),
                       ),
                     ),
-                    const SizedBox(height: 4),
+                    SizedBox(height: h(4)),
                     Text(
                       data.technicalSpecs[key] ?? '',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
-                        fontSize: 12,
+                        fontSize: sp(12),
                         fontWeight: FontWeight.bold,
                       ),
                       maxLines: 1,
@@ -242,20 +243,20 @@ class ProductDetailView extends GetView<ProductDetailController> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             "OVERVIEW / 详情描述",
             style: TextStyle(
               color: Colors.white,
-              fontSize: 12,
+              fontSize: sp(12),
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: h(10)),
           Text(
             data.description,
-            style: const TextStyle(
+            style: TextStyle(
               color: Color(0xFFD1D1D6),
-              fontSize: 13,
+              fontSize: sp(13),
               height: 1.6,
             ),
           ),
@@ -269,7 +270,7 @@ class ProductDetailView extends GetView<ProductDetailController> {
     return BottomAppBar(
       height: 70, // 稍微拉高一点，给全面屏留出呼吸感
       elevation: 8,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: w(16), vertical: 12),
       child: Row(
         children: [
           // 按钮一：收藏 (Obx 局部包裹状态)
@@ -295,7 +296,7 @@ class ProductDetailView extends GetView<ProductDetailController> {
               ),
             ),
           ),
-          const SizedBox(width: 8), // 紧凑的工业间距
+          SizedBox(width: w(8)), // 紧凑的工业间距
           // 按钮二：🆕 国际化通用分享按钮
           GestureDetector(
             onTap: controller.executeShare, // 触发上面写好的分享
@@ -307,14 +308,14 @@ class ProductDetailView extends GetView<ProductDetailController> {
                 borderRadius: BorderRadius.circular(4),
                 border: Border.all(color: const Color(0xFF333333)),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.ios_share_outlined, // 极简的出海通用分享图标
                 color: Colors.white,
-                size: 20,
+                size: r(20),
               ),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: w(12)),
 
           // 按钮三：提货主操作
           Expanded(
@@ -329,13 +330,13 @@ class ProductDetailView extends GetView<ProductDetailController> {
               },
               child: Box(
                 style: ProductDetailStyle.primaryActionBtn,
-                child: const Text(
+                child: Text(
                   "EXECUTE PROCUREMENT / 立即提货",
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
-                    fontSize: 13,
-                    letterSpacing: 0.5,
+                    fontSize: sp(13),
+                    letterSpacing: w(0.5),
                     fontFamily: 'monospace',
                   ),
                 ),

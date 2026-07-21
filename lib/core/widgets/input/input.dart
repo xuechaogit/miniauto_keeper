@@ -5,6 +5,8 @@ import '../../theme/app_theme_tool.dart';
 import 'input.style.dart';
 import 'input.variant.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class CustomInput extends StatelessWidget {
   final TextEditingController? controller;
 
@@ -43,15 +45,14 @@ class CustomInput extends StatelessWidget {
               style: textSpec.style,
               decoration: InputDecoration(
                 hintText: hint,
-                hintStyle: const TextStyle(fontSize: 16, color: Colors.grey),
+                hintStyle: TextStyle(fontSize: sp(16), color: Colors.grey),
                 // 3. 使用 StyledIcon，它会自动根据 Style 中的 $icon 定义来渲染
                 prefixIcon: StyledIcon(icon, style: CustomInputStyle.iconStyle),
                 suffixIcon: suffixIcon,
 
                 border: InputBorder.none,
 
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 26,
+                contentPadding: EdgeInsets.symmetric(horizontal: w(26),
                   vertical: 18,
                 ),
               ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 
 class SnackBarUtil {
   // 私有基础配置，减少重复代码
@@ -18,9 +19,9 @@ class SnackBarUtil {
       backgroundColor: backgroundColor.withOpacity(0.4),
       colorText: textColor,
       icon: Icon(icon, color: textColor),
-      margin: const EdgeInsets.all(16),
+      margin: EdgeInsets.all(w(16)),
       duration: duration,
-      borderRadius: 8,
+      borderRadius: r(8),
       snackStyle: SnackStyle.FLOATING,
     );
   }

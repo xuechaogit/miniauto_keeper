@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:mix/mix.dart';
 import '../../../../models/product_model.dart';
 import '../../image/image.dart';
@@ -23,7 +24,7 @@ class ProductListLayout extends StatelessWidget {
         children: [
           // 图片
           Box(
-            style: Style($box.width(100), $box.height(100)),
+            style: Style($box.width(w(100)), $box.height(w(100))),
             child: CustomImage(imageUrl: product.imageUrl, aspectRatio: 1),
           ),
 
@@ -36,10 +37,10 @@ class ProductListLayout extends StatelessWidget {
                   children: [
                     Text(
                       product.brandName,
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.blueAccent,
                         fontWeight: FontWeight.bold,
-                        fontSize: 12,
+                        fontSize: sp(12),
                       ),
                     ),
                     StyledText(

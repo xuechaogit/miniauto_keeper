@@ -84,6 +84,9 @@ dependencies:
   # 现代微互动动画库（加入收藏的果冻弹跳）
   flutter_animate: ^4.5.0
 
+  # 屏幕适配（设计稿比例缩放）
+  flutter_screenutil: ^5.9.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:mix/mix.dart';
 import 'social_button.style.dart';
 
@@ -23,8 +24,8 @@ class SocialButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 32),
-            const SizedBox(width: 10),
+            Icon(icon, size: r(32)),
+            SizedBox(width: w(10)),
             StyledText(label, style: SocialButtonStyle.labelStyle),
           ],
         ),

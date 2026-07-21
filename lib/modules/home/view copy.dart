@@ -6,6 +6,8 @@ import '../../core/services/settings_service.dart';
 import 'controller.dart';
 import 'widget/personalization_drawer/personalization_drawer.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
 
@@ -29,13 +31,13 @@ class HomeView extends GetView<HomeController> {
       // 3. 配置右侧抽屉
       endDrawer: PersonalizationDrawer(context),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
+        padding: EdgeInsets.all(r(24.0)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 欢迎卡片
             _buildWelcomeCard(context),
-            const SizedBox(height: 32),
+            SizedBox(height: h(32)),
 
             // 主题色选择区
             Text(
@@ -44,21 +46,21 @@ class HomeView extends GetView<HomeController> {
                 context,
               ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: h(16)),
             _buildColorPicker(settings),
-            const SizedBox(height: 32),
+            SizedBox(height: h(32)),
 
-            SizedBox(height: 16),
+            SizedBox(height: h(16)),
             ElevatedButton(
               child: Text("Go to Login"),
               onPressed: () => Get.toNamed('/login'),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: h(16)),
             ElevatedButton(
               child: Text("Go to Calender"),
               onPressed: () => Get.toNamed('/calender'),
             ),
-            SizedBox(height: 16),
+            SizedBox(height: h(16)),
             ElevatedButton(
               child: Text("Go to Notice"),
               onPressed: () => Get.toNamed('/notice'),
@@ -77,7 +79,7 @@ class HomeView extends GetView<HomeController> {
   Widget _buildWelcomeCard(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.all(r(24)),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(16),
@@ -88,12 +90,12 @@ class HomeView extends GetView<HomeController> {
           Text(
             context.l10n.homeTitle, // 国际化标题
             style: TextStyle(
-              fontSize: 24,
+              fontSize: sp(24),
               fontWeight: FontWeight.bold,
               color: Theme.of(context).colorScheme.onPrimaryContainer,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: h(8)),
           const Text("欢迎使用车仔助手，您的专业模型车库管家。"),
         ],
       ),

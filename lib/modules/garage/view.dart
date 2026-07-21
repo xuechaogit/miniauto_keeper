@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:mix/mix.dart';
@@ -19,35 +20,35 @@ class GarageView extends GetView<GarageController> {
   // 顶部统计卡片文字样式
   Style get labelStyle => Style(
     $text.style.color.white38(),
-    $text.style.fontSize(10),
+    $text.style.fontSize(sp(10)),
     $text.style.fontWeight.bold(),
   );
 
   Style get valueStyle => Style(
     $text.style.color.white(),
-    $text.style.fontSize(20),
+    $text.style.fontSize(sp(20)),
     $text.style.fontWeight.bold(),
-    $text.style.fontFamily('Inter'), // 建议使用硬朗的字体
+    $text.style.fontFamily('Inter'),
   );
 
   // 搜索框容器样式
   Style get searchBarBoxStyle => Style(
     $box.color(const Color(0xFF161616)),
-    $box.borderRadius.all(12),
+    $box.borderRadius.all(r(12)),
     $box.border.all.color(Colors.white10),
-    $box.padding.horizontal(12),
+    $box.padding.horizontal(w(12)),
   );
 
   Style get sectionTitleStyle => Style(
     $text.style.color.white(),
-    $text.style.fontSize(14),
+    $text.style.fontSize(sp(14)),
     $text.style.fontWeight.bold(),
     $text.style.letterSpacing(1.2),
   );
 
   Style get cardDecoration => Style(
     $box.color(const Color(0xFF121212)),
-    $box.borderRadius.all(12),
+    $box.borderRadius.all(r(12)),
     $box.border.all.color(Colors.white.withOpacity(0.05)),
   );
 
@@ -64,10 +65,10 @@ class GarageView extends GetView<GarageController> {
           CustomScrollView(
             slivers: [
               // 1. 统计面板
-              const SliverToBoxAdapter(child: SizedBox(height: 16)),
+              SliverToBoxAdapter(child: SizedBox(height: h(16))),
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: EdgeInsets.symmetric(horizontal: w(16)),
                   child: Obx(
                     () => StatsDashboard(
                       modelsCount:
@@ -94,7 +95,7 @@ class GarageView extends GetView<GarageController> {
                     ? _buildListView()
                     : _buildGridView();
               }),
-              const SliverToBoxAdapter(child: SizedBox(height: 100)),
+              SliverToBoxAdapter(child: SizedBox(height: h(100))),
             ],
           ),
         ],
@@ -107,15 +108,15 @@ class GarageView extends GetView<GarageController> {
     return SliverPersistentHeader(
       pinned: true, // 关键：设置为 true 开启吸顶效果
       delegate: _SliverHeaderDelegate(
-        height: 128, // 严格计算后的总面板高度
+        height: h(128), // 严格计算后的总面板高度
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             // 1. 搜索框部分 (去掉了原本多余的 vertical padding，改为精准控制)
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+              padding: EdgeInsets.fromLTRB(w(16), h(16), w(16), h(8)),
               child: SizedBox(
-                height: 40,
+                height: h(40),
                 child: TextField(
                   style: context.textStyle(mxt.textStyle.body),
                   onChanged: (value) {},
@@ -126,7 +127,7 @@ class GarageView extends GetView<GarageController> {
                     prefixIcon: Icon(
                       Icons.search,
                       color: context.color(mxt.color.primary),
-                      size: 20,
+                      size: r(20),
                     ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(
@@ -134,7 +135,7 @@ class GarageView extends GetView<GarageController> {
                       ),
                       borderSide: BorderSide.none,
                     ),
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                    contentPadding: EdgeInsets.symmetric(horizontal: w(12)),
                   ),
                 ),
               ),
@@ -143,8 +144,8 @@ class GarageView extends GetView<GarageController> {
             // 2. 筛选 Chips 部分
             HBox(
               style: Style(
-                $box.padding.horizontal(16),
-                $box.padding.vertical(8),
+                $box.padding.horizontal(w(16)),
+                $box.padding.vertical(h(8)),
               ),
               children: [
                 Expanded(
@@ -168,10 +169,10 @@ class GarageView extends GetView<GarageController> {
   // 列表布局
   Widget _buildListView() {
     return SliverPadding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(w(16)),
       sliver: SliverList.separated(
         itemCount: controller.filteredModels.length,
-        separatorBuilder: (context, index) => const SizedBox(height: 12),
+        separatorBuilder: (context, index) => SizedBox(height: h(12)),
         itemBuilder: (context, index) =>
             ProductItem(controller.filteredModels[index], isListMode: true),
       ),
@@ -181,12 +182,12 @@ class GarageView extends GetView<GarageController> {
   // 网格布局
   Widget _buildGridView() {
     return SliverPadding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      padding: EdgeInsets.fromLTRB(w(16), h(8), w(16), h(16)),
       sliver: Obx(
         () => SliverMasonryGrid.count(
           crossAxisCount: 2,
-          mainAxisSpacing: 16,
-          crossAxisSpacing: 16,
+          mainAxisSpacing: h(16),
+          crossAxisSpacing: w(16),
           childCount: controller.filteredModels.length,
           itemBuilder: (context, index) =>
               ProductItem(controller.filteredModels[index], isListMode: false),
@@ -197,7 +198,7 @@ class GarageView extends GetView<GarageController> {
 
   Widget _buildTuneButton(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.tune, size: 20),
+      icon: Icon(Icons.tune, size: r(20)),
       onPressed: () => Scaffold.of(context).openEndDrawer(),
     );
   }
@@ -205,11 +206,11 @@ class GarageView extends GetView<GarageController> {
   Widget _buildTheVaultHeader() {
     return SliverToBoxAdapter(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
+        padding: EdgeInsets.fromLTRB(w(16), h(24), w(16), h(16)),
         child: Row(
           children: [
-            Container(width: 24, height: 2, color: const Color(0xFFE54335)),
-            const SizedBox(width: 8),
+            Container(width: w(24), height: h(2), color: const Color(0xFFE54335)),
+            SizedBox(width: w(8)),
             StyledText("THE  VAULT", style: sectionTitleStyle),
             const Spacer(),
             const Text(
@@ -229,8 +230,8 @@ class GarageView extends GetView<GarageController> {
   Widget _buildMainCard() {
     return SliverToBoxAdapter(
       child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16),
-        height: 240,
+        margin: EdgeInsets.symmetric(horizontal: w(16)),
+        height: h(240),
         child: Stack(
           children: [
             // 卡片主体
@@ -239,7 +240,7 @@ class GarageView extends GetView<GarageController> {
                 Style($box.width.infinity(), $box.height.infinity()),
               ),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(r(12)),
                 child: Column(
                   children: [
                     Expanded(
@@ -253,7 +254,7 @@ class GarageView extends GetView<GarageController> {
                     Expanded(
                       flex: 1,
                       child: Container(
-                        padding: const EdgeInsets.all(16),
+                        padding: EdgeInsets.all(w(16)),
                         color: const Color(0xFF161616),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -271,7 +272,7 @@ class GarageView extends GetView<GarageController> {
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
+                                SizedBox(height: h(4)),
                                 const Text(
                                   "Nissan GT-R R35",
                                   style: TextStyle(

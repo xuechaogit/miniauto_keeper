@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:get/get.dart';
 import 'package:mix/mix.dart';
-import '../../core/l10n/l10n_util.dart'; // 导入我们之前的扩展
+import '../../core/l10n/l10n_util.dart';
 import '../../core/services/settings_service.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_theme_tool.dart';
 import '../../core/widgets/product/product.dart';
+import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
+
 import '../../core/widgets/tag/tag.dart';
 import '../../core/widgets/tag/tag.variant.dart';
 import 'controller.dart';
@@ -24,7 +27,7 @@ class buildTitleStyle {
   );
 
   static Style get moreIconStyle =>
-      Style($icon.color.ref(mxt.color.onSurfaceVariant), $icon.size(14));
+      Style($icon.color.ref(mxt.color.onSurfaceVariant), $icon.size(r(14)));
 }
 
 class HomeView extends GetView<HomeController> {
@@ -35,37 +38,32 @@ class HomeView extends GetView<HomeController> {
     final settings = Get.find<SettingsService>();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(context.l10n.appName), // 使用国际化
-        centerTitle: false,
-        actions: [
-          Builder(
-            builder: (context) => IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () => Scaffold.of(context).openEndDrawer(),
-            ),
-          ),
-        ],
-      ),
-      // 3. 配置右侧抽屉
       endDrawer: PersonalizationDrawer(context),
       body: CustomScrollView(
+        controller: controller.scrollController,
         slivers: [
+          SliverAppBar(
+            pinned: true,
+            expandedHeight: w(390),
+            backgroundColor: Colors.transparent,
+            automaticallyImplyLeading: false,
+            toolbarHeight: kToolbarHeight,
+            flexibleSpace: _buildFlexibleSpace(context),
+          ),
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+            padding: EdgeInsets.all(h(8)),
             sliver: SliverMainAxisGroup(
               slivers: [
-                //公告
-                SliverToBoxAdapter(child: Text('公告')),
+                SliverToBoxAdapter(child: SizedBox(height: h(24))),
 
-                SliverToBoxAdapter(child: SizedBox(height: 24)),
+                // //公告
+                SliverToBoxAdapter(child: Text('公告')),
 
                 //热门车车型
                 _buildHeader('热门车型'),
-                SliverToBoxAdapter(child: SizedBox(height: 8)),
+                SliverToBoxAdapter(child: SizedBox(height: h(16))),
                 SliverToBoxAdapter(child: hotCarList()),
-
-                SliverToBoxAdapter(child: SizedBox(height: 24)),
+                SliverToBoxAdapter(child: SizedBox(height: h(24))),
 
                 //新品预告
                 _buildHeader(
@@ -74,7 +72,7 @@ class HomeView extends GetView<HomeController> {
                     Get.toNamed('/calender');
                   },
                 ),
-                SliverToBoxAdapter(child: SizedBox(height: 8)),
+                SliverToBoxAdapter(child: SizedBox(height: h(8))),
                 SliverToBoxAdapter(child: newCarList()),
               ],
             ),
@@ -82,6 +80,151 @@ class HomeView extends GetView<HomeController> {
         ],
       ),
     );
+  }
+
+  Widget _buildFlexibleSpace(BuildContext context) {
+    final topPadding = MediaQuery.of(context).padding.top;
+
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // 层1：轮播组件（展开态可见，收起后被裁剪）
+        _buildCarousel(),
+
+        // 层2：收起后 AppBar 背景图（isScrolled 时在 toolbar 区域显示当前图片 cover）
+        Obx(
+          () => controller.isScrolled.value
+              ? Positioned(
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  height: kToolbarHeight + topPadding,
+                  child: Image.network(
+                    controller.hotProducts.isNotEmpty
+                        ? controller
+                              .hotProducts[controller
+                                  .currentCarouselIndex
+                                  .value]
+                              .imageUrl
+                        : '',
+                    fit: BoxFit.cover,
+                    alignment: Alignment.topCenter,
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
+
+        // 层3：标题栏
+        Positioned(
+          top: topPadding,
+          left: 0,
+          right: 0,
+          height: kToolbarHeight,
+          child: Row(
+            children: [
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  context.l10n.appName,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.settings, color: Colors.white),
+                onPressed: () => Scaffold.of(context).openEndDrawer(),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildCarousel() {
+    return Obx(() {
+      final items = controller.hotProducts.take(3).toList();
+      if (items.isEmpty) return const SizedBox.shrink();
+
+      return FlutterCarousel.builder(
+        itemCount: items.length,
+        itemBuilder: (context, index, pageViewIndex) {
+          final p = items[index];
+          return Stack(
+            fit: StackFit.expand,
+            children: [
+              Image.network(p.imageUrl, fit: BoxFit.cover),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                height: h(100),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Colors.transparent, Colors.black54],
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: h(16),
+                left: w(16),
+                right: w(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (p.tags.isNotEmpty)
+                      CustomTag(label: p.tags.first, size: CustomTagSize.small),
+                    SizedBox(height: h(8)),
+                    Text(
+                      p.title,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: sp(16),
+                        fontWeight: FontWeight.bold,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: h(4)),
+                    Text(
+                      '¥${p.price.toStringAsFixed(0)}',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.9),
+                        fontSize: sp(20),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
+        },
+        options: FlutterCarouselOptions(
+          height: w(390),
+          autoPlay: true,
+          controller: controller.carouselController,
+          autoPlayInterval: const Duration(seconds: 3),
+          showIndicator: true,
+          slideIndicator: CircularSlideIndicator(),
+          viewportFraction: 1.0,
+          pauseAutoPlayOnTouch: true,
+          pauseAutoPlayOnManualNavigate: true,
+          enlargeCenterPage: false,
+          onPageChanged: (index, reason) {
+            controller.currentCarouselIndex.value = index;
+          },
+        ),
+      );
+    });
   }
 
   Widget _buildHeader(String title, {VoidCallback? onMoreTap}) {
@@ -96,7 +239,7 @@ class HomeView extends GetView<HomeController> {
             child: HBox(
               children: [
                 StyledText('More', style: buildTitleStyle.moreStyle),
-                const SizedBox(width: 4),
+                SizedBox(width: w(4)),
                 StyledIcon(
                   Icons.arrow_forward_ios,
                   style: buildTitleStyle.moreIconStyle,
@@ -116,9 +259,9 @@ class HomeView extends GetView<HomeController> {
         child: HBox(
           children: controller.hotProducts.map((p) {
             return Padding(
-              padding: const EdgeInsets.only(right: 8),
+              padding: EdgeInsets.only(right: w(8)),
               child: SizedBox(
-                width: 160,
+                width: w(120),
                 child: ProductItem(
                   p,
                   details: VBox(
@@ -129,16 +272,17 @@ class HomeView extends GetView<HomeController> {
                           $text.color.ref(mxt.color.onSurface),
                           $text.style.ref(mxt.textStyle.body),
                           $text.maxLines(1),
+                          $text.overflow(TextOverflow.ellipsis),
                         ),
                       ),
-                      SizedBox(height: 4),
+                      SizedBox(height: h(4)),
                       HBox(
                         children: [
                           StyledIcon(
                             Icons.star,
                             style: Style(
                               $icon.color.ref(mxt.color.onSurfaceVariant),
-                              $icon.size(14),
+                              $icon.size(r(14)),
                             ),
                           ),
                           StyledText(
@@ -167,94 +311,105 @@ class HomeView extends GetView<HomeController> {
       () => VBox(
         children: controller.hotProducts.map((p) {
           return Padding(
-            padding: const EdgeInsets.only(bottom: 8),
+            padding: EdgeInsets.only(bottom: h(8)),
             child: ProductItem(
               p,
               isListMode: true,
-              details: HBox(
+              details: VBox(
+                style: Style($box.height(w(100))),
                 children: [
-                  Expanded(
-                    child: FlexBox(
-                      direction: Axis.vertical,
-                      style: Style(
-                        $flex.gap(4),
-                        $flex.crossAxisAlignment.start(),
+                  HBox(
+                    style: Style($flex.gap(w(8))),
+                    children: [
+                      StyledText(
+                        '${p.brandName}',
+                        style: Style(
+                          $text.color.ref(mxt.color.onSurface),
+                          $text.style.ref(mxt.textStyle.headline3),
+                          $text.fontWeight.bold(),
+                        ),
                       ),
-                      children: [
-                        HBox(
-                          style: Style($flex.gap(8)),
-                          children: [
-                            StyledText(
-                              '${p.brandName}',
-                              style: Style(
-                                $text.color.ref(mxt.color.onSurface),
-                                $text.style.ref(mxt.textStyle.body),
-                                $text.fontWeight.bold(),
-                              ),
-                            ),
-                            CustomTag(label: '新品上新', size: CustomTagSize.small),
-                          ],
-                        ),
-                        StyledText(
-                          '${p.title}',
-                          style: Style(
-                            $text.color.ref(mxt.color.onSurface),
-                            $text.style.ref(mxt.textStyle.body),
-                            $text.maxLines(2),
-                            $text.overflow(TextOverflow.ellipsis),
-                          ),
-                        ),
-                        StyledText(
-                          '预计发售：2025年7月',
-                          style: Style(
-                            $text.color.ref(mxt.color.onSurfaceVariant),
-                            $text.style.ref(mxt.textStyle.caption),
-                          ),
-                        ),
-                      ],
-                    ),
+                      CustomTag(label: '新品上新', size: CustomTagSize.small),
+                    ],
                   ),
-
-                  SizedBox(width: 40),
-
-                  Box(
-                    style: Style($box.width(80)),
-                    child: VBox(
-                      style: Style(
-                        $flex.mainAxisAlignment.center(),
-                        $flex.gap(4),
-                      ),
+                  HBox(style: Style($box.height(w(8)))),
+                  Expanded(
+                    flex: 1,
+                    child: HBox(
+                      style: Style($flex.gap.ref(mxt.space.medium)),
                       children: [
-                        StyledText(
-                          '距发售还有',
-                          style: Style(
-                            $text.color.ref(mxt.color.onSurfaceVariant),
-                            $text.style.ref(mxt.textStyle.caption),
+                        Expanded(
+                          child: FlexBox(
+                            direction: Axis.vertical,
+                            style: Style(
+                              $flex.gap(h(4)),
+                              $flex.mainAxisAlignment.spaceBetween(),
+                              $flex.crossAxisAlignment.start(),
+                            ),
+                            children: [
+                              StyledText(
+                                '${p.title}',
+                                style: Style(
+                                  $text.color.ref(mxt.color.onSurface),
+                                  $text.style.ref(mxt.textStyle.body),
+                                  $text.maxLines(2),
+                                  $text.overflow(TextOverflow.ellipsis),
+                                ),
+                              ),
+                              StyledText(
+                                '预计发售：2025年7月',
+                                style: Style(
+                                  $text.color.ref(mxt.color.onSurfaceVariant),
+                                  $text.style.ref(mxt.textStyle.caption),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                        HBox(
-                          style: Style(
-                            $flex.mainAxisAlignment.center(),
-                            $flex.crossAxisAlignment.baseline(),
-                            $flex.textBaseline.alphabetic(), // ← 这个
-                            $flex.gap(4),
+
+                        Box(
+                          style: Style($box.width(w(60))),
+                          child: VBox(
+                            style: Style(
+                              $flex.mainAxisAlignment.center(),
+                              $flex.gap(h(4)),
+                            ),
+                            children: [
+                              StyledText(
+                                '距发售',
+                                style: Style(
+                                  $text.color.ref(mxt.color.onSurfaceVariant),
+                                  $text.style.ref(mxt.textStyle.caption),
+                                ),
+                              ),
+                              HBox(
+                                style: Style(
+                                  $flex.mainAxisAlignment.center(),
+                                  $flex.crossAxisAlignment.baseline(),
+                                  $flex.textBaseline.alphabetic(), // ← 这个
+                                  $flex.gap(h(4)),
+                                ),
+                                children: [
+                                  StyledText(
+                                    '${12}',
+                                    style: Style(
+                                      $text.color.ref(mxt.color.primary),
+                                      $text.style.ref(mxt.textStyle.headline1),
+                                    ),
+                                  ),
+                                  StyledText(
+                                    '天',
+                                    style: Style(
+                                      $text.color.ref(
+                                        mxt.color.onSurfaceVariant,
+                                      ),
+                                      $text.style.ref(mxt.textStyle.caption),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                          children: [
-                            StyledText(
-                              '${12}',
-                              style: Style(
-                                $text.color.ref(mxt.color.primary),
-                                $text.style.ref(mxt.textStyle.headline1),
-                              ),
-                            ),
-                            StyledText(
-                              '天',
-                              style: Style(
-                                $text.color.ref(mxt.color.onSurfaceVariant),
-                                $text.style.ref(mxt.textStyle.caption),
-                              ),
-                            ),
-                          ],
                         ),
                       ],
                     ),

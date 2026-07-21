@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:mix/mix.dart';
 import '../../theme/app_theme.dart';
 import 'product.variant.dart';
@@ -11,7 +12,7 @@ class ProductStyle {
     $box.clipBehavior.antiAlias(),
 
     // 列表模式下的容器特定属性
-    ProductMode.listMode($box.width(double.infinity), $box.padding(12)),
+    ProductMode.listMode($box.width(double.infinity), $box.padding(8)),
 
     // 网格模式下的容器特定属性
     ProductMode.gridMode($box.padding(8)),
@@ -22,7 +23,7 @@ class ProductStyle {
     $box.color(Color(0xFFF5F5F5)),
     $box.borderRadius(8),
 
-    ProductMode.listMode($box.width(100), $box.height(100)),
+    ProductMode.listMode($box.width(w(100)), $box.height(w(100))),
 
     ProductMode.gridMode($box.width(double.infinity)),
   );
@@ -30,7 +31,7 @@ class ProductStyle {
   // 3. 标题文字样式
   static Style get title => Style(
     $text.style.fontWeight.bold(),
-    $text.style.fontSize(16),
+    $text.style.ref(mxt.textStyle.headline3),
     $text.style.color.ref(mxt.color.onSurface),
     $text.maxLines(2),
     $text.overflow.ellipsis(),

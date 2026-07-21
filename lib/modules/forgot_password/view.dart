@@ -6,6 +6,8 @@ import '../login/view.dart'; // 引入你的 LoginMixStyles
 import '../login/widgets/login_label/login_label.dart';
 import 'controller.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class ForgotPasswordView extends GetView<ForgotPasswordController> {
   const ForgotPasswordView({super.key});
 
@@ -22,7 +24,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
             children: [
               Box(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  padding: EdgeInsets.symmetric(horizontal: w(24.0)),
                   child: Box(
                     style: LoginMixStyles.loginCard,
                     child: Column(
@@ -35,34 +37,34 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                             $text.style.fontWeight.w800(),
                           ),
                         ),
-                        const SizedBox(height: 12),
-                        const Text(
+                        SizedBox(height: h(12)),
+                        Text(
                           'Enter your email to receive a reset link. We\'ll help you get back to your collection.',
-                          style: TextStyle(fontSize: 14),
+                          style: TextStyle(fontSize: sp(14)),
                         ),
-                        const SizedBox(height: 32),
+                        SizedBox(height: h(32)),
                         const LoginLabel('Email Address'),
 
-                        const SizedBox(height: 8),
+                        SizedBox(height: h(8)),
                         CustomInput(
                           controller: controller.emailController,
                           hint: 'collector@apex.com',
                           icon: Icons.email_outlined,
                         ),
-                        const SizedBox(height: 32),
+                        SizedBox(height: h(32)),
                         _buildSubmitButton(
                           'Send Reset Link',
                           Icons.send_rounded,
                           controller.sendResetLink,
                         ),
-                        const SizedBox(height: 32),
+                        SizedBox(height: h(32)),
                         _buildBackToLogin(),
                       ],
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 32),
+              SizedBox(height: h(32)),
               // _buildFooterSupport(),
             ],
           ),
@@ -96,8 +98,8 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             StyledText(label),
-            const SizedBox(width: 8),
-            Icon(icon, color: Colors.white, size: 18),
+            SizedBox(width: w(8)),
+            Icon(icon, color: Colors.white, size: r(18)),
           ],
         ),
       ),
@@ -108,11 +110,11 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
     return Center(
       child: GestureDetector(
         onTap: () => Get.back(),
-        child: const Row(
+        child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.arrow_back, size: 16),
-            SizedBox(width: 8),
+            Icon(Icons.arrow_back, size: r(16)),
+            SizedBox(width: w(8)),
             Text(
               'Back to Login',
               style: TextStyle(fontWeight: FontWeight.w600),
@@ -125,19 +127,19 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
 
   Widget _buildFooterSupport() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
+      padding: EdgeInsets.only(bottom: h(20)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text(
+          Text(
             'Need technical assistance? ',
-            style: TextStyle(fontSize: 14),
+            style: TextStyle(fontSize: sp(14)),
           ),
           GestureDetector(
             onTap: () {},
-            child: const Text(
+            child: Text(
               'Contact Support',
-              style: TextStyle(color: Colors.blueAccent, fontSize: 12),
+              style: TextStyle(color: Colors.blueAccent, fontSize: sp(12)),
             ),
           ),
         ],

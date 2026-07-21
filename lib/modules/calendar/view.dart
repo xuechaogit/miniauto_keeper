@@ -9,6 +9,8 @@ import 'widgets/action_button/action_button.dart';
 import 'widgets/horizontal_calendar/horizontal_calendar.dart';
 import 'widgets/horizontal_calendar/horizontal_calendar.style.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class CalendarView extends GetView<CalendarController> {
   const CalendarView({super.key});
 
@@ -25,18 +27,18 @@ class CalendarView extends GetView<CalendarController> {
         actions: [
           IconButton(icon: const Icon(Icons.search), onPressed: () {}),
           const CircleAvatar(radius: 15),
-          const SizedBox(width: 16),
+          SizedBox(width: w(16)),
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(r(20)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildHeader(context), // 传入 context
-            const SizedBox(height: 20),
+            SizedBox(height: h(20)),
             _buildHorizontalCalendar(),
-            const SizedBox(height: 20),
+            SizedBox(height: h(20)),
             FilterChips(
               // 数据源：List<String>
               filters: controller.brands,
@@ -45,9 +47,9 @@ class CalendarView extends GetView<CalendarController> {
               // 点击回调：将点击的值传递给控制器逻辑
               onSelected: (value) => controller.changeBrand(value),
             ),
-            const SizedBox(height: 30),
+            SizedBox(height: h(30)),
             _buildTodayIndicator(),
-            const SizedBox(height: 16),
+            SizedBox(height: h(16)),
             _buildReleaseList(),
           ],
         ),
@@ -64,9 +66,9 @@ class CalendarView extends GetView<CalendarController> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Release Calendar',
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: sp(28), fontWeight: FontWeight.bold),
             ),
             // 联动显示当前选中的月份
             Obx(
@@ -74,7 +76,7 @@ class CalendarView extends GetView<CalendarController> {
                 DateFormat(
                   'MMMM yyyy',
                 ).format(controller.currentSelectedDate.value),
-                style: const TextStyle(fontSize: 16),
+                style: TextStyle(fontSize: sp(16)),
               ),
             ),
           ],
@@ -85,7 +87,7 @@ class CalendarView extends GetView<CalendarController> {
               icon: Icons.calendar_today_outlined,
               onTap: () => controller.pickDate(context),
             ),
-            // const SizedBox(width: 10),
+            // SizedBox(width: w(10)),
             // ActionButton(icon: Icons.tune, onTap: () {}),
           ],
         ),
@@ -133,7 +135,7 @@ class CalendarView extends GetView<CalendarController> {
               $box.color.ref(mxt.color.primary),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: w(12)),
           // 中间文字部分
           StyledText(
             '$label · $dateText',
@@ -144,7 +146,7 @@ class CalendarView extends GetView<CalendarController> {
               $text.letterSpacing(1.2),
             ),
           ),
-          const SizedBox(width: 12),
+          SizedBox(width: w(12)),
           // 右侧长线撑满
           // Expanded(child: Container(height: 1, color: Colors.white10)),
         ],
@@ -189,29 +191,29 @@ class CalendarView extends GetView<CalendarController> {
               $box.borderRadius(12),
               $box.color.white.withOpacity(0.05),
             ),
-            child: const Center(child: Icon(Icons.directions_car, size: 40)),
+            child: Center(child: Icon(Icons.directions_car, size: r(40))),
           ),
-          const SizedBox(width: 15),
+          SizedBox(width: w(15)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   product.brandName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.blueAccent,
                     fontWeight: FontWeight.bold,
-                    fontSize: 12,
+                    fontSize: sp(12),
                   ),
                 ),
                 Text(
                   product.title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: sp(16),
                   ),
                 ),
-                Text(product.tags.last, style: const TextStyle(fontSize: 13)),
+                Text(product.tags.last, style: TextStyle(fontSize: sp(13))),
               ],
             ),
           ),

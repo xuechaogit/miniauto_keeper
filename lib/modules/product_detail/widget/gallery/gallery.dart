@@ -6,6 +6,8 @@ import '../../../../core/widgets/image/image.dart';
 import '../../controller.dart';
 import 'gallery.style.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class ProductImageGallery extends GetView<ProductDetailController> {
   final dynamic data; // 承接你的商品详情对象数据
 
@@ -64,8 +66,7 @@ class ProductImageGallery extends GetView<ProductDetailController> {
                     duration: const Duration(milliseconds: 200),
                     curve: Curves.easeInOut,
                     // 隐形防呆扩展热区，防止手指粗误触
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8.0,
+                    padding: EdgeInsets.symmetric(vertical: h(8.0),
                       horizontal: 6.0,
                     ),
                     child: Container(

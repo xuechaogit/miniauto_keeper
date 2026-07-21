@@ -3,6 +3,8 @@ import 'package:mix/mix.dart';
 import '../../controller.dart'; // 引入 NoticeModel
 import 'notice_item.style.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class NoticeItem extends StatelessWidget {
   final NoticeModel notice;
   final VoidCallback onTap;
@@ -30,9 +32,9 @@ class NoticeItem extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: h(8)),
             StyledText(notice.content, style: NoticeItemStyles.previewText),
-            const SizedBox(height: 12),
+            SizedBox(height: h(12)),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:get/get.dart';
 
 import '../../core/router/app_routes.dart';
@@ -61,13 +62,13 @@ class BrandView extends GetView<BrandsController> {
         // 控制整个页面的内边距，顺便为你底部的卡片预留 120 的安全空间
         slivers: [
           SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+            padding: EdgeInsets.fromLTRB(w(16), h(16), w(16), h(32)),
             sliver: SliverMainAxisGroup(
               slivers: [
                 // 1. 搜索框
                 SliverToBoxAdapter(
                   child: SizedBox(
-                    height: 40,
+                    height: h(40),
                     child: TextField(
                       style: context.textStyle(mxt.textStyle.body),
                       onChanged: (value) => null,
@@ -78,7 +79,7 @@ class BrandView extends GetView<BrandsController> {
                         prefixIcon: Icon(
                           Icons.search,
                           color: context.color(mxt.color.primary),
-                          size: 20,
+                          size: r(20),
                         ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.all(
@@ -86,15 +87,15 @@ class BrandView extends GetView<BrandsController> {
                           ),
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 12,
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: w(12),
                         ),
                       ),
                     ),
                   ),
                 ),
 
-                SliverToBoxAdapter(child: const SizedBox(height: 32)),
+                SliverToBoxAdapter(child: SizedBox(height: h(32))),
 
                 // 2. 标题行
                 SliverToBoxAdapter(
@@ -112,7 +113,7 @@ class BrandView extends GetView<BrandsController> {
                   ),
                 ),
 
-                SliverToBoxAdapter(child: const SizedBox(height: 24)),
+                SliverToBoxAdapter(child: SizedBox(height: h(24))),
 
                 AppPagedListView<BrandModel>.sliver(
                   data: controller.brands,
@@ -123,7 +124,7 @@ class BrandView extends GetView<BrandsController> {
                   skeletonList: SliverList.separated(
                     itemCount: 5,
                     separatorBuilder: (context, index) =>
-                        const SizedBox(height: 16),
+                        SizedBox(height: h(16)),
                     itemBuilder: (context, index) => const BrandSkeletonItem(),
                   ),
 

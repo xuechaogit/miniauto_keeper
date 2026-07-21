@@ -1,3 +1,4 @@
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:flutter/material.dart';
 import 'package:mix/mix.dart';
 
@@ -126,36 +127,40 @@ final lightTheme = MixThemeData(
   },
   textStyles: {
     // 使用原生 TextStyle，不再依赖 GoogleFonts
-    mxt.textStyle.headline1: const TextStyle(
-      fontSize: 22,
+    mxt.textStyle.headline1: TextStyle(
+      fontSize: sp(20),
       fontWeight: FontWeight.bold,
       // 如果你有本地字体，在这里指定 fontFamily
     ),
-    mxt.textStyle.headline2: const TextStyle(
-      fontSize: 18,
+    mxt.textStyle.headline2: TextStyle(
+      fontSize: sp(18),
       fontWeight: FontWeight.bold,
       // 如果你有本地字体，在这里指定 fontFamily
     ),
-    mxt.textStyle.headline3: const TextStyle(
-      fontSize: 16,
+    mxt.textStyle.headline3: TextStyle(
+      fontSize: sp(16),
       fontWeight: FontWeight.bold,
       // 如果你有本地字体，在这里指定 fontFamily
     ),
-    mxt.textStyle.body: const TextStyle(
-      fontSize: 14,
+    mxt.textStyle.body: TextStyle(
+      fontSize: sp(14),
       fontWeight: FontWeight.normal,
     ),
-    mxt.textStyle.caption: const TextStyle(
-      fontSize: 12,
+    mxt.textStyle.caption: TextStyle(
+      fontSize: sp(12),
       fontWeight: FontWeight.normal,
     ),
   },
   radii: {
-    mxt.radius.large: const Radius.circular(100),
-    mxt.radius.medium: const Radius.circular(12),
-    mxt.radius.small: const Radius.circular(4),
+    mxt.radius.large: Radius.circular(w(100)),
+    mxt.radius.medium: Radius.circular(w(12)),
+    mxt.radius.small: Radius.circular(w(4)),
   },
-  spaces: {mxt.space.large: 24, mxt.space.medium: 16, mxt.space.small: 8},
+  spaces: {
+    mxt.space.large: w(24),
+    mxt.space.medium: w(16),
+    mxt.space.small: w(8),
+  },
 );
 
 // 3. 声明暗黑主题
@@ -194,36 +199,40 @@ final darkTheme = MixThemeData(
     mxt.color.shimmerHighlight: const Color(0xFF35383F), // 微亮闪烁
   },
   textStyles: {
-    mxt.textStyle.headline1: const TextStyle(
-      fontSize: 22,
+    mxt.textStyle.headline1: TextStyle(
+      fontSize: sp(20),
       fontWeight: FontWeight.bold,
       // 如果你有本地字体，在这里指定 fontFamily
     ),
-    mxt.textStyle.headline2: const TextStyle(
-      fontSize: 18,
+    mxt.textStyle.headline2: TextStyle(
+      fontSize: sp(18),
       fontWeight: FontWeight.bold,
       // 如果你有本地字体，在这里指定 fontFamily
     ),
-    mxt.textStyle.headline3: const TextStyle(
-      fontSize: 16,
+    mxt.textStyle.headline3: TextStyle(
+      fontSize: sp(16),
       fontWeight: FontWeight.bold,
       // 如果你有本地字体，在这里指定 fontFamily
     ),
-    mxt.textStyle.body: const TextStyle(
-      fontSize: 16,
+    mxt.textStyle.body: TextStyle(
+      fontSize: sp(14),
       fontWeight: FontWeight.normal,
     ),
-    mxt.textStyle.caption: const TextStyle(
-      fontSize: 14,
+    mxt.textStyle.caption: TextStyle(
+      fontSize: sp(12),
       fontWeight: FontWeight.normal,
     ),
   },
   radii: {
-    mxt.radius.large: const Radius.circular(100),
-    mxt.radius.medium: const Radius.circular(12),
-    mxt.radius.small: const Radius.circular(4), // 暗色模式通常更紧凑
+    mxt.radius.large: Radius.circular(w(100)),
+    mxt.radius.medium: Radius.circular(w(12)),
+    mxt.radius.small: Radius.circular(w(4)), // 暗色模式通常更紧凑
   }, // 暗色模式通常更硬朗
-  spaces: {mxt.space.large: 24, mxt.space.medium: 16, mxt.space.small: 8},
+  spaces: {
+    mxt.space.large: w(24),
+    mxt.space.medium: w(16),
+    mxt.space.small: w(8),
+  },
 );
 
 ThemeData convertMixToThemeData(MixThemeData mixData, Brightness brightness) {

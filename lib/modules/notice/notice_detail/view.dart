@@ -9,6 +9,8 @@ import '../../../core/theme/app_theme.dart';
 import '../widget/notice_detail_skeleton/notice_skeleton_item.dart';
 import 'controller.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class NoticeDetailStyles {
   static Style get contentText => Style(
     $text.color.ref(mxt.color.onSurface),
@@ -57,7 +59,7 @@ class NoticeDetailView extends GetView<NoticeDetailController> {
           // 3. 核心正文渲染
           return SizedBox.expand(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24.0),
+              padding: EdgeInsets.all(r(24.0)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -74,18 +76,18 @@ class NoticeDetailView extends GetView<NoticeDetailController> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: h(16)),
                   Text(
                     notice.title,
                     style: TextStyle(
-                      fontSize: 22,
+                      fontSize: sp(22),
                       fontWeight: FontWeight.bold,
                       height: 1.3,
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: h(12)),
                   Divider(height: 2),
-                  const SizedBox(height: 24),
+                  SizedBox(height: h(24)),
                   // HTML 渲染核心部件
                   AppHtmlRenderer(
                     htmlContent: notice.content, // 扔进 HTML 字符串

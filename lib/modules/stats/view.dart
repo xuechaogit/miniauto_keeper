@@ -8,6 +8,8 @@ import 'widgets/header_stats/header_stats.dart';
 import 'widgets/monthly_spending_trend/monthly_spending_trend.dart';
 import 'package:mix/mix.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class StatsView extends GetView<StatsController> {
   const StatsView({super.key});
 
@@ -20,7 +22,7 @@ class StatsView extends GetView<StatsController> {
         actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.search))],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(r(16)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -31,12 +33,12 @@ class StatsView extends GetView<StatsController> {
                 growthRate: controller.growthRate.value,
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: h(24)),
             _buildTodayGarage(),
-            const SizedBox(height: 24),
+            SizedBox(height: h(24)),
             //月花费趋势组件
             const MonthlySpendingTrend(),
-            const SizedBox(height: 24),
+            SizedBox(height: h(24)),
             // 品牌分布组件
             BrandShare(),
           ],
@@ -52,27 +54,26 @@ class StatsView extends GetView<StatsController> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text(
+            Text(
               'Today Added to Your Garage',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: sp(18), fontWeight: FontWeight.bold),
             ),
             Text(
               '+${controller.todayAddedCount.value} Total Today',
-              style: const TextStyle(color: Color(0xFFE99E8D), fontSize: 14),
+              style: TextStyle(color: Color(0xFFE99E8D), fontSize: sp(14)),
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: h(16)),
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(r(16)),
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           child: Column(
             children: [
               Row(
                 children: [
                   // 左侧图片叠加效果
-                  SizedBox(
-                    width: 80,
+                  SizedBox(width: w(80),
                     height: 40,
                     child: Stack(
                       children: [
@@ -84,23 +85,23 @@ class StatsView extends GetView<StatsController> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: w(12)),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
+                        Text(
                           'Collection Progress',
-                          style: TextStyle(fontSize: 14),
+                          style: TextStyle(fontSize: sp(14)),
                         ),
                         Text(
                           controller.progressDetail.value,
-                          style: const TextStyle(fontSize: 12),
+                          style: TextStyle(fontSize: sp(12)),
                         ),
                       ],
                     ),
                   ),
-                  const Icon(
+                  Icon(
                     Icons.emoji_events_outlined,
                     color: Color(0xFFE99E8D),
                     size: 24,
@@ -132,7 +133,7 @@ class StatsView extends GetView<StatsController> {
           ? Center(
               child: Text(
                 '+1',
-                style: TextStyle(fontSize: 10, color: Colors.white),
+                style: TextStyle(fontSize: sp(10), color: Colors.white),
               ),
             )
           : null,

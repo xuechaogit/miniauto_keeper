@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 import '../../../../core/l10n/l10n_util.dart';
 import '../../../../core/services/settings_service.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 Widget PersonalizationDrawer(BuildContext context) {
   final settings = Get.find<SettingsService>();
   return Drawer(
@@ -15,21 +17,21 @@ Widget PersonalizationDrawer(BuildContext context) {
           // 抽屉头部
           Container(
             height: kToolbarHeight,
-            padding: EdgeInsets.only(left: 16, right: 16),
+            padding: EdgeInsets.only(left: w(16), right: w(16)),
             alignment: Alignment.centerLeft,
             child: Row(
               children: [
                 Icon(
                   Icons.tune,
                   color: Theme.of(context).colorScheme.primary,
-                  size: 24, // 契合 AppBar 默认图标大小
+                  size: r(24),
                 ),
-                const SizedBox(width: 12),
+                SizedBox(width: w(12)),
                 Text(
                   "个性化设置",
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
-                    fontSize: 20, // 契合 AppBar 默认标题大小
+                    fontSize: sp(20),
                   ),
                 ),
               ],
@@ -99,7 +101,7 @@ Widget PersonalizationDrawer(BuildContext context) {
 
           // 底部版权/品牌信息展示
           Padding(
-            padding: const EdgeInsets.all(24.0),
+            padding: EdgeInsets.all(w(24)),
             child: Center(
               child: Text(
                 "车仔助手 v1.0.0",

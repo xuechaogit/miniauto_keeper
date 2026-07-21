@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/modules/modules.dart';
 import 'package:mix/mix.dart';
@@ -47,8 +48,8 @@ class MainView extends GetView<MainController> {
     bool isSelected = controller.currentIndex == 2;
     return Box(
       style: Style(
-        $box.width(64),
-        $box.height(64),
+        $box.width(w(64)),
+        $box.height(h(64)),
         $box.decoration.shape(BoxShape.circle),
         $box.decoration.color(
           isSelected
@@ -58,7 +59,7 @@ class MainView extends GetView<MainController> {
       ),
       child: InkWell(
         onTap: () => controller.changePage(2),
-        borderRadius: BorderRadius.circular(32),
+        borderRadius: BorderRadius.circular(r(32)),
         child: const Icon(
           Icons.directions_car_filled,
           color: Colors.white,
@@ -86,12 +87,12 @@ class MainView extends GetView<MainController> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: isSelected ? activeColor : inactiveColor, size: 24),
+          Icon(icon, color: isSelected ? activeColor : inactiveColor, size: r(24)),
           Text(
             label,
             style: TextStyle(
               color: isSelected ? activeColor : inactiveColor,
-              fontSize: 10,
+              fontSize: sp(10),
               fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
             ),
           ),
@@ -102,9 +103,9 @@ class MainView extends GetView<MainController> {
 
   Widget _buildBottomBar(BuildContext context) {
     return BottomAppBar(
-      height: 70,
-      shape: const CircularNotchedRectangle(), // 让底部栏产生凹陷感
-      notchMargin: 8.0, // 凹陷的边距
+      height: h(70),
+      shape: const CircularNotchedRectangle(),
+      notchMargin: h(8),
       color: context.color(mxt.color.surface),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -125,7 +126,7 @@ class MainView extends GetView<MainController> {
               index: 1,
             ),
           ),
-          const SizedBox(width: 48), // 中间留出大按钮的空间
+          SizedBox(width: w(48)), // 中间留出大按钮的空间
           Expanded(
             child: _buildNavItem(
               context,

@@ -3,6 +3,8 @@ import 'package:mix/mix.dart';
 import 'header_card.clipper.dart';
 import 'header_card.style.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class ProfileHeaderCard extends StatelessWidget {
   final String name;
 
@@ -11,16 +13,15 @@ class ProfileHeaderCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
-      child: SizedBox(
-        height: 180,
+      padding: EdgeInsets.all(r(16)),
+      child: SizedBox(height: h(180),
         child: Stack(
           children: [
             // 底层：颜色边框
             ClipPath(clipper: GTAeroClipper(), child: Container()),
             // 内容层
             Padding(
-              padding: const EdgeInsets.all(1.5),
+              padding: EdgeInsets.all(r(1.5)),
               child: ClipPath(
                 clipper: GTAeroClipper(),
                 child: Box(
@@ -37,11 +38,11 @@ class ProfileHeaderCard extends StatelessWidget {
 
   Widget _buildBody() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: w(20)),
       child: Row(
         children: [
           _buildAvatar(),
-          const SizedBox(width: 18),
+          SizedBox(width: w(18)),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -51,7 +52,7 @@ class ProfileHeaderCard extends StatelessWidget {
                   name.toUpperCase(),
                   style: HeaderCardStyle.driverName,
                 ),
-                const SizedBox(height: 10),
+                SizedBox(height: h(10)),
                 StyledText(
                   'GT3 • TRACK MODE ACTIVE',
                   style: HeaderCardStyle.statusText,

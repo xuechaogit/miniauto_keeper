@@ -1,18 +1,27 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 
 import '../../core/services/settings_service.dart';
-import 'repository.dart'; // 导入仓库
+import '../../core/utils/screen_adapter.dart';
+import 'repository.dart';
 import '../../models/product_model.dart';
 
 class HomeController extends GetxController {
   final settings = Get.find<SettingsService>();
 
-  // 1. 实例化仓库
   final HomeRepository _repository = HomeRepository();
+
+  final ScrollController scrollController = ScrollController();
+  final FlutterCarouselController carouselController =
+      FlutterCarouselController();
 
   final totalCars = 0.obs;
   final recentAddedCount = 0.obs;
   final isLoading = false.obs;
+  final currentCarouselIndex = 0.obs;
+  final carouselAutoPlay = true.obs;
+  final isScrolled = false.obs;
 
   final hotProducts = [
     ProductModel(
@@ -85,7 +94,28 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    scrollController.addListener(_onScroll);
     refreshDashboard();
+  }
+
+  @override
+  void onClose() {
+    scrollController.removeListener(_onScroll);
+    scrollController.dispose();
+    super.onClose();
+  }
+
+  void _onScroll() {
+    final offset = scrollController.offset;
+    final scrolled = offset >= 56;
+    if (isScrolled.value != scrolled) {
+      isScrolled.value = scrolled;
+      if (scrolled) {
+        carouselController.stopAutoPlay();
+      } else {
+        carouselController.startAutoPlay();
+      }
+    }
   }
 
   // 2. 调用真实的 API 接口

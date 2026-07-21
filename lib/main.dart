@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'core/utils/screen_adapter.dart';
 import 'package:get/get.dart';
 import 'package:mix/mix.dart';
 
@@ -50,9 +51,11 @@ class MyApp extends StatelessWidget {
     return Obx(() {
       final isDark = settings.isDarkMode;
       print('isDark $isDark');
-      return MixTheme(
-        data: isDark ? darkTheme : lightTheme,
-        child: GetMaterialApp(
+      return ScreenUtilInit(
+        designSize: const Size(390, 844),
+        builder: (context, child) => MixTheme(
+          data: isDark ? darkTheme : lightTheme,
+          child: GetMaterialApp(
           title: 'Flutter Demo',
           //开启
           scrollBehavior: const MaterialScrollBehavior().copyWith(
@@ -78,6 +81,7 @@ class MyApp extends StatelessWidget {
           getPages: AppPages.routes,
           //
           // home: const MainView(),
+          ),
         ),
       );
     });

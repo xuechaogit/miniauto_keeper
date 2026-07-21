@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mix/mix.dart';
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import '../../../../core/widgets/filter_chips/filter_chips.dart';
 
 import 'horizontal_calendar.dart';
@@ -50,7 +51,7 @@ class HorizontalCalendar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 StyledText(weekDay, style: HorizontalCalendarStyle.weekDayText),
-                const SizedBox(height: 4),
+                SizedBox(height: h(4)),
                 StyledText(day, style: HorizontalCalendarStyle.dayText),
 
                 // 选中时的红点指示器

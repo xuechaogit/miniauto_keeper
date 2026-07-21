@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:mix/mix.dart';
 import '../../../../../models/brand_stats.dart';
 import 'brand_card.style.dart';
@@ -100,7 +101,7 @@ class BrandCard extends StatelessWidget {
                 '${brand.totalCount}',
                 style: BrandCardStyle.countText,
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: w(8)),
               StyledText('Total Inclusion', style: BrandCardStyle.subLabelText),
             ],
           ),
@@ -109,11 +110,11 @@ class BrandCard extends StatelessWidget {
           Row(
             children: [
               _buildMiniTag('1:64'),
-              const SizedBox(width: 8),
+              SizedBox(width: w(8)),
               _buildMiniTag(brandName),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: h(12)),
           // 描述文字
           StyledText(
             'Latest: Detailed description of the limited edition...',

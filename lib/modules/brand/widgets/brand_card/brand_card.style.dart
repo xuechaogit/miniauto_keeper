@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:mix/mix.dart';
 import '../../../../../core/theme/app_mix_themes.dart';
 import '../../../../core/theme/app_theme.dart';
@@ -27,11 +28,11 @@ class BrandCardStyle {
   );
 
   /// 3. 信息层内边距
-  static Style get contentPadding => Style($box.padding.all(24));
+  static Style get contentPadding => Style($box.padding.all(w(24)));
 
   /// 4. 品牌 Logo 大文字 (背景层)
   static Style get logoText => Style(
-    $text.style.fontSize(32),
+    $text.style.fontSize(sp(24)),
     $text.style.fontWeight.w900(),
     $text.style.color.ref(mxt.color.onSurface),
     $text.style.letterSpacing(-1.5),
@@ -44,7 +45,7 @@ class BrandCardStyle {
 
   /// 5. 数量数字样式
   static Style get countText => Style(
-    $text.style.fontSize(48),
+    $text.style.fontSize(sp(24)),
     $text.style.fontWeight.w700(),
     $text.style.color.ref(mxt.color.onSurface),
     $text.style.height(1),

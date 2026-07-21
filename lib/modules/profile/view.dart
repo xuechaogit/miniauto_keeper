@@ -10,6 +10,8 @@ import '../../core/widgets/tag/tag.variant.dart';
 import 'controller.dart';
 import 'widgets/header_card/header_card.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class ProfileView extends GetView<ProfileController> {
   const ProfileView({super.key});
 
@@ -32,9 +34,9 @@ class ProfileView extends GetView<ProfileController> {
           SliverToBoxAdapter(child: ProfileHeaderCard(name: 'John Doe')),
           // ProfileHeaderCard(),
           _buildLargeEntries(context),
-          SliverToBoxAdapter(child: SizedBox(height: 16)),
+          SliverToBoxAdapter(child: SizedBox(height: h(16))),
           SliverToBoxAdapter(child: _buildTodayIndicator()),
-          SliverToBoxAdapter(child: SizedBox(height: 16)),
+          SliverToBoxAdapter(child: SizedBox(height: h(16))),
           _buildActionMenu(context),
         ],
       ),
@@ -44,12 +46,12 @@ class ProfileView extends GetView<ProfileController> {
   // --- 功能列表 ---
   Widget _buildActionMenu(BuildContext context) {
     return SliverPadding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16), // 顶部收紧，侧边留白
+      padding: EdgeInsets.fromLTRB(w(16), h(0), w(16), h(16)), // 顶部收紧，侧边留白
       sliver: SliverToBoxAdapter(
         child: Container(
           decoration: BoxDecoration(
             color: const Color(0xFF111111), // 稍深于背景，增加悬浮感
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(r(20)),
             // 极细的顶部高光，模拟金属边缘
             border: Border.all(
               color: Colors.white.withOpacity(0.05),
@@ -77,8 +79,7 @@ class ProfileView extends GetView<ProfileController> {
                           .resolve(context)
                           .withOpacity(0.1),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
+                        padding: EdgeInsets.symmetric(horizontal: w(16),
                           vertical: 14,
                         ),
                         child: Row(
@@ -89,7 +90,7 @@ class ProfileView extends GetView<ProfileController> {
                               height: 42,
                               decoration: BoxDecoration(
                                 color: const Color(0xFF1A1A1A),
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(r(12)),
                                 border: Border.all(
                                   color: Colors.white.withOpacity(0.08),
                                 ),
@@ -100,17 +101,17 @@ class ProfileView extends GetView<ProfileController> {
                                 size: 22,
                               ),
                             ),
-                            const SizedBox(width: 16),
+                            SizedBox(width: w(16)),
                             // 2. 标题部分
                             Expanded(
                               child: Text(
                                 (item['title'] as String)
                                     .toUpperCase(), // 全大写更具赛车味
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: 14,
+                                  fontSize: sp(14),
                                   fontWeight: FontWeight.w600,
-                                  letterSpacing: 1.1,
+                                  letterSpacing: w(1.1),
                                 ),
                               ),
                             ),
@@ -128,7 +129,7 @@ class ProfileView extends GetView<ProfileController> {
                   // 4. 优化后的分割线：不再横跨全屏
                   if (!isLast)
                     Padding(
-                      padding: const EdgeInsets.only(left: 74, right: 20),
+                      padding: EdgeInsets.only(left: w(74), right: w(20)),
                       child: Divider(
                         height: 1,
                         thickness: 0.5,
@@ -147,9 +148,9 @@ class ProfileView extends GetView<ProfileController> {
   // 根据索引获取圆角，确保 InkWell 点击效果不超出 Container
   BorderRadius _getBorderRadius(int index, int total) {
     if (index == 0)
-      return const BorderRadius.vertical(top: Radius.circular(20));
+      return BorderRadius.vertical(top: Radius.circular(r(20)));
     if (index == total - 1)
-      return const BorderRadius.vertical(bottom: Radius.circular(20));
+      return BorderRadius.vertical(bottom: Radius.circular(r(20)));
     return BorderRadius.zero;
   }
 
@@ -159,7 +160,7 @@ class ProfileView extends GetView<ProfileController> {
     const double borderWidth = 1.5; // 红色边框的粗细
 
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(r(16)),
       child: SizedBox(
         height: cardHeight,
         child: Stack(
@@ -199,11 +200,11 @@ class ProfileView extends GetView<ProfileController> {
 
                       // --- 核心内容 ---
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        padding: EdgeInsets.symmetric(horizontal: w(20)),
                         child: Row(
                           children: [
                             _buildCockpitAvatar(context),
-                            const SizedBox(width: 18),
+                            SizedBox(width: w(18)),
                             Expanded(
                               child: _buildDriverCluster(context, primaryColor),
                             ),
@@ -235,8 +236,7 @@ class ProfileView extends GetView<ProfileController> {
         alignment: Alignment.center,
         children: [
           // 外圈仪表环
-          SizedBox(
-            width: 78,
+          SizedBox(width: w(78),
             height: 78,
             child: CircularProgressIndicator(
               value: 0.72,
@@ -277,29 +277,29 @@ class ProfileView extends GetView<ProfileController> {
             controller.userName.value.toUpperCase(),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
-            style: const TextStyle(
+            style: TextStyle(
               color: Colors.white,
-              fontSize: 24,
+              fontSize: sp(24),
               fontWeight: FontWeight.w800,
-              letterSpacing: 2,
+              letterSpacing: w(2),
             ),
           ),
         ),
 
-        const SizedBox(height: 10),
+        SizedBox(height: h(10)),
 
         // SUB SYSTEM STATUS（像车的 mode）
         Text(
           'GT3 • TRACK MODE ACTIVE',
           style: TextStyle(
             color: Colors.white.withOpacity(0.55),
-            fontSize: 11,
-            letterSpacing: 2.5,
+            fontSize: sp(11),
+            letterSpacing: w(2.5),
             fontWeight: FontWeight.w600,
           ),
         ),
 
-        const SizedBox(height: 14),
+        SizedBox(height: h(14)),
       ],
     );
   }
@@ -308,7 +308,7 @@ class ProfileView extends GetView<ProfileController> {
     final primaryColor = mxt.color.primary.resolve(context);
 
     return SliverPadding(
-      padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+      padding: EdgeInsets.fromLTRB(w(16), h(8), w(16), h(16)),
       sliver: SliverGrid(
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
@@ -357,7 +357,7 @@ class ProfileView extends GetView<ProfileController> {
 
         // 2. 内容层：通过 Padding 露边
         Padding(
-          padding: const EdgeInsets.all(1.2),
+          padding: EdgeInsets.all(r(1.2)),
           child: ClipPath(
             clipper: GTSmallCardClipper(isReverse: isReverse),
             child: Material(
@@ -367,7 +367,7 @@ class ProfileView extends GetView<ProfileController> {
                 splashColor: color.withOpacity(0.12),
                 highlightColor: Colors.white.withOpacity(0.02),
                 child: Container(
-                  padding: const EdgeInsets.all(16),
+                  padding: EdgeInsets.all(r(16)),
                   child: Column(
                     // 根据裁剪方向自动切换文字对齐：切左边则靠右对齐，切右边则靠左对齐
                     crossAxisAlignment: isReverse
@@ -376,41 +376,41 @@ class ProfileView extends GetView<ProfileController> {
                     children: [
                       // 图标容器
                       Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: EdgeInsets.all(r(8)),
                         decoration: BoxDecoration(
                           color: color.withOpacity(0.08),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(r(10)),
                         ),
-                        child: Icon(icon, color: color, size: 22),
+                        child: Icon(icon, color: color, size: r(22)),
                       ),
                       const Spacer(),
                       // 标题
                       Text(
                         label.toUpperCase(),
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
-                          fontSize: 15,
+                          fontSize: sp(15),
                           fontWeight: FontWeight.w900,
-                          letterSpacing: 1.5,
+                          letterSpacing: w(1.5),
                         ),
                       ),
-                      const SizedBox(height: 6),
+                      SizedBox(height: h(6)),
                       // 动态装饰线
                       Container(
                         width: 28,
                         height: 2,
                         decoration: BoxDecoration(
                           color: color.withOpacity(0.6),
-                          borderRadius: BorderRadius.circular(1),
+                          borderRadius: BorderRadius.circular(r(1)),
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: h(8)),
                       // 副标题
                       Text(
                         subtitle,
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.35),
-                          fontSize: 10,
+                          fontSize: sp(10),
                           fontFamily: 'monospace',
                           fontWeight: FontWeight.bold,
                         ),
@@ -429,7 +429,7 @@ class ProfileView extends GetView<ProfileController> {
 
 Widget _buildTodayIndicator() {
   return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16),
+    padding: EdgeInsets.symmetric(horizontal: w(16)),
     child: Row(
       children: [
         // 中间文字部分
@@ -442,7 +442,7 @@ Widget _buildTodayIndicator() {
             $text.letterSpacing(1.2),
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: w(12)),
         // 右侧长线撑满
         Expanded(child: Container(height: 1, color: Colors.white10)),
       ],

@@ -7,6 +7,8 @@ import '../../core/theme/app_theme.dart';
 import '../login/view.dart';
 import 'controller.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class VerifyIdentityView extends GetView<ForgotPasswordController> {
   const VerifyIdentityView({super.key});
 
@@ -19,7 +21,7 @@ class VerifyIdentityView extends GetView<ForgotPasswordController> {
       width: 50,
       height: 65,
       textStyle: TextStyle(
-        fontSize: 24,
+        fontSize: sp(24),
         fontWeight: FontWeight.bold,
         // 动态文字颜色：暗色模式白色，亮色模式黑色
         color: isDark ? Colors.white : Colors.black87,
@@ -66,15 +68,15 @@ class VerifyIdentityView extends GetView<ForgotPasswordController> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: EdgeInsets.all(r(24.0)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               "We've sent a 6-digit code to your email",
-              style: TextStyle(fontSize: 16),
+              style: TextStyle(fontSize: sp(16)),
             ),
-            const SizedBox(height: 32),
+            SizedBox(height: h(32)),
             Text(
               controller.emailController.text,
               style: const TextStyle(
@@ -82,7 +84,7 @@ class VerifyIdentityView extends GetView<ForgotPasswordController> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: h(16)),
 
             // --- 优化后的验证码输入组件 ---
             Center(
@@ -95,15 +97,15 @@ class VerifyIdentityView extends GetView<ForgotPasswordController> {
                 hapticFeedbackType: HapticFeedbackType.lightImpact, // 触感反馈
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 // 让它看起来更像你的 Mix 风格
-                separatorBuilder: (index) => const SizedBox(width: 8),
+                separatorBuilder: (index) => SizedBox(width: w(8)),
               ),
             ),
 
-            const SizedBox(height: 16),
-            const Center(
+            SizedBox(height: h(16)),
+            Center(
               child: Text(
                 'Check your spam folder if you don\'t see it.',
-                style: TextStyle(fontSize: 13),
+                style: TextStyle(fontSize: sp(13)),
               ),
             ),
             const Spacer(),
@@ -116,9 +118,9 @@ class VerifyIdentityView extends GetView<ForgotPasswordController> {
                 child: const Center(child: StyledText('Verify and Continue')),
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: h(24)),
             _buildResendSection(),
-            const SizedBox(height: 20),
+            SizedBox(height: h(20)),
           ],
         ),
       ),
@@ -133,13 +135,13 @@ class VerifyIdentityView extends GetView<ForgotPasswordController> {
             'Resend Code',
             style: TextStyle(fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: h(8)),
           Obx(
             () => Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.timer_outlined, size: 16),
-                const SizedBox(width: 4),
+                Icon(Icons.timer_outlined, size: r(16)),
+                SizedBox(width: w(4)),
                 Text(
                   'Resend in 0:${controller.timer.value.toString().padLeft(2, '0')}',
                 ),

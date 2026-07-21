@@ -3,6 +3,8 @@ import 'package:mix/mix.dart';
 import '../../../../core/widgets/custom_shimmer/custom_shimmer.dart';
 import 'brand_skeleton_item.style.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class BrandSkeletonItem extends StatelessWidget {
   const BrandSkeletonItem({super.key});
 
@@ -38,7 +40,7 @@ class BrandSkeletonItem extends StatelessWidget {
                             width: parentWidth * 0.2,
                             height: 48,
                           ),
-                          const SizedBox(width: 12),
+                          SizedBox(width: w(12)),
                           // 提示文字占位：占用父宽度的 30%
                           CustomShimmerBlock(
                             width: parentWidth * 0.3,
@@ -58,7 +60,7 @@ class BrandSkeletonItem extends StatelessWidget {
                             height: 22,
                             style: BrandSkeletonItemStyle.tagBlock,
                           ),
-                          const SizedBox(width: 8),
+                          SizedBox(width: w(8)),
                           // 品牌名字标签占位：占用父宽度的 22%
                           CustomShimmerBlock(
                             width: parentWidth * 0.22,
@@ -68,7 +70,7 @@ class BrandSkeletonItem extends StatelessWidget {
                         ],
                       ),
 
-                      const SizedBox(height: 16),
+                      SizedBox(height: h(16)),
 
                       // 3. 底部：单行描述文字占位：占用父宽度的 65%
                       CustomShimmerBlock(width: parentWidth * 0.65, height: 14),
@@ -76,7 +78,7 @@ class BrandSkeletonItem extends StatelessWidget {
                   ),
                 ),
 
-                const SizedBox(width: 16), // 左右两侧加个安全间距
+                SizedBox(width: w(16)), // 左右两侧加个安全间距
                 // 右侧数字占位：占用父宽度的 20%
                 CustomShimmerBlock(width: parentWidth * 0.2, height: 48),
               ],

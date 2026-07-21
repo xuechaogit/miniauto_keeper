@@ -4,6 +4,8 @@ import 'package:mix/mix.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/custom_shimmer/custom_shimmer.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 // 导入你提供的通用骨架屏组件
 // import 'path_to_your_custom_shimmer/custom_shimmer.dart';
 
@@ -19,7 +21,7 @@ class NoticeDetailSkeleton extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomShimmer(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24.0),
+        padding: EdgeInsets.all(r(24.0)),
         physics: const NeverScrollableScrollPhysics(), // 骨架状态下锁定滚动
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,7 +42,7 @@ class NoticeDetailSkeleton extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: h(20)),
 
             // 2. 模拟大标题（错落两行，更具真实感）
             CustomShimmerBlock(
@@ -48,13 +50,13 @@ class NoticeDetailSkeleton extends StatelessWidget {
               height: 24,
               style: NoticeDetailSkeletonStyles.shimmerBlockStyle,
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: h(8)),
             CustomShimmerBlock(
               width: Get.width * 0.6,
               height: 24,
               style: NoticeDetailSkeletonStyles.shimmerBlockStyle,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: h(16)),
 
             // 3. 工业分割线占位
             CustomShimmerBlock(
@@ -62,7 +64,7 @@ class NoticeDetailSkeleton extends StatelessWidget {
               height: 2,
               style: NoticeDetailSkeletonStyles.shimmerBlockStyle,
             ),
-            const SizedBox(height: 28),
+            SizedBox(height: h(28)),
 
             // 4. 模拟富文本段落一
             CustomShimmerBlock(
@@ -70,19 +72,19 @@ class NoticeDetailSkeleton extends StatelessWidget {
               height: 16,
               style: NoticeDetailSkeletonStyles.shimmerBlockStyle,
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: h(12)),
             CustomShimmerBlock(
               width: double.infinity,
               height: 16,
               style: NoticeDetailSkeletonStyles.shimmerBlockStyle,
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: h(12)),
             CustomShimmerBlock(
               width: Get.width * 0.8,
               height: 16,
               style: NoticeDetailSkeletonStyles.shimmerBlockStyle,
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: h(24)),
 
             // 5. 模拟富文本段落二
             CustomShimmerBlock(
@@ -90,7 +92,7 @@ class NoticeDetailSkeleton extends StatelessWidget {
               height: 16,
               style: NoticeDetailSkeletonStyles.shimmerBlockStyle,
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: h(12)),
             CustomShimmerBlock(
               width: Get.width * 0.4,
               height: 16,

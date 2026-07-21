@@ -4,6 +4,8 @@ import 'package:mix/mix.dart';
 import 'filter_chips.style.dart';
 import 'filter_chips.variant.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 typedef FilterChipBuilder =
     Widget Function(BuildContext context, int index, bool isSelected);
 
@@ -120,7 +122,7 @@ class _FilterChipsState extends State<FilterChips> {
           scrollDirection: Axis.horizontal,
           physics: const BouncingScrollPhysics(),
           itemCount: widget.filters.length,
-          separatorBuilder: (context, index) => const SizedBox(width: 12),
+          separatorBuilder: (context, index) => SizedBox(width: w(12)),
           itemBuilder: (context, index) {
             final item = widget.filters[index];
             final label = item['label'].toString();

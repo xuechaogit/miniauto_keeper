@@ -8,6 +8,8 @@ import '../../../../core/theme/app_theme_tool.dart';
 import '../../../main/controller.dart';
 import 'header_stats.style.dart';
 
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+
 class HeaderStats extends StatelessWidget {
   final double totalValue;
   final int totalCollections;
@@ -40,7 +42,7 @@ class HeaderStats extends StatelessWidget {
                     'TOTAL ESTIMATED VALUE',
                     style: HeaderStatsStyles.label,
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: h(4)),
                   // =================== 动画数字组件 ===================
                   AnimatedDigitWidget(
                     key: ValueKey('stats_animate_${currentIndex == 3}'),
@@ -53,7 +55,7 @@ class HeaderStats extends StatelessWidget {
                     textStyle: TextStyle(
                       // 💡 从解析后的样式中直接读取具体的颜色、字号等
                       color: context.color(mxt.color.primary),
-                      fontSize: 32,
+                      fontSize: sp(32),
                       fontWeight: FontWeight.bold,
                       height: 1.2,
                       fontFeatures: const [
@@ -67,12 +69,12 @@ class HeaderStats extends StatelessWidget {
                 builder: (context, state) {
                   return HBox(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.trending_up,
                         color: Colors.blue,
-                        size: 14,
+                        size: r(14),
                       ),
-                      const SizedBox(width: 4),
+                      SizedBox(width: w(4)),
                       StyledText(
                         '+$growthRate%',
                         style: HeaderStatsStyles.growthBadge,
@@ -86,7 +88,7 @@ class HeaderStats extends StatelessWidget {
 
           // 分割线
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
+            padding: EdgeInsets.symmetric(vertical: h(16)),
             child: Divider(
               color: context.color(mxt.color.outlineVariant),
               thickness: 1,
@@ -96,8 +98,8 @@ class HeaderStats extends StatelessWidget {
           // 下部分：收藏统计
           Row(
             children: [
-              const Icon(Icons.auto_awesome_mosaic_outlined, size: 18),
-              const SizedBox(width: 8),
+              Icon(Icons.auto_awesome_mosaic_outlined, size: r(18)),
+              SizedBox(width: w(8)),
               StyledText('COLLECTIONS', style: HeaderStatsStyles.label),
               const Spacer(),
               HBox(
@@ -106,7 +108,7 @@ class HeaderStats extends StatelessWidget {
                     '$totalCollections',
                     style: HeaderStatsStyles.collectionValue,
                   ),
-                  const SizedBox(width: 4),
+                  SizedBox(width: w(4)),
                   StyledText('Items', style: HeaderStatsStyles.itemsLabel),
                 ],
               ),
