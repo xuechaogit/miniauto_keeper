@@ -39,106 +39,109 @@ class HomeView extends GetView<HomeController> {
 
     return Scaffold(
       endDrawer: PersonalizationDrawer(context),
-      body: CustomScrollView(
-        controller: controller.scrollController,
-        slivers: [
-          SliverAppBar(
-            pinned: true,
-            expandedHeight: w(390),
-            backgroundColor: Colors.transparent,
-            automaticallyImplyLeading: false,
-            toolbarHeight: kToolbarHeight,
-            flexibleSpace: _buildFlexibleSpace(context),
-          ),
-          SliverPadding(
-            padding: EdgeInsets.all(h(8)),
-            sliver: SliverMainAxisGroup(
-              slivers: [
-                SliverToBoxAdapter(child: SizedBox(height: h(24))),
+      body: Stack(
+        children: [
+          CustomScrollView(
+            controller: controller.scrollController,
+            slivers: [
+              SliverToBoxAdapter(child: _buildCarousel()),
+              SliverPadding(
+                padding: EdgeInsets.all(h(8)),
+                sliver: SliverMainAxisGroup(
+                  slivers: [
+                    SliverToBoxAdapter(child: SizedBox(height: h(24))),
 
-                // //公告
-                SliverToBoxAdapter(child: Text('公告')),
+                    // //公告
+                    SliverToBoxAdapter(child: Text('公告')),
 
-                //热门车车型
-                _buildHeader('热门车型'),
-                SliverToBoxAdapter(child: SizedBox(height: h(16))),
-                SliverToBoxAdapter(child: hotCarList()),
-                SliverToBoxAdapter(child: SizedBox(height: h(24))),
+                    //热门车车型
+                    _buildHeader('热门车型'),
+                    SliverToBoxAdapter(child: SizedBox(height: h(16))),
+                    SliverToBoxAdapter(child: hotCarList()),
+                    SliverToBoxAdapter(child: SizedBox(height: h(24))),
 
-                //新品预告
-                _buildHeader(
-                  '新品预告',
-                  onMoreTap: () {
-                    Get.toNamed('/calender');
-                  },
+                    //新品预告
+                    _buildHeader(
+                      '新品预告',
+                      onMoreTap: () {
+                        Get.toNamed('/calender');
+                      },
+                    ),
+                    SliverToBoxAdapter(child: SizedBox(height: h(8))),
+                    SliverToBoxAdapter(child: newCarList()),
+                  ],
                 ),
-                SliverToBoxAdapter(child: SizedBox(height: h(8))),
-                SliverToBoxAdapter(child: newCarList()),
-              ],
-            ),
+              ),
+            ],
           ),
+          _buildFloatingAppBar(context),
         ],
       ),
     );
   }
 
-  Widget _buildFlexibleSpace(BuildContext context) {
+  Widget _buildFloatingAppBar(BuildContext context) {
     final topPadding = MediaQuery.of(context).padding.top;
 
-    return Stack(
-      fit: StackFit.expand,
-      children: [
-        // 层1：轮播组件（展开态可见，收起后被裁剪）
-        _buildCarousel(),
-
-        // 层2：收起后 AppBar 背景图（isScrolled 时在 toolbar 区域显示当前图片 cover）
-        Obx(
-          () => controller.isScrolled.value
-              ? Positioned(
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: kToolbarHeight + topPadding,
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      child: Obx(() {
+        if (controller.isScrolled.value) {
+          return Container(
+            height: kToolbarHeight + topPadding,
+            child: Stack(
+              children: [
+                Positioned.fill(
                   child: Image.network(
                     controller.hotProducts.isNotEmpty
                         ? controller
-                              .hotProducts[controller
-                                  .currentCarouselIndex
-                                  .value]
-                              .imageUrl
+                            .hotProducts[controller.currentCarouselIndex.value]
+                            .imageUrl
                         : '',
                     fit: BoxFit.cover,
                     alignment: Alignment.topCenter,
                   ),
-                )
-              : const SizedBox.shrink(),
-        ),
-
-        // 层3：标题栏
-        Positioned(
-          top: topPadding,
-          left: 0,
-          right: 0,
-          height: kToolbarHeight,
-          child: Row(
-            children: [
-              const SizedBox(width: 16),
-              Expanded(
-                child: Text(
-                  context.l10n.appName,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
                 ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.settings, color: Colors.white),
-                onPressed: () => Scaffold.of(context).openEndDrawer(),
-              ),
-            ],
+                Positioned(
+                  top: topPadding,
+                  left: 0,
+                  right: 0,
+                  height: kToolbarHeight,
+                  child: _buildTitleRow(context),
+                ),
+              ],
+            ),
+          );
+        } else {
+          return Container(
+            height: kToolbarHeight + topPadding,
+            padding: EdgeInsets.only(top: topPadding),
+            child: _buildTitleRow(context),
+          );
+        }
+      }),
+    );
+  }
+
+  Widget _buildTitleRow(BuildContext context) {
+    return Row(
+      children: [
+        const SizedBox(width: 16),
+        Expanded(
+          child: Text(
+            context.l10n.appName,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+            ),
           ),
+        ),
+        IconButton(
+          icon: const Icon(Icons.settings, color: Colors.white),
+          onPressed: () => Scaffold.of(context).openEndDrawer(),
         ),
       ],
     );
