@@ -6,6 +6,7 @@ import '../../core/services/settings_service.dart';
 import '../../core/utils/screen_adapter.dart';
 import 'repository.dart';
 import '../../models/product_model.dart';
+import '../../models/notice_model.dart';
 
 class HomeController extends GetxController {
   final settings = Get.find<SettingsService>();
@@ -22,6 +23,9 @@ class HomeController extends GetxController {
   final currentCarouselIndex = 0.obs;
   final carouselAutoPlay = true.obs;
   final isScrolled = false.obs;
+
+  final notices = <NoticeModel>[].obs;
+  final noticeCarouselController = FlutterCarouselController();
 
   final hotProducts = [
     ProductModel(
@@ -95,7 +99,8 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     scrollController.addListener(_onScroll);
-    refreshDashboard();
+    // refreshDashboard();
+    fetchNotices();
   }
 
   @override
@@ -139,5 +144,13 @@ class HomeController extends GetxController {
 
   void quickAddCar() {
     print("触发快捷入库");
+  }
+
+  Future<void> fetchNotices() async {
+    final response = await _repository.fetchNotices();
+    // print('response: $response');
+    if (response.data != null) {
+      notices.value = response.data!.list;
+    }
   }
 }

@@ -14,21 +14,8 @@ import '../../core/widgets/tag/tag.dart';
 import '../../core/widgets/tag/tag.variant.dart';
 import 'controller.dart';
 import 'widget/personalization_drawer/personalization_drawer.dart';
-
-class buildTitleStyle {
-  static Style get titleStyle => Style(
-    $text.color.ref(mxt.color.onSurface),
-    $text.style.ref(mxt.textStyle.headline3),
-  );
-
-  static Style get moreStyle => Style(
-    $text.color.ref(mxt.color.onSurfaceVariant),
-    $text.style.ref(mxt.textStyle.body),
-  );
-
-  static Style get moreIconStyle =>
-      Style($icon.color.ref(mxt.color.onSurfaceVariant), $icon.size(r(14)));
-}
+import 'widget/notice_banner/notice_banner.dart';
+import 'widget/section_header/section_header.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -39,43 +26,46 @@ class HomeView extends GetView<HomeController> {
 
     return Scaffold(
       endDrawer: PersonalizationDrawer(context),
-      body: Stack(
-        children: [
-          CustomScrollView(
-            controller: controller.scrollController,
-            slivers: [
-              SliverToBoxAdapter(child: _buildCarousel()),
-              SliverPadding(
-                padding: EdgeInsets.all(h(8)),
-                sliver: SliverMainAxisGroup(
-                  slivers: [
-                    SliverToBoxAdapter(child: SizedBox(height: h(24))),
+      body: Builder(
+        builder: (scaffoldContext) => Stack(
+          children: [
+            CustomScrollView(
+              controller: controller.scrollController,
+              slivers: [
+                SliverToBoxAdapter(child: _buildCarousel()),
+                SliverPadding(
+                  padding: EdgeInsets.all(h(8)),
+                  sliver: SliverMainAxisGroup(
+                    slivers: [
+                      // 公告
+                      SliverToBoxAdapter(child: SizedBox(height: h(24))),
+                      SliverToBoxAdapter(
+                        child: NoticeBanner(controller: controller),
+                      ),
+                      SliverToBoxAdapter(child: SizedBox(height: h(24))),
 
-                    // //公告
-                    SliverToBoxAdapter(child: Text('公告')),
+                      //热门车车型
+                      SliverToBoxAdapter(child: SizedBox(height: h(8))),
+                      SectionHeader(title: '热门车型'),
+                      SliverToBoxAdapter(child: SizedBox(height: h(16))),
+                      SliverToBoxAdapter(child: hotCarList()),
+                      SliverToBoxAdapter(child: SizedBox(height: h(24))),
 
-                    //热门车车型
-                    _buildHeader('热门车型'),
-                    SliverToBoxAdapter(child: SizedBox(height: h(16))),
-                    SliverToBoxAdapter(child: hotCarList()),
-                    SliverToBoxAdapter(child: SizedBox(height: h(24))),
-
-                    //新品预告
-                    _buildHeader(
-                      '新品预告',
-                      onMoreTap: () {
-                        Get.toNamed('/calender');
-                      },
-                    ),
-                    SliverToBoxAdapter(child: SizedBox(height: h(8))),
-                    SliverToBoxAdapter(child: newCarList()),
-                  ],
+                      //新品预告
+                      SectionHeader(
+                        title: '新品预告',
+                        onMoreTap: () => Get.toNamed('/calender'),
+                      ),
+                      SliverToBoxAdapter(child: SizedBox(height: h(8))),
+                      SliverToBoxAdapter(child: newCarList()),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-          _buildFloatingAppBar(context),
-        ],
+              ],
+            ),
+            _buildFloatingAppBar(scaffoldContext),
+          ],
+        ),
       ),
     );
   }
@@ -97,8 +87,10 @@ class HomeView extends GetView<HomeController> {
                   child: Image.network(
                     controller.hotProducts.isNotEmpty
                         ? controller
-                            .hotProducts[controller.currentCarouselIndex.value]
-                            .imageUrl
+                              .hotProducts[controller
+                                  .currentCarouselIndex
+                                  .value]
+                              .imageUrl
                         : '',
                     fit: BoxFit.cover,
                     alignment: Alignment.topCenter,
@@ -228,31 +220,6 @@ class HomeView extends GetView<HomeController> {
         ),
       );
     });
-  }
-
-  Widget _buildHeader(String title, {VoidCallback? onMoreTap}) {
-    return SliverToBoxAdapter(
-      child: HBox(
-        style: Style($flex.mainAxisAlignment.spaceBetween()),
-        children: [
-          StyledText(title, style: buildTitleStyle.titleStyle),
-
-          PressableBox(
-            onPress: onMoreTap,
-            child: HBox(
-              children: [
-                StyledText('More', style: buildTitleStyle.moreStyle),
-                SizedBox(width: w(4)),
-                StyledIcon(
-                  Icons.arrow_forward_ios,
-                  style: buildTitleStyle.moreIconStyle,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   Widget hotCarList() {
