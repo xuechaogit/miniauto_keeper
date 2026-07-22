@@ -36,6 +36,7 @@ class HomeController extends GetxController {
       imageUrl:
           'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=800',
       tags: ['1:18', 'Limited'],
+      releaseDate: '2026·08月15日·10:00',
     ),
     ProductModel(
       id: '2',
@@ -45,6 +46,7 @@ class HomeController extends GetxController {
       imageUrl:
           'https://images.unsplash.com/photo-1592198084033-aade902d1aae?q=80&w=800',
       tags: ['1:18', 'Diecast'],
+      releaseDate: '2026·08月22日·20:00',
     ),
     ProductModel(
       id: '3',
@@ -54,6 +56,7 @@ class HomeController extends GetxController {
       imageUrl:
           'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=800',
       tags: ['1:43', 'In Stock'],
+      releaseDate: '2026·09月01日·12:00',
     ),
     ProductModel(
       id: '4',
@@ -64,6 +67,7 @@ class HomeController extends GetxController {
       imageUrl:
           'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=800',
       tags: ['1:43', 'In Stock'],
+      releaseDate: '2026·09月10日·18:00',
     ),
     ProductModel(
       id: '5',
@@ -74,6 +78,7 @@ class HomeController extends GetxController {
       imageUrl:
           'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=800',
       tags: ['1:43', 'In Stock'],
+      releaseDate: '2026·09月15日·08:00',
     ),
     ProductModel(
       id: '6',
@@ -83,6 +88,7 @@ class HomeController extends GetxController {
       imageUrl:
           'https://images.unsplash.com/photo-1555215695-3004980ad94e?q=80&w=800',
       tags: ['1:18', 'New'],
+      releaseDate: '2026·08月30日·14:00',
     ),
     ProductModel(
       id: '7',
@@ -92,6 +98,7 @@ class HomeController extends GetxController {
       imageUrl:
           'https://images.unsplash.com/photo-1606152421660-0e7829762957?q=80&w=800',
       tags: ['1:43', 'Classic'],
+      releaseDate: '2026·09月05日·10:00',
     ),
   ].obs;
 

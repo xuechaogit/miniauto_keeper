@@ -7,8 +7,14 @@ import 'section_header.style.dart';
 class SectionHeader extends StatelessWidget {
   final String title;
   final VoidCallback? onMoreTap;
+  final String moreText;
 
-  const SectionHeader({super.key, required this.title, this.onMoreTap});
+  const SectionHeader({
+    super.key,
+    required this.title,
+    this.onMoreTap,
+    this.moreText = 'More',
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +30,7 @@ class SectionHeader extends StatelessWidget {
               child: HBox(
                 style: SectionHeaderStyle.moreRow,
                 children: [
-                  StyledText('More', style: SectionHeaderStyle.moreText),
+                  StyledText(moreText, style: SectionHeaderStyle.moreText),
                   SizedBox(width: 4.w),
                   StyledIcon(
                     Icons.arrow_forward_ios,

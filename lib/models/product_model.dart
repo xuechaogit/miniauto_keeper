@@ -8,6 +8,7 @@ class ProductModel {
   final List<String> tags; // 比如：1:18, Limited, Diecast
   final String description;
   final String purchaseDate;
+  final String? releaseDate; // 新品发售日期
 
   ProductModel({
     required this.id,
@@ -18,5 +19,6 @@ class ProductModel {
     required this.tags,
     this.purchaseDate = '',
     this.description = '',
+    this.releaseDate,
   });
 }

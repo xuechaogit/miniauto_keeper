@@ -16,6 +16,7 @@ import 'controller.dart';
 import 'widget/personalization_drawer/personalization_drawer.dart';
 import 'widget/notice_banner/notice_banner.dart';
 import 'widget/section_header/section_header.dart';
+import 'widget/new_arrival/new_arrival.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -51,13 +52,26 @@ class HomeView extends GetView<HomeController> {
                       SliverToBoxAdapter(child: hotCarList()),
                       SliverToBoxAdapter(child: SizedBox(height: h(24))),
 
-                      //新品预告
+                      //新品速递 (新版)
                       SectionHeader(
-                        title: '新品预告',
+                        title: '新品速递',
+                        moreText: '发售日历',
                         onMoreTap: () => Get.toNamed('/calender'),
                       ),
-                      SliverToBoxAdapter(child: SizedBox(height: h(8))),
-                      SliverToBoxAdapter(child: newCarList()),
+                      SliverToBoxAdapter(child: SizedBox(height: h(12))),
+                      SliverToBoxAdapter(
+                        child: NewArrival(items: controller.hotProducts),
+                      ),
+
+                      SliverToBoxAdapter(child: SizedBox(height: h(24))),
+                      //新品预告
+                      // SectionHeader(
+                      //   title: '新品预告',
+                      //   onMoreTap: () => Get.toNamed('/calender'),
+                      // ),
+                      // SliverToBoxAdapter(child: SizedBox(height: h(8))),
+                      // SliverToBoxAdapter(child: newCarList()),
+                      // SliverToBoxAdapter(child: SizedBox(height: h(24))),
                     ],
                   ),
                 ),
