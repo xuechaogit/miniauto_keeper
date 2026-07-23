@@ -65,13 +65,13 @@ class HomeView extends GetView<HomeController> {
 
                       SliverToBoxAdapter(child: SizedBox(height: h(24))),
                       //新品预告
-                      // SectionHeader(
-                      //   title: '新品预告',
-                      //   onMoreTap: () => Get.toNamed('/calender'),
-                      // ),
-                      // SliverToBoxAdapter(child: SizedBox(height: h(8))),
-                      // SliverToBoxAdapter(child: newCarList()),
-                      // SliverToBoxAdapter(child: SizedBox(height: h(24))),
+                      SectionHeader(
+                        title: '新品预告',
+                        onMoreTap: () => Get.toNamed('/calender'),
+                      ),
+                      SliverToBoxAdapter(child: SizedBox(height: h(8))),
+                      SliverToBoxAdapter(child: newCarList()),
+                      SliverToBoxAdapter(child: SizedBox(height: h(24))),
                     ],
                   ),
                 ),
