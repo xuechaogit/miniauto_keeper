@@ -205,7 +205,7 @@ class BrandDetailView extends GetView<BrandDetailController> {
             Stack(
               children: [
                 CustomImage(
-                  imageUrl: item.imageUrl,
+                  imageUrl: item.thumb,
                   aspectRatio: 1, // 如果后端有比例，可以传 item.width / item.height
                   // borderRadius: 16, // 如果需要圆角
                 ),

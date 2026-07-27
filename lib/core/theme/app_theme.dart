@@ -121,28 +121,49 @@ final _sharedSpaces = <SpaceToken, double>{
 // 2. 颜色定义
 
 Map<ColorToken, Color> _lightColors() => {
+  // 品牌主色：按钮、图标高亮、选中态、进度条
   mxt.color.primary: const Color(0xFF3B5EF5),
+  // Scaffold 底色：页面最底层背景
   mxt.color.background: const Color(0xFFFFFFFF),
+  // 卡片色：Card、Dialog、Sheet、ListTile 滑出态
   mxt.color.surface: const Color(0xFFF2F4F7),
+  // 输入框/容器填充：TextField、SearchBar、Chip 底色
   mxt.color.surfaceVariant: const Color(0xFFE4E8F0),
+  // 正文/标题：大段阅读文字、卡片标题、图标
   mxt.color.onSurface: const Color(0xFF16181D),
+  // 次要文字：副标题、说明、占位符、禁用态图标
   mxt.color.onSurfaceVariant: const Color(0xFF5F6470),
+  // 品牌卡片：资产总览、数据仪表盘等强调型深色卡片
   mxt.color.brandCardBg: const Color(0xFF1A1F2E),
+  // 品牌卡片内层叠加：brandCard 内的嵌套区块
   mxt.color.brandCardOverlay: const Color(0xFF10131A),
+  // 标准边框：卡片边框、输入框常态边框、分割线
   mxt.color.outline: const Color(0xFF9196A4),
+  // 淡边框/分割线：列表项底部分割、轻量分隔
   mxt.color.outlineVariant: const Color(0xFFD0D4DC),
+  // 聚焦/选中边框：输入框获焦、选中卡片描边
   mxt.color.outlinePrimary: const Color(0xFF3B5EF5),
+  // 信息选中底色：列表选中行、FilterChip 选中
   mxt.color.primaryContainer: const Color(0xFFE8EDFF),
   mxt.color.infoContainer: const Color(0xFFE8EDFF),
+  // 成功提示底色：Toast 成功、订单完成标签
   mxt.color.successContainer: const Color(0xFFE6F4EA),
+  // 警告提示底色：Toast 警告、待处理标签
   mxt.color.warningContainer: const Color(0xFFFFF5E6),
+  // 错误提示底色：Toast 错误、失败标签、删除确认
   mxt.color.errorContainer: const Color(0xFFFDE8EC),
+  // 信息选中文字：选中行文字、Chip 标签文字
   mxt.color.onPrimaryContainer: const Color(0xFF1E3FA8),
   mxt.color.onInfoContainer: const Color(0xFF1E3FA8),
+  // 成功提示文字
   mxt.color.onSuccessContainer: const Color(0xFF1B7A3A),
+  // 警告提示文字
   mxt.color.onWarningContainer: const Color(0xFFB86E00),
+  // 错误提示文字
   mxt.color.onErrorContainer: const Color(0xFFC6283A),
+  // 骨架屏底色
   mxt.color.shimmerBase: const Color(0xFFE4E8F0),
+  // 骨架屏高光色
   mxt.color.shimmerHighlight: const Color(0xFFF2F4F7),
 };
 

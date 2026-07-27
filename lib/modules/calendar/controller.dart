@@ -93,7 +93,7 @@ class CalendarController extends GetxController {
         title: 'Nissan Skyline GT-R (R34)',
         brandName: 'MINI GT',
         price: 19.99,
-        imageUrl:
+        thumb:
             'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=800', // 实际图片路径
         tags: ['HOT', 'Z-Tune Midnight Purple III'],
       ),
@@ -102,7 +102,7 @@ class CalendarController extends GetxController {
         title: 'Datsun 510 Pro Street',
         brandName: 'KAIDO HOUSE',
         price: 24.99,
-        imageUrl:
+        thumb:
             'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=800',
         tags: ['OG Green Carbon Edition'],
       ),

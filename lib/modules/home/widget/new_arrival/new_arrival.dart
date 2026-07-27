@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/widgets/image/image.dart';
+import 'package:miniauto_keeper/models/product_model.dart';
 import 'package:mix/mix.dart';
 
 import '../../../../core/utils/screen_adapter.dart';
-import '../../../../models/product_model.dart';
+import '../../../../models/home_stats.dart';
 import 'new_arrival.style.dart';
 
 /// 新品上新（新版）
@@ -24,6 +25,18 @@ class _NewArrivalState extends State<NewArrival> {
   final FlutterCarouselController _carouselController =
       FlutterCarouselController();
   final RxInt _currentIndex = 0.obs;
+
+  @override
+  void didUpdateWidget(covariant NewArrival oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // 当外部传入的 items 缩容时，_currentIndex 可能指向越界索引，
+    // 需自动 clamp 到有效范围，否则 Obx 中 items[index] 会抛 RangeError
+    if (widget.items.length < oldWidget.items.length &&
+        _currentIndex.value >= widget.items.length &&
+        widget.items.isNotEmpty) {
+      _currentIndex.value = widget.items.length - 1;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +64,7 @@ class _NewArrivalState extends State<NewArrival> {
             padding: EdgeInsets.only(right: w(8)),
             child: Box(
               style: NewArrivalStyle.carouselImage,
-              child: CustomImage(imageUrl: p.imageUrl, aspectRatio: 1),
+              child: CustomImage(imageUrl: p.thumb, aspectRatio: 1),
             ),
           );
         },
@@ -76,6 +89,12 @@ class _NewArrivalState extends State<NewArrival> {
   Widget _buildDetailPanel(List<ProductModel> items) {
     return Obx(() {
       final index = _currentIndex.value;
+      if (index >= items.length) {
+        if (items.isNotEmpty) {
+          _currentIndex.value = items.length - 1;
+        }
+        return const SizedBox.shrink();
+      }
       final p = items[index];
       return AnimatedSwitcher(
         duration: const Duration(milliseconds: 500),

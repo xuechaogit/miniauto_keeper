@@ -1,14 +1,67 @@
+// lib/models/home_stats.dart
+
+import 'brand_model.dart';
+import 'product_model.dart';
+
+class PreList {
+  final List<ProductModel> products;
+  final String title;
+
+  PreList({required this.products, required this.title});
+
+  factory PreList.fromJson(Map<String, dynamic> json) {
+    return PreList(
+      products: (json['items'] as List? ?? [])
+          .map((e) => ProductModel.fromJson(e))
+          .toList(),
+      title: json['title'] ?? '',
+    );
+  }
+}
+
+class ItemData {
+  final PreList preList;
+
+  ItemData({required this.preList});
+
+  factory ItemData.fromJson(Map<String, dynamic> json) {
+    return ItemData(preList: PreList.fromJson(json['preList']));
+  }
+}
+
 class HomeStats {
+  final ItemData itemData;
+  final int code;
+  final String message;
   final int totalCars;
   final int recentAdded;
+  final List<BrandModel> brands;
 
-  HomeStats({required this.totalCars, required this.recentAdded});
+  HomeStats({
+    required this.code,
+    required this.message,
+    required this.itemData,
+    required this.recentAdded,
+    required this.totalCars,
+    required this.brands,
+  });
 
-  // 从 JSON 转换的工厂方法
   factory HomeStats.fromJson(Map<String, dynamic> json) {
+    final itemDataJson = json['itemData'];
     return HomeStats(
       totalCars: json['total_cars'] ?? 0,
       recentAdded: json['recent_added'] ?? 0,
+      code: json['code'] ?? 0,
+      message: json['message'] ?? '',
+      itemData: itemDataJson != null
+          ? ItemData.fromJson(itemDataJson)
+          : ItemData(
+              preList: PreList(products: [], title: ''),
+            ),
+      brands: (json['categoryData']?['level-2'] as List?)
+              ?.map((e) => BrandModel.fromJson(e))
+              .toList() ??
+          [],
     );
   }
 }

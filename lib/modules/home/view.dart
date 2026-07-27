@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:get/get.dart';
+import 'package:miniauto_keeper/core/widgets/image/image.dart';
 import 'package:mix/mix.dart';
 import '../../core/l10n/l10n_util.dart';
 import '../../core/services/settings_service.dart';
@@ -17,6 +18,8 @@ import 'widget/personalization_drawer/personalization_drawer.dart';
 import 'widget/notice_banner/notice_banner.dart';
 import 'widget/section_header/section_header.dart';
 import 'widget/new_arrival/new_arrival.dart';
+import 'widget/brand_section/brand_section.dart';
+import '../main/controller.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -31,6 +34,7 @@ class HomeView extends GetView<HomeController> {
         builder: (scaffoldContext) => Stack(
           children: [
             CustomScrollView(
+              key: const PageStorageKey('home_scroll'),
               controller: controller.scrollController,
               slivers: [
                 SliverToBoxAdapter(child: _buildCarousel()),
@@ -45,12 +49,26 @@ class HomeView extends GetView<HomeController> {
                       ),
                       SliverToBoxAdapter(child: SizedBox(height: h(24))),
 
-                      //热门车车型
-                      SliverToBoxAdapter(child: SizedBox(height: h(8))),
-                      SectionHeader(title: '热门车型'),
-                      SliverToBoxAdapter(child: SizedBox(height: h(16))),
-                      SliverToBoxAdapter(child: hotCarList()),
+                      SectionHeader(
+                        title: '车模品牌',
+                        moreText: '更多',
+                        onMoreTap: () => Get.find<MainController>().changePage(1),
+                      ),
+                      // 车模品牌
+                      SliverToBoxAdapter(
+                        child: Obx(
+                          () =>
+                              BrandSection(brands: controller.brands.toList()),
+                        ),
+                      ),
                       SliverToBoxAdapter(child: SizedBox(height: h(24))),
+
+                      //热门车车型
+                      // SliverToBoxAdapter(child: SizedBox(height: h(8))),
+                      // SectionHeader(title: '热门车型'),
+                      // SliverToBoxAdapter(child: SizedBox(height: h(16))),
+                      // SliverToBoxAdapter(child: hotCarList()),
+                      // SliverToBoxAdapter(child: SizedBox(height: h(24))),
 
                       //新品速递 (新版)
                       SectionHeader(
@@ -58,7 +76,6 @@ class HomeView extends GetView<HomeController> {
                         moreText: '发售日历',
                         onMoreTap: () => Get.toNamed('/calender'),
                       ),
-                      SliverToBoxAdapter(child: SizedBox(height: h(12))),
                       SliverToBoxAdapter(
                         child: NewArrival(items: controller.hotProducts),
                       ),
@@ -69,7 +86,6 @@ class HomeView extends GetView<HomeController> {
                         title: '新品预告',
                         onMoreTap: () => Get.toNamed('/calender'),
                       ),
-                      SliverToBoxAdapter(child: SizedBox(height: h(8))),
                       SliverToBoxAdapter(child: newCarList()),
                       SliverToBoxAdapter(child: SizedBox(height: h(24))),
                     ],
@@ -104,7 +120,7 @@ class HomeView extends GetView<HomeController> {
                               .hotProducts[controller
                                   .currentCarouselIndex
                                   .value]
-                              .imageUrl
+                              .thumb
                         : '',
                     fit: BoxFit.cover,
                     alignment: Alignment.topCenter,
@@ -155,9 +171,8 @@ class HomeView extends GetView<HomeController> {
 
   Widget _buildCarousel() {
     return Obx(() {
-      final items = controller.hotProducts.take(3).toList();
+      final items = controller.hotProducts.toList();
       if (items.isEmpty) return const SizedBox.shrink();
-
       return FlutterCarousel.builder(
         itemCount: items.length,
         itemBuilder: (context, index, pageViewIndex) {
@@ -165,7 +180,7 @@ class HomeView extends GetView<HomeController> {
           return Stack(
             fit: StackFit.expand,
             children: [
-              Image.network(p.imageUrl, fit: BoxFit.cover),
+              CustomImage(imageUrl: p.thumb, aspectRatio: 1),
               Positioned(
                 bottom: 0,
                 left: 0,

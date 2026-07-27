@@ -52,13 +52,18 @@ class CustomImage extends StatelessWidget {
             return _buildShimmer(context);
           },
           // 关键点 3：错误处理
-          errorBuilder: (context, error, stackTrace) => Container(
-            color: context.color(mxt.color.shimmerBase),
-            child: Icon(
-              Icons.directions_car_filled,
-              size: r(72),
-              color: context.color(mxt.color.onSurfaceVariant),
-            ),
+          errorBuilder: (context, error, stackTrace) => LayoutBuilder(
+            builder: (context, constraints) {
+              final size = constraints.maxWidth * 0.4;
+              return Container(
+                color: context.color(mxt.color.shimmerBase),
+                child: Icon(
+                  Icons.directions_car_filled,
+                  size: size,
+                  color: context.color(mxt.color.onSurfaceVariant),
+                ),
+              );
+            },
           ),
         ),
       ),

@@ -25,7 +25,7 @@ class ProductListLayout extends StatelessWidget {
           // 图片
           Box(
             style: Style($box.width(w(100)), $box.height(w(100))),
-            child: CustomImage(imageUrl: product.imageUrl, aspectRatio: 1),
+            child: CustomImage(imageUrl: product.thumb, aspectRatio: 1),
           ),
 
           // 右侧内容

@@ -38,7 +38,7 @@ class BrandDetailController extends GetxController {
           title: 'Porsche 911 (992) GT3 RS - Ice Grey',
           brandName: 'Porsche',
           price: 299.0,
-          imageUrl:
+          thumb:
               'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=800',
           tags: ['1:18', 'Limited'],
         ),
@@ -47,7 +47,7 @@ class BrandDetailController extends GetxController {
           title: 'Ferrari SF90 Stradale Assetto Fiorano',
           brandName: 'Ferrari',
           price: 350.0,
-          imageUrl:
+          thumb:
               'https://images.unsplash.com/photo-1592198084033-aade902d1aae?q=80&w=800',
           tags: ['1:18', 'Diecast'],
         ),
@@ -56,7 +56,7 @@ class BrandDetailController extends GetxController {
           title: 'Lamborghini Huracán STO - Blue Laufey',
           brandName: 'Lamborghini',
           price: 280.0,
-          imageUrl:
+          thumb:
               'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=800',
           tags: ['1:43', 'In Stock'],
         ),
@@ -66,7 +66,7 @@ class BrandDetailController extends GetxController {
               'Lamborghini Huracán STO - Blue Laufey Lamborghini Huracán STO - Blue Laufey',
           brandName: 'Lamborghini',
           price: 280.0,
-          imageUrl:
+          thumb:
               'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=800',
           tags: ['1:43', 'In Stock'],
         ),
@@ -76,7 +76,7 @@ class BrandDetailController extends GetxController {
               'Lamborghini Huracán STO - Blue Laufey Lamborghini Huracán STO - Blue Laufey',
           brandName: 'Lamborghini',
           price: 280.0,
-          imageUrl:
+          thumb:
               'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=800',
           tags: ['1:43', 'In Stock'],
         ),
@@ -85,7 +85,7 @@ class BrandDetailController extends GetxController {
           title: 'BMW M4 CSL (G82) - Frozen Grey',
           brandName: 'BMW',
           price: 180.0,
-          imageUrl:
+          thumb:
               'https://images.unsplash.com/photo-1555215695-3004980ad94e?q=80&w=800',
           tags: ['1:18', 'New'],
         ),
@@ -94,7 +94,7 @@ class BrandDetailController extends GetxController {
           title: 'Audi RS6 Avant - Nardo Grey Custom',
           brandName: 'Audi',
           price: 150.0,
-          imageUrl:
+          thumb:
               'https://images.unsplash.com/photo-1606152421660-0e7829762957?q=80&w=800',
           tags: ['1:43', 'Classic'],
         ),

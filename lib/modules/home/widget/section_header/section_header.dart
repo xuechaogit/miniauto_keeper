@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:mix/mix.dart';
 
 import 'section_header.style.dart';
@@ -24,14 +25,14 @@ class SectionHeader extends StatelessWidget {
         children: [
           StyledText(title, style: SectionHeaderStyle.title),
           if (onMoreTap != null) ...[
-            SizedBox(height: 4),
+            SizedBox(height: h(8)),
             PressableBox(
               onPress: onMoreTap,
               child: HBox(
                 style: SectionHeaderStyle.moreRow,
                 children: [
                   StyledText(moreText, style: SectionHeaderStyle.moreText),
-                  SizedBox(width: 4.w),
+                  SizedBox(width: w(4)),
                   StyledIcon(
                     Icons.arrow_forward_ios,
                     style: SectionHeaderStyle.moreIcon,
@@ -40,6 +41,7 @@ class SectionHeader extends StatelessWidget {
               ),
             ),
           ],
+          SizedBox(height: h(12)),
         ],
       ),
     );

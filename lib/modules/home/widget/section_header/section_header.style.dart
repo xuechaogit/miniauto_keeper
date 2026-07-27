@@ -19,7 +19,8 @@ class SectionHeaderStyle {
 
   static Style get moreText => Style(
     $text.color.ref(mxt.color.onSurfaceVariant),
-    $text.style.ref(mxt.textStyle.body),
+    $text.style.ref(mxt.textStyle.caption),
+    $text.decoration.underline(),
   );
 
   static Style get moreIcon =>

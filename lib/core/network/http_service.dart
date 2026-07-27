@@ -21,7 +21,7 @@ class HttpService extends GetxService {
     // 添加拦截器链
     _dio.interceptors.addAll([
       AuthInterceptor(),
-      LogInterceptor(responseBody: true, requestBody: true),
+      // LogInterceptor(responseBody: true, requestBody: true),
     ]);
 
     return this;
