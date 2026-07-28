@@ -20,19 +20,17 @@ class SectionHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverToBoxAdapter(
-      child: VBox(
+      child: HBox(
         style: SectionHeaderStyle.container,
         children: [
           StyledText(title, style: SectionHeaderStyle.title),
-          if (onMoreTap != null) ...[
-            SizedBox(height: h(8)),
+          if (onMoreTap != null)
             PressableBox(
               onPress: onMoreTap,
               child: HBox(
                 style: SectionHeaderStyle.moreRow,
                 children: [
                   StyledText(moreText, style: SectionHeaderStyle.moreText),
-                  SizedBox(width: w(4)),
                   StyledIcon(
                     Icons.arrow_forward_ios,
                     style: SectionHeaderStyle.moreIcon,
@@ -40,8 +38,6 @@ class SectionHeader extends StatelessWidget {
                 ],
               ),
             ),
-          ],
-          SizedBox(height: h(12)),
         ],
       ),
     );

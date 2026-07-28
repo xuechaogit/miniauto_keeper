@@ -21,11 +21,15 @@ class PreList {
 
 class ItemData {
   final PreList preList;
+  final PreList recList;
 
-  ItemData({required this.preList});
+  ItemData({required this.preList, required this.recList});
 
   factory ItemData.fromJson(Map<String, dynamic> json) {
-    return ItemData(preList: PreList.fromJson(json['preList']));
+    return ItemData(
+      preList: PreList.fromJson(json['preList']),
+      recList: PreList.fromJson(json['recList']),
+    );
   }
 }
 
@@ -57,8 +61,10 @@ class HomeStats {
           ? ItemData.fromJson(itemDataJson)
           : ItemData(
               preList: PreList(products: [], title: ''),
+              recList: PreList(products: [], title: ''),
             ),
-      brands: (json['categoryData']?['level-2'] as List?)
+      brands:
+          (json['categoryData']?['level-2'] as List?)
               ?.map((e) => BrandModel.fromJson(e))
               .toList() ??
           [],

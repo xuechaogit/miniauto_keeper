@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:ui';
 
 import 'package:miniauto_keeper/core/theme/app_theme.dart';
@@ -6,66 +5,68 @@ import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:mix/mix.dart';
 
 class BrandSectionStyle {
-  // ========== 磁吸标签云 - 胶囊容器 ==========
+  // ========== 胶囊标签 — 三档规格 ==========
 
-  static final _neonCyan = const Color(0xFF00E5FF);
-  static final _neonPink = const Color(0xFF2D55);
-  static final _cardBg = const Color(0xFF131822);
-  static final _rng = Random();
-
-  // 胶囊基础
-  static Style _pillBase(double height, Color borderColor, double borderOpacity) => Style(
+  static Style _pillBase(double height, double radius) => Style(
     $box.height(height),
-    $box.color(_cardBg),
-    $box.borderRadius.all.circular(height / 2),
-    $box.border.all(width: 1, color: borderColor.withOpacity(borderOpacity)),
+    $box.borderRadius.all.circular(radius),
     $flex.mainAxisSize.min(),
     $flex.mainAxisAlignment.center(),
     $flex.crossAxisAlignment.center(),
-    $flex.gap(w(6)),
-    $box.padding.horizontal(w(12)),
+    $flex.gap.ref(mxt.space.small),
+    $box.padding.horizontal.ref(mxt.space.medium),
+    $box.padding.vertical(h(6)),
+    $box.color.ref(mxt.color.surface),
+    $box.border.all(width: 1),
+    $box.border.color.ref(mxt.color.outlineVariant),
   );
 
-  // 三档胶囊
-  static Style get pillLarge => _pillBase(h(42), _neonCyan, 0.6);
-  static Style get pillMedium => _pillBase(h(36), _neonPink, 0.35);
-  static Style get pillSmall => _pillBase(h(30), _neonCyan, 0.15);
+  // 大号 42×21
+  static Style get pillLarge => _pillBase(h(42), r(21));
+  // 中号 36×18
+  static Style get pillMedium => _pillBase(h(36), r(18));
+  // 小号 30×15
+  static Style get pillSmall => _pillBase(h(30), r(15));
 
-  // logo 小图标
-  static Style get pillLogo => Style(
-    $box.width(w(22)),
-    $box.height(w(22)),
-    $box.borderRadius.all.circular(r(4)),
+  // 选中叠加
+  static Style get cardSelected => Style(
+    $box.color.ref(mxt.color.primaryContainer),
+    $box.border.all(width: 2),
+    $box.border.color.ref(mxt.color.outlinePrimary),
+    $box.shadow(
+      color: const Color(0xFF93C5FD).withOpacity(0.15),
+      blurRadius: 6,
+      offset: const Offset(0, 2),
+    ),
   );
 
-  // 品牌名文字
-  static Style get pillNameLarge => Style(
+  // ========== 文字三档 ==========
+  static Style get nameLarge => Style(
     $text.maxLines(1),
     $text.overflow.ellipsis(),
-    $text.color(const Color(0xFFFFFFFF)),
-    $text.style.fontSize(sp(13)),
+    $text.style.ref(mxt.textStyle.headline3),
     $text.style.fontWeight.w600(),
+    $text.color.ref(mxt.color.onSurfaceVariant),
   );
 
-  static Style get pillNameMedium => Style(
+  static Style get nameMedium => Style(
     $text.maxLines(1),
     $text.overflow.ellipsis(),
-    $text.color(const Color(0xFFFFFFFF)),
-    $text.style.fontSize(sp(12)),
+    $text.style.ref(mxt.textStyle.body),
     $text.style.fontWeight.w500(),
+    $text.color.ref(mxt.color.onSurfaceVariant),
   );
 
-  static Style get pillNameSmall => Style(
+  static Style get nameSmall => Style(
     $text.maxLines(1),
     $text.overflow.ellipsis(),
-    $text.color(const Color(0xFFFFFFFF)),
-    $text.style.fontSize(sp(11)),
+    $text.style.ref(mxt.textStyle.caption),
     $text.style.fontWeight.w400(),
+    $text.color.ref(mxt.color.onSurfaceVariant),
   );
+
+  static Style get nameSelected => Style($text.color.ref(mxt.color.onSurface));
 
   // Wrap 外层
-  static Style get wrapContainer => Style(
-    $box.padding.horizontal(w(16)),
-    $box.padding.vertical(h(12)),
-  );
+  static Style get wrapContainer => Style();
 }

@@ -19,6 +19,7 @@ import 'widget/notice_banner/notice_banner.dart';
 import 'widget/section_header/section_header.dart';
 import 'widget/new_arrival/new_arrival.dart';
 import 'widget/brand_section/brand_section.dart';
+import 'widget/hot_product/hot_product.dart';
 import '../main/controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -43,7 +44,7 @@ class HomeView extends GetView<HomeController> {
                   sliver: SliverMainAxisGroup(
                     slivers: [
                       // 公告
-                      SliverToBoxAdapter(child: SizedBox(height: h(24))),
+                      SliverToBoxAdapter(child: SizedBox(height: h(36))),
                       SliverToBoxAdapter(
                         child: NoticeBanner(controller: controller),
                       ),
@@ -52,8 +53,10 @@ class HomeView extends GetView<HomeController> {
                       SectionHeader(
                         title: '车模品牌',
                         moreText: '更多',
-                        onMoreTap: () => Get.find<MainController>().changePage(1),
+                        onMoreTap: () =>
+                            Get.find<MainController>().changePage(1),
                       ),
+                      SliverToBoxAdapter(child: SizedBox(height: h(16))),
                       // 车模品牌
                       SliverToBoxAdapter(
                         child: Obx(
@@ -61,7 +64,22 @@ class HomeView extends GetView<HomeController> {
                               BrandSection(brands: controller.brands.toList()),
                         ),
                       ),
-                      SliverToBoxAdapter(child: SizedBox(height: h(24))),
+                      SliverToBoxAdapter(child: SizedBox(height: h(36))),
+
+                      //热销商品
+                      // SectionHeader(title: '热销商品'),
+                      // SliverToBoxAdapter(child: SizedBox(height: h(16))),
+                      // SliverToBoxAdapter(
+                      //   child: Obx(() {
+                      //     final items =
+                      //         controller.hotProducts.take(3).toList();
+                      //     if (items.isEmpty) {
+                      //       return const SizedBox.shrink();
+                      //     }
+                      //     return HotProduct(products: items);
+                      //   }),
+                      // ),
+                      // SliverToBoxAdapter(child: SizedBox(height: h(36))),
 
                       //热门车车型
                       // SliverToBoxAdapter(child: SizedBox(height: h(8))),
@@ -76,18 +94,19 @@ class HomeView extends GetView<HomeController> {
                         moreText: '发售日历',
                         onMoreTap: () => Get.toNamed('/calender'),
                       ),
+                      SliverToBoxAdapter(child: SizedBox(height: h(16))),
                       SliverToBoxAdapter(
                         child: NewArrival(items: controller.hotProducts),
                       ),
 
-                      SliverToBoxAdapter(child: SizedBox(height: h(24))),
+                      SliverToBoxAdapter(child: SizedBox(height: h(36))),
                       //新品预告
-                      SectionHeader(
-                        title: '新品预告',
-                        onMoreTap: () => Get.toNamed('/calender'),
-                      ),
-                      SliverToBoxAdapter(child: newCarList()),
-                      SliverToBoxAdapter(child: SizedBox(height: h(24))),
+                      // SectionHeader(
+                      //   title: '新品预告',
+                      //   onMoreTap: () => Get.toNamed('/calender'),
+                      // ),
+                      // SliverToBoxAdapter(child: newCarList()),
+                      // SliverToBoxAdapter(child: SizedBox(height: h(24))),
                     ],
                   ),
                 ),

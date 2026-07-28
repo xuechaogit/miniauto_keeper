@@ -1,30 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:mix/mix.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../../theme/app_theme.dart';
 import '../../theme/app_theme_tool.dart';
 import '../custom_shimmer/custom_shimmer.dart';
 
-import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+import 'image.style.dart';
+import 'image.variant.dart';
 
 class CustomImage extends StatelessWidget {
   final String imageUrl;
   final double aspectRatio;
   final BoxFit fit;
-  final double borderRadius;
+  final CustomImageShape shape;
+  final double? customRadius;
 
   const CustomImage({
     super.key,
     required this.imageUrl,
     this.aspectRatio = 1.0,
     this.fit = BoxFit.cover,
-    this.borderRadius = 0,
+    this.shape = CustomImageShape.rounded,
+    this.customRadius,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius),
+    final imageStyle = CustomImageStyle(
+      shape: shape,
+      customRadius: customRadius,
+    );
+    return Box(
+      style: imageStyle.container(),
       child: AspectRatio(
         aspectRatio: aspectRatio,
         child: Image.network(
@@ -37,7 +45,7 @@ class CustomImage extends StatelessWidget {
 
             // 如果图片还没准备好（包括请求中、下载中、解码中）
             if (frame == null) {
-              return _buildShimmer(context); // 这里放你的 Shimmer 或 Loading 文本
+              return _buildShimmer(context, imageStyle);
             }
 
             return AnimatedOpacity(
@@ -49,18 +57,21 @@ class CustomImage extends StatelessWidget {
           // 关键点 2：loadingBuilder 处理大文件下载时的字节流监听
           loadingBuilder: (context, child, loadingProgress) {
             if (loadingProgress == null) return child;
-            return _buildShimmer(context);
+            return _buildShimmer(context, imageStyle);
           },
           // 关键点 3：错误处理
           errorBuilder: (context, error, stackTrace) => LayoutBuilder(
             builder: (context, constraints) {
               final size = constraints.maxWidth * 0.4;
-              return Container(
-                color: context.color(mxt.color.shimmerBase),
-                child: Icon(
-                  Icons.directions_car_filled,
-                  size: size,
-                  color: context.color(mxt.color.onSurfaceVariant),
+              return Box(
+                style: imageStyle.container(),
+                child: Container(
+                  color: context.color(mxt.color.shimmerBase),
+                  child: Icon(
+                    Icons.directions_car_filled,
+                    size: size,
+                    color: context.color(mxt.color.onSurfaceVariant),
+                  ),
                 ),
               );
             },
@@ -71,10 +82,13 @@ class CustomImage extends StatelessWidget {
   }
 
   // 内部封装的骨架屏样式
-  Widget _buildShimmer(BuildContext context) {
-    return CustomShimmer(
-      child: Container(
-        color: context.color(mxt.color.shimmerBase), // 这里的颜色会被 Shimmer 覆盖
+  Widget _buildShimmer(BuildContext context, CustomImageStyle imageStyle) {
+    return Box(
+      style: imageStyle.container(),
+      child: CustomShimmer(
+        child: Container(
+          color: context.color(mxt.color.shimmerBase),
+        ),
       ),
     );
   }

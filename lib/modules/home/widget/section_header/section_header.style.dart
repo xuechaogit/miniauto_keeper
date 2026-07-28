@@ -1,9 +1,10 @@
 import 'package:miniauto_keeper/core/theme/app_theme.dart';
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:mix/mix.dart';
 
 class SectionHeaderStyle {
   static Style get container => Style(
-    $flex.mainAxisAlignment.center(),
+    $flex.mainAxisAlignment.spaceBetween(),
     $flex.crossAxisAlignment.center(),
   );
 
@@ -15,12 +16,12 @@ class SectionHeaderStyle {
   static Style get moreRow => Style(
     $flex.mainAxisAlignment.center(),
     $flex.crossAxisAlignment.center(),
+    $flex.gap.ref(mxt.space.small),
   );
 
   static Style get moreText => Style(
     $text.color.ref(mxt.color.onSurfaceVariant),
-    $text.style.ref(mxt.textStyle.caption),
-    $text.decoration.underline(),
+    $text.style.ref(mxt.textStyle.body),
   );
 
   static Style get moreIcon =>
