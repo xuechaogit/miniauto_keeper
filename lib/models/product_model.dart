@@ -26,7 +26,7 @@ class ProductModel {
       id: json['id']?.toString() ?? '',
       title: json['title'] ?? '',
       brandName: json['brandName'] ?? '',
-      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      price: double.tryParse('${json['price'] ?? ''}') ?? 0.0,
       thumb: json['thumb'] ?? '',
       tags: json['tags'] ?? [],
       purchaseDate: json['purchaseDate'] ?? '',

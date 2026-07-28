@@ -67,19 +67,18 @@ class HomeView extends GetView<HomeController> {
                       SliverToBoxAdapter(child: SizedBox(height: h(36))),
 
                       //热销商品
-                      // SectionHeader(title: '热销商品'),
-                      // SliverToBoxAdapter(child: SizedBox(height: h(16))),
-                      // SliverToBoxAdapter(
-                      //   child: Obx(() {
-                      //     final items =
-                      //         controller.hotProducts.take(3).toList();
-                      //     if (items.isEmpty) {
-                      //       return const SizedBox.shrink();
-                      //     }
-                      //     return HotProduct(products: items);
-                      //   }),
-                      // ),
-                      // SliverToBoxAdapter(child: SizedBox(height: h(36))),
+                      SectionHeader(title: '热销商品'),
+                      SliverToBoxAdapter(child: SizedBox(height: h(16))),
+                      SliverToBoxAdapter(
+                        child: Obx(() {
+                          final items = controller.hotProducts.take(3).toList();
+                          if (items.isEmpty) {
+                            return const SizedBox.shrink();
+                          }
+                          return HotProduct(products: items);
+                        }),
+                      ),
+                      SliverToBoxAdapter(child: SizedBox(height: h(36))),
 
                       //热门车车型
                       // SliverToBoxAdapter(child: SizedBox(height: h(8))),

@@ -34,7 +34,7 @@ class GarageView extends GetView<GarageController> {
   // 搜索框容器样式
   Style get searchBarBoxStyle => Style(
     $box.color(const Color(0xFF161616)),
-    $box.borderRadius.all(r(12)),
+    $box.borderRadius(r(12)),
     $box.border.all.color(Colors.white10),
     $box.padding.horizontal(w(12)),
   );
@@ -48,7 +48,7 @@ class GarageView extends GetView<GarageController> {
 
   Style get cardDecoration => Style(
     $box.color(const Color(0xFF121212)),
-    $box.borderRadius.all(r(12)),
+    $box.borderRadius(r(12)),
     $box.border.all.color(Colors.white.withOpacity(0.05)),
   );
 
@@ -209,7 +209,11 @@ class GarageView extends GetView<GarageController> {
         padding: EdgeInsets.fromLTRB(w(16), h(24), w(16), h(16)),
         child: Row(
           children: [
-            Container(width: w(24), height: h(2), color: const Color(0xFFE54335)),
+            Container(
+              width: w(24),
+              height: h(2),
+              color: const Color(0xFFE54335),
+            ),
             SizedBox(width: w(8)),
             StyledText("THE  VAULT", style: sectionTitleStyle),
             const Spacer(),

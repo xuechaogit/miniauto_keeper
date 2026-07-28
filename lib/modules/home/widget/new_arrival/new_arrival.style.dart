@@ -12,10 +12,8 @@ class NewArrivalStyle {
       Style($box.padding.horizontal.ref(mxt.space.small));
 
   // 左侧信息列
-  static Style get infoColumn => Style(
-    $flex.gap(4),
-    $flex.crossAxisAlignment.start(),
-  );
+  static Style get infoColumn =>
+      Style($flex.gap(4), $flex.crossAxisAlignment.start());
 
   // 品牌名
   static Style get brandText => Style(
