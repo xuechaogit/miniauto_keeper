@@ -24,7 +24,7 @@ class _BrandSectionState extends State<BrandSection> {
   int? _selectedIndex;
 
   /// 分档：第1、4个为大号，其余中号
-  int _tier(int index) => (index == 0 || index == 3) ? 2 : 1;
+  int _tier(int index) => (index == 0 || index == 3) ? 2 : 0;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +34,7 @@ class _BrandSectionState extends State<BrandSection> {
       style: BrandSectionStyle.wrapContainer,
       child: Wrap(
         alignment: WrapAlignment.center,
+        crossAxisAlignment: WrapCrossAlignment.center,
         spacing: w(8),
         runSpacing: h(16),
         children: List.generate(widget.brands.length, (i) {
@@ -46,13 +47,13 @@ class _BrandSectionState extends State<BrandSection> {
   Widget _brandCard(BrandModel brand, int index) {
     final isSelected = _selectedIndex == index;
     final t = _tier(index);
-    final hasIcon = brand.thumb.isNotEmpty;
 
     final pillStyle = switch (t) {
       2 => BrandSectionStyle.pillLarge,
       1 => BrandSectionStyle.pillMedium,
       _ => BrandSectionStyle.pillSmall,
     };
+
     final nameStyle = switch (t) {
       2 => BrandSectionStyle.nameLarge,
       1 => BrandSectionStyle.nameMedium,
@@ -60,9 +61,9 @@ class _BrandSectionState extends State<BrandSection> {
     };
 
     final iconSize = switch (t) {
-      2 => w(26),
+      2 => w(32),
       1 => w(26),
-      _ => 0.0,
+      _ => w(20),
     };
 
     return PressableBox(
@@ -75,15 +76,15 @@ class _BrandSectionState extends State<BrandSection> {
           if (isSelected) BrandSectionStyle.cardSelected,
         ]),
         children: [
-          if (hasIcon && iconSize > 0)
-            SizedBox(
-              width: iconSize,
-              height: iconSize,
-              child: CustomImage(
-                imageUrl: brand.thumb,
-                shape: CustomImageShape.circle,
-              ),
+          SizedBox(
+            width: iconSize,
+            height: iconSize,
+            child: CustomImage(
+              imageUrl: brand.thumb,
+              aspectRatio: 1.0,
+              shape: CustomImageShape.circle,
             ),
+          ),
           StyledText(
             brand.name,
             style: Style.combine([

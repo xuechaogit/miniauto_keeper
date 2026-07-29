@@ -16,8 +16,12 @@ class HotProductStyle {
     $with.scale(1.5),
   );
 
-  static Style get infoCard =>
-      Style($box.color.ref(mxt.color.surface), $box.width(double.infinity));
+  static Style get infoCard => Style(
+    $box.color.ref(mxt.color.surface),
+    $box.width(double.infinity),
+    $box.borderRadius.bottomLeft(r(16)),
+    $box.borderRadius.bottomRight(r(16)),
+  );
 
   static Style get infoArea => Style(
     $box.padding.all.ref(mxt.space.medium),

@@ -114,7 +114,7 @@ final _sharedRadii = <RadiusToken, Radius>{
 
 final _sharedSpaces = <SpaceToken, double>{
   mxt.space.large: w(24),
-  mxt.space.medium: w(16),
+  mxt.space.medium: w(12),
   mxt.space.small: w(8),
 };
 
@@ -124,9 +124,9 @@ Map<ColorToken, Color> _lightColors() => {
   // 品牌主色：按钮、图标高亮、选中态、进度条
   mxt.color.primary: const Color(0xFF3B5EF5),
   // Scaffold 底色：页面最底层背景
-  mxt.color.background: const Color(0xFFFFFFFF),
+  mxt.color.background: const Color(0xFFF2F4F7),
   // 卡片色：Card、Dialog、Sheet、ListTile 滑出态
-  mxt.color.surface: const Color(0xFFF2F4F7),
+  mxt.color.surface: const Color(0xFFFFFFFF),
   // 输入框/容器填充：TextField、SearchBar、Chip 底色
   mxt.color.surfaceVariant: const Color(0xFFE4E8F0),
   // 正文/标题：大段阅读文字、卡片标题、图标

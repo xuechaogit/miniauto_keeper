@@ -7,8 +7,7 @@ import 'package:mix/mix.dart';
 class BrandSectionStyle {
   // ========== 胶囊标签 — 三档规格 ==========
 
-  static Style _pillBase(double height, double radius) => Style(
-    $box.height(height),
+  static Style _pillBase(double radius) => Style(
     $box.borderRadius.all.circular(radius),
     $flex.mainAxisSize.min(),
     $flex.mainAxisAlignment.center(),
@@ -22,11 +21,11 @@ class BrandSectionStyle {
   );
 
   // 大号 42×21
-  static Style get pillLarge => _pillBase(h(42), r(21));
+  static Style get pillLarge => _pillBase(r(28));
   // 中号 36×18
-  static Style get pillMedium => _pillBase(h(36), r(18));
+  static Style get pillMedium => _pillBase(r(21));
   // 小号 30×15
-  static Style get pillSmall => _pillBase(h(30), r(15));
+  static Style get pillSmall => _pillBase(r(28));
 
   // 选中叠加
   static Style get cardSelected => Style(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
+import 'package:get/get.dart';
+import 'package:miniauto_keeper/core/router/app_routes.dart';
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:miniauto_keeper/core/widgets/image/image.dart';
 import 'package:miniauto_keeper/core/widgets/image/image.variant.dart';
@@ -34,7 +36,11 @@ class _HotProductState extends State<HotProduct> {
 
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return Box(
+    return PressableBox(
+      onPress: () => Get.toNamed(
+        '${AppRoutes.productDetail}?id=${widget.products[_currentIndex].id}',
+      ),
+      child: Box(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -111,7 +117,7 @@ class _HotProductState extends State<HotProduct> {
           ),
         ],
       ),
-    );
+    ));
   }
 
   Widget _buildArrow({required bool isLeft}) {

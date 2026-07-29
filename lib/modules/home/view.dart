@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:get/get.dart';
-import 'package:miniauto_keeper/core/widgets/image/image.dart';
+import 'package:miniauto_keeper/core/widgets/app_logo/app_logo.dart';
 import 'package:mix/mix.dart';
 import '../../core/l10n/l10n_util.dart';
 import '../../core/services/settings_service.dart';
@@ -9,8 +9,6 @@ import '../../core/services/settings_service.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_theme_tool.dart';
 import '../../core/widgets/product/product.dart';
-import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
-
 import '../../core/widgets/tag/tag.dart';
 import '../../core/widgets/tag/tag.variant.dart';
 import 'controller.dart';
@@ -20,6 +18,7 @@ import 'widget/section_header/section_header.dart';
 import 'widget/new_arrival/new_arrival.dart';
 import 'widget/brand_section/brand_section.dart';
 import 'widget/hot_product/hot_product.dart';
+import 'widget/carousel/carousel.dart';
 import '../main/controller.dart';
 
 class HomeView extends GetView<HomeController> {
@@ -38,9 +37,19 @@ class HomeView extends GetView<HomeController> {
               key: const PageStorageKey('home_scroll'),
               controller: controller.scrollController,
               slivers: [
-                SliverToBoxAdapter(child: _buildCarousel()),
+                //热门车车型
+                SliverToBoxAdapter(
+                  child: Obx(() {
+                    final items = controller.hotProducts.toList();
+                    if (items.isEmpty) return const SizedBox.shrink();
+                    return HomeCarousel(items: items);
+                  }),
+                ),
                 SliverPadding(
-                  padding: EdgeInsets.all(h(8)),
+                  padding: EdgeInsets.symmetric(
+                    vertical: 0.0,
+                    horizontal: w(12),
+                  ),
                   sliver: SliverMainAxisGroup(
                     slivers: [
                       // 公告
@@ -80,13 +89,6 @@ class HomeView extends GetView<HomeController> {
                       ),
                       SliverToBoxAdapter(child: SizedBox(height: h(36))),
 
-                      //热门车车型
-                      // SliverToBoxAdapter(child: SizedBox(height: h(8))),
-                      // SectionHeader(title: '热门车型'),
-                      // SliverToBoxAdapter(child: SizedBox(height: h(16))),
-                      // SliverToBoxAdapter(child: hotCarList()),
-                      // SliverToBoxAdapter(child: SizedBox(height: h(24))),
-
                       //新品速递 (新版)
                       SectionHeader(
                         title: '新品速递',
@@ -95,7 +97,13 @@ class HomeView extends GetView<HomeController> {
                       ),
                       SliverToBoxAdapter(child: SizedBox(height: h(16))),
                       SliverToBoxAdapter(
-                        child: NewArrival(items: controller.hotProducts),
+                        child: Obx(() {
+                          final items = controller.hotProducts.toList();
+                          if (items.isEmpty) {
+                            return const SizedBox.shrink();
+                          }
+                          return NewArrival(items: items);
+                        }),
                       ),
 
                       SliverToBoxAdapter(child: SizedBox(height: h(36))),
@@ -132,17 +140,7 @@ class HomeView extends GetView<HomeController> {
             child: Stack(
               children: [
                 Positioned.fill(
-                  child: Image.network(
-                    controller.hotProducts.isNotEmpty
-                        ? controller
-                              .hotProducts[controller
-                                  .currentCarouselIndex
-                                  .value]
-                              .thumb
-                        : '',
-                    fit: BoxFit.cover,
-                    alignment: Alignment.topCenter,
-                  ),
+                  child: Container(color: context.color(mxt.color.surface)),
                 ),
                 Positioned(
                   top: topPadding,
@@ -168,158 +166,17 @@ class HomeView extends GetView<HomeController> {
   Widget _buildTitleRow(BuildContext context) {
     return Row(
       children: [
-        const SizedBox(width: 16),
-        Expanded(
-          child: Text(
-            context.l10n.appName,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
+        SizedBox(width: w(12)),
+        AppLogo(height: 32),
+        const Spacer(),
         IconButton(
-          icon: const Icon(Icons.settings, color: Colors.white),
+          icon: StyledIcon(
+            Icons.settings,
+            style: Style($icon.color.ref(mxt.color.onSurface)),
+          ),
           onPressed: () => Scaffold.of(context).openEndDrawer(),
         ),
       ],
-    );
-  }
-
-  Widget _buildCarousel() {
-    return Obx(() {
-      final items = controller.hotProducts.toList();
-      if (items.isEmpty) return const SizedBox.shrink();
-      return FlutterCarousel.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index, pageViewIndex) {
-          final p = items[index];
-          return Stack(
-            fit: StackFit.expand,
-            children: [
-              CustomImage(imageUrl: p.thumb, aspectRatio: 1),
-              Positioned(
-                bottom: 0,
-                left: 0,
-                right: 0,
-                height: h(100),
-                child: Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [Colors.transparent, Colors.black54],
-                    ),
-                  ),
-                ),
-              ),
-              Positioned(
-                bottom: h(16),
-                left: w(16),
-                right: w(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (p.tags.isNotEmpty)
-                      CustomTag(label: p.tags.first, size: CustomTagSize.small),
-                    SizedBox(height: h(8)),
-                    Text(
-                      p.title,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: sp(16),
-                        fontWeight: FontWeight.bold,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    SizedBox(height: h(4)),
-                    Text(
-                      '¥${p.price.toStringAsFixed(0)}',
-                      style: TextStyle(
-                        color: Colors.white.withOpacity(0.9),
-                        fontSize: sp(20),
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        },
-        options: FlutterCarouselOptions(
-          height: w(390),
-          autoPlay: true,
-          controller: controller.carouselController,
-          autoPlayInterval: const Duration(seconds: 3),
-          showIndicator: true,
-          slideIndicator: CircularSlideIndicator(),
-          viewportFraction: 1.0,
-          pauseAutoPlayOnTouch: true,
-          pauseAutoPlayOnManualNavigate: true,
-          enlargeCenterPage: false,
-          onPageChanged: (index, reason) {
-            controller.currentCarouselIndex.value = index;
-          },
-        ),
-      );
-    });
-  }
-
-  Widget hotCarList() {
-    return Obx(
-      () => SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: HBox(
-          children: controller.hotProducts.map((p) {
-            return Padding(
-              padding: EdgeInsets.only(right: w(8)),
-              child: SizedBox(
-                width: w(120),
-                child: ProductItem(
-                  p,
-                  details: VBox(
-                    children: [
-                      StyledText(
-                        '${p.title}',
-                        style: Style(
-                          $text.color.ref(mxt.color.onSurface),
-                          $text.style.ref(mxt.textStyle.body),
-                          $text.maxLines(1),
-                          $text.overflow(TextOverflow.ellipsis),
-                        ),
-                      ),
-                      SizedBox(height: h(4)),
-                      HBox(
-                        children: [
-                          StyledIcon(
-                            Icons.star,
-                            style: Style(
-                              $icon.color.ref(mxt.color.onSurfaceVariant),
-                              $icon.size(r(14)),
-                            ),
-                          ),
-                          StyledText(
-                            '${123} 人收藏',
-                            style: Style(
-                              $text.color.ref(mxt.color.onSurface),
-                              $text.style.ref(mxt.textStyle.caption),
-                              $text.maxLines(1),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }).toList(),
-        ),
-      ),
     );
   }
 
