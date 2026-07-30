@@ -2,10 +2,16 @@
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:get/get.dart';
 
+import '../../models/brand_model.dart';
+
 class StorageService extends GetxService {
   // 静态初始化方法，在 main.dart 中调用
   static Future<void> init() async {
     await Hive.initFlutter();
+
+    // 注册 TypeAdapter
+    Hive.registerAdapter(BrandModelAdapter());
+
     // 在这里预开常用的 Box
     await Hive.openBox('settings');
     await Hive.openBox('cache');

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
+import 'package:hive/hive.dart';
 import 'package:miniauto_keeper/models/product_model.dart';
 
 import '../../core/services/settings_service.dart';
+import '../../core/services/storage_service.dart';
 import '../../core/utils/screen_adapter.dart';
 import 'repository.dart';
 import '../../models/brand_model.dart';
@@ -48,6 +50,9 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     scrollController.addListener(_onScroll);
+
+    // 先从缓存读取 brands，再异步刷新
+    _loadBrandsFromCache();
     refreshDashboard();
     fetchNotices();
   }
@@ -72,6 +77,16 @@ class HomeController extends GetxController {
     }
   }
 
+  void _loadBrandsFromCache() {
+    try {
+      final box = Hive.box('cache');
+      final cached = box.get('brands');
+      if (cached != null && cached is List<BrandModel>) {
+        brands.value = cached;
+      }
+    } catch (_) {}
+  }
+
   // 2. 调用真实的 API 接口
   Future<void> refreshDashboard() async {
     isLoading.value = true;
@@ -85,7 +100,13 @@ class HomeController extends GetxController {
       totalCars.value = res.data!.totalCars;
       recentAddedCount.value = res.data!.recentAdded;
       hotProducts.value = res.data!.itemData.preList.products;
-      brands.value = res.data!.brands.take(9).toList();
+      final freshList = res.data!.brands.take(9).toList();
+      brands.value = freshList;
+
+      // 写入 Hive 缓存
+      final box = Hive.box('cache');
+      box.put('brands', freshList);
+
       print('hotProducts.value ${hotProducts.value}');
     } catch (e) {
       print('e: $e');
