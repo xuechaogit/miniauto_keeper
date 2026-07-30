@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/widgets/divider/divider.dart';
+import 'package:miniauto_keeper/core/widgets/price_tag/price_tag.dart';
 import 'package:mix/mix.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../../core/widgets/html_renderer/html_renderer.dart';
@@ -11,6 +12,7 @@ import 'package:miniauto_keeper/core/theme/app_theme_tool.dart';
 import '../../models/product_detail_model.dart';
 import 'controller.dart';
 import 'style.dart';
+import 'widget/card_panel/card_panel.dart';
 import 'widget/gallery/gallery.dart';
 
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
@@ -79,43 +81,23 @@ class ProductDetailView extends GetView<ProductDetailController> {
   }
 
   Widget _buildCoreMetaCard(ProductDetailModel data) {
-    return Box(
-      style: ProductDetailStyle.industrialCard,
-      child: VBox(
+    return CardPanel(
+      showDivider: false,
+      content: VBox(
         style: Style(
-          $flex.gap.ref(mxt.space.small),
+          $flex.gap.ref(mxt.space.medium),
           $flex.crossAxisAlignment.start(),
         ),
         children: [
-          // 价格行
           HBox(
             style: Style(
               $flex.mainAxisAlignment.spaceBetween(),
               $flex.crossAxisAlignment.end(),
             ),
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  StyledText('\$ ', style: ProductDetailStyle.priceSmall),
-                  StyledText(
-                    '${data.price}',
-                    style: ProductDetailStyle.priceLarge,
-                  ),
-                  if (data.originalPrice > data.price) ...[
-                    SizedBox(width: w(8)),
-                    StyledText(
-                      '¥${data.originalPrice}',
-                      style: ProductDetailStyle.originalPrice,
-                    ),
-                  ],
-                ],
-              ),
+              PriceTag(price: data.price, originalPrice: data.originalPrice),
             ],
           ),
-
-          // 商品标题
           StyledText(data.title, style: ProductDetailStyle.productTitle),
         ],
       ),
@@ -123,12 +105,11 @@ class ProductDetailView extends GetView<ProductDetailController> {
   }
 
   Widget _buildParamPanel(ProductDetailModel data) {
-    return Box(
-      style: ProductDetailStyle.paramPanel,
-      child: VBox(
+    return CardPanel(
+      showDivider: false,
+      content: VBox(
         style: Style($flex.gap(0)),
         children: [
-          // 核心字段 2×2 横向网格（value 上 / label 下）
           _buildFieldGrid([
             ('年份', data.year),
             ('车模品牌', data.level2Category),
@@ -137,7 +118,6 @@ class ProductDetailView extends GetView<ProductDetailController> {
           ], vertical: true),
 
           const AppDivider(),
-          // 折叠字段 列表（label 左 / value 右）
           Obx(
             () => controller.isExpanded.value
                 ? _buildFieldGrid([
@@ -149,7 +129,6 @@ class ProductDetailView extends GetView<ProductDetailController> {
                 : const SizedBox.shrink(),
           ),
 
-          // BundleTags
           if (data.bundleTags.isNotEmpty)
             Padding(
               padding: EdgeInsets.only(top: 8),
@@ -169,7 +148,6 @@ class ProductDetailView extends GetView<ProductDetailController> {
               ),
             ),
 
-          // 展开/收起按钮
           PressableBox(
             onPress: () => controller.isExpanded.toggle(),
             style: ProductDetailStyle.expandBtn,
@@ -191,15 +169,25 @@ class ProductDetailView extends GetView<ProductDetailController> {
     bool vertical = false,
   }) {
     if (grid) {
-      return HBox(
-        style: Style(
-          $flex.mainAxisAlignment.spaceEvenly(),
-          $flex.crossAxisAlignment.center(),
+      return IntrinsicHeight(
+        child: HBox(
+          style: Style($flex.crossAxisAlignment.center()),
+          children: [
+            for (var i = 0; i < fields.length; i++) ...[
+              if (i > 0)
+                AppDivider(
+                  direction: AppDividerDirection.vertical,
+                  style: Style(
+                    $box.margin.horizontal(0),
+                    $box.margin.vertical(h(4)),
+                  ),
+                ),
+              Expanded(
+                child: _paramCell(fields[i].$1, fields[i].$2, vertical: true),
+              ),
+            ],
+          ],
         ),
-        children: [
-          for (var field in fields)
-            Expanded(child: _paramCell(field.$1, field.$2, vertical: true)),
-        ],
       );
     }
     return VBox(
@@ -244,15 +232,10 @@ class ProductDetailView extends GetView<ProductDetailController> {
   Widget _buildDetailDescCard(ProductDetailModel data) {
     if (data.content.isEmpty) return const SizedBox.shrink();
 
-    return Box(
-      style: ProductDetailStyle.industrialCard,
-      child: VBox(
-        style: Style($flex.gap(10)),
-        children: [
-          StyledText('OVERVIEW / 详情描述', style: ProductDetailStyle.sectionTitle),
-          AppHtmlRenderer(htmlContent: data.content),
-        ],
-      ),
+    return CardPanel(
+      title: 'OVERVIEW / 详情描述',
+      showDivider: false,
+      content: AppHtmlRenderer(htmlContent: data.content),
     );
   }
 
@@ -336,55 +319,56 @@ class ProductDetailView extends GetView<ProductDetailController> {
   }
 
   Widget _buildRatingCard(ProductDetailModel data, BuildContext context) {
-    return Box(
-      style: ProductDetailStyle.ratingCard,
-      child: VBox(
-        style: Style(
-          $flex.gap.ref(mxt.space.small),
-          $flex.crossAxisAlignment.center(),
-        ),
-        children: [
-          StyledText('评分', style: ProductDetailStyle.paramLabel),
-          SizedBox(height: h(4)),
-          Obx(() {
-            final rating =
-                controller.userRating.value ??
-                (double.tryParse(data.erpRating ?? '') ?? 0.0);
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                RatingBar.builder(
-                  initialRating: rating,
-                  minRating: 1,
-                  direction: Axis.horizontal,
-                  allowHalfRating: true,
-                  itemCount: 5,
-                  itemSize: 28,
-                  itemPadding: EdgeInsets.symmetric(horizontal: 2),
-                  itemBuilder: (context, _) =>
-                      Icon(Icons.star, color: Colors.amber),
-                  onRatingUpdate: (val) {
-                    controller.userRating.value = val;
-                  },
-                ),
-                SizedBox(width: w(10)),
-                StyledText(
-                  rating.toStringAsFixed(1),
-                  style: ProductDetailStyle.ratingValue,
-                ),
-              ],
-            );
-          }),
-          SizedBox(height: h(6)),
-          GestureDetector(
-            onTap: () => _showRatingSheet(context, data),
-            child: StyledText(
-              controller.userRating.value == null ? '点击评分' : '修改评分',
-              style: ProductDetailStyle.expandBtnText,
-            ),
+    return CardPanel(
+      title: '评分',
+      showDivider: false,
+      content: Obx(() {
+        final rating =
+            controller.userRating.value ??
+            (double.tryParse(data.erpRating ?? '') ?? 0.0);
+        return HBox(
+          style: Style(
+            $flex.mainAxisAlignment.spaceBetween(),
+            $flex.crossAxisAlignment.center(),
           ),
-        ],
-      ),
+          children: [
+            StyledText(
+              rating.toStringAsFixed(1),
+              style: ProductDetailStyle.ratingValue,
+            ),
+            IgnorePointer(
+              child: RatingBar.builder(
+                initialRating: rating,
+                minRating: 1,
+                direction: Axis.horizontal,
+                allowHalfRating: true,
+                itemCount: 5,
+                itemSize: 28,
+                itemPadding: EdgeInsets.symmetric(horizontal: 2),
+                itemBuilder: (context, _) =>
+                    Icon(Icons.star, color: Colors.amber),
+                onRatingUpdate: (val) {},
+              ),
+            ),
+            GestureDetector(
+              onTap: () => _showRatingSheet(context, data),
+              child: Row(
+                children: [
+                  StyledText(
+                    controller.userRating.value == null ? '点击评分' : '修改评分',
+                    style: ProductDetailStyle.expandBtnText,
+                  ),
+                  Icon(
+                    Icons.chevron_right,
+                    color: mxt.color.primary.resolve(context),
+                    size: 18,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      }),
     );
   }
 
@@ -392,79 +376,87 @@ class ProductDetailView extends GetView<ProductDetailController> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
-      builder: (_) => Container(
-        padding: EdgeInsets.all(w(16)),
-        decoration: BoxDecoration(
-          color: mxt.color.surface.resolve(context),
-          borderRadius: BorderRadius.vertical(
-            top: mxt.radius.medium.resolve(context),
-          ),
-        ),
-        child: VBox(
-          style: Style(
-            $flex.gap.ref(mxt.space.medium),
-            $flex.crossAxisAlignment.center(),
-          ),
-          children: [
-            SizedBox(height: h(8)),
-            StyledText('您的评分', style: ProductDetailStyle.paramLabel),
-            SizedBox(height: h(8)),
-            RatingBar.builder(
-              initialRating:
-                  controller.userRating.value ??
-                  (double.tryParse(data.erpRating ?? '') ?? 0.0),
-              minRating: 1,
-              direction: Axis.horizontal,
-              allowHalfRating: true,
-              itemCount: 5,
-              itemSize: 40,
-              itemPadding: EdgeInsets.symmetric(horizontal: 4),
-              itemBuilder: (context, _) =>
-                  Icon(Icons.star, color: Colors.amber),
-              onRatingUpdate: (val) {
-                controller.userRating.value = val;
-              },
+      builder: (_) => Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: EdgeInsets.all(w(16)),
+            decoration: BoxDecoration(
+              color: mxt.color.surface.resolve(context),
+              borderRadius: BorderRadius.vertical(
+                top: mxt.radius.medium.resolve(context),
+              ),
             ),
-            SizedBox(height: h(24)),
-            Row(
+            child: VBox(
+              style: Style(
+                $flex.gap.ref(mxt.space.medium),
+                $flex.crossAxisAlignment.center(),
+              ),
               children: [
-                Expanded(
-                  child: PressableBox(
-                    style: Style(
-                      $box.borderRadius.all.ref(mxt.radius.small),
-                      $box.color.ref(mxt.color.surface),
-                      $box.padding.vertical.ref(mxt.space.small),
-                      $flex.mainAxisAlignment.center(),
-                    ),
-                    onPress: () => Navigator.pop(context),
-                    child: StyledText(
-                      '取消',
-                      style: ProductDetailStyle.paramLabel,
-                    ),
-                  ),
+                SizedBox(height: h(8)),
+                StyledText('您的评分', style: ProductDetailStyle.paramLabel),
+                SizedBox(height: h(8)),
+                RatingBar.builder(
+                  initialRating:
+                      controller.userRating.value ??
+                      (double.tryParse(data.erpRating ?? '') ?? 0.0),
+                  minRating: 1,
+                  direction: Axis.horizontal,
+                  allowHalfRating: true,
+                  itemCount: 5,
+                  itemSize: 40,
+                  itemPadding: EdgeInsets.symmetric(horizontal: 4),
+                  itemBuilder: (context, _) =>
+                      Icon(Icons.star, color: Colors.amber),
+                  onRatingUpdate: (val) {
+                    controller.userRating.value = val;
+                  },
                 ),
-                SizedBox(width: w(12)),
-                Expanded(
-                  child: PressableBox(
-                    style: ProductDetailStyle.primaryActionBtn,
-                    onPress: () {
-                      Navigator.pop(context);
-                      Get.snackbar(
-                        'SUCCESS',
-                        '评分已提交',
-                        snackPosition: SnackPosition.BOTTOM,
-                        backgroundColor: const Color(0xFF1E1E1E),
-                        colorText: ProductDetailStyle.accent,
-                        duration: const Duration(seconds: 1),
-                      );
-                    },
-                    child: StyledText('确认', style: ProductDetailStyle.btnText),
-                  ),
+                SizedBox(height: h(24)),
+                Row(
+                  children: [
+                    Expanded(
+                      child: PressableBox(
+                        style: Style(
+                          $box.borderRadius.all.ref(mxt.radius.small),
+                          $box.color.ref(mxt.color.surface),
+                          $box.padding.vertical.ref(mxt.space.small),
+                          $flex.mainAxisAlignment.center(),
+                        ),
+                        onPress: () => Navigator.pop(context),
+                        child: StyledText(
+                          '取消',
+                          style: ProductDetailStyle.paramLabel,
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: w(12)),
+                    Expanded(
+                      child: PressableBox(
+                        style: ProductDetailStyle.primaryActionBtn,
+                        onPress: () {
+                          Navigator.pop(context);
+                          Get.snackbar(
+                            'SUCCESS',
+                            '评分已提交',
+                            snackPosition: SnackPosition.BOTTOM,
+                            backgroundColor: const Color(0xFF1E1E1E),
+                            colorText: ProductDetailStyle.accent,
+                            duration: const Duration(seconds: 1),
+                          );
+                        },
+                        child: StyledText(
+                          '确认',
+                          style: ProductDetailStyle.btnText,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

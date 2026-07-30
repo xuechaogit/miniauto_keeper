@@ -86,15 +86,15 @@ class MyThemeSpaceToken {
 final _sharedTextStyles = <TextStyleToken, TextStyle>{
   mxt.textStyle.headline1: TextStyle(
     fontSize: sp(20),
-    fontWeight: FontWeight.bold,
+    // fontWeight: FontWeight.bold,
   ),
   mxt.textStyle.headline2: TextStyle(
     fontSize: sp(18),
-    fontWeight: FontWeight.bold,
+    // fontWeight: FontWeight.bold,
   ),
   mxt.textStyle.headline3: TextStyle(
     fontSize: sp(16),
-    fontWeight: FontWeight.bold,
+    // fontWeight: FontWeight.bold,
   ),
   mxt.textStyle.body: TextStyle(
     fontSize: sp(14),
@@ -124,7 +124,7 @@ Map<ColorToken, Color> _lightColors() => {
   // 品牌主色：按钮、图标高亮、选中态、进度条
   mxt.color.primary: const Color(0xFF3B5EF5),
   // Scaffold 底色：页面最底层背景
-  mxt.color.background: const Color(0xFFF2F4F7),
+  mxt.color.background: const Color(0xF9F9F9F9),
   // 卡片色：Card、Dialog、Sheet、ListTile 滑出态
   mxt.color.surface: const Color(0xFFFFFFFF),
   // 输入框/容器填充：TextField、SearchBar、Chip 底色
@@ -137,12 +137,12 @@ Map<ColorToken, Color> _lightColors() => {
   mxt.color.brandCardBg: const Color(0xFF1A1F2E),
   // 品牌卡片内层叠加：brandCard 内的嵌套区块
   mxt.color.brandCardOverlay: const Color(0xFF10131A),
-  // 标准边框：卡片边框、输入框常态边框、分割线
-  mxt.color.outline: const Color(0xFF9196A4),
+  // 标准边框：卡片边框、输入框常态边框
+  mxt.color.outline: const Color(0xFFB0B6C1),
   // 淡边框/分割线：列表项底部分割、轻量分隔
-  mxt.color.outlineVariant: const Color(0xFFD0D4DC),
+  mxt.color.outlineVariant: const Color(0xFFE8EBF0),
   // 聚焦/选中边框：输入框获焦、选中卡片描边
-  mxt.color.outlinePrimary: const Color(0xFF3B5EF5),
+  mxt.color.outlinePrimary: const Color(0xFF5C7AFF),
   // 信息选中底色：列表选中行、FilterChip 选中
   mxt.color.primaryContainer: const Color(0xFFE8EDFF),
   mxt.color.infoContainer: const Color(0xFFE8EDFF),
@@ -176,9 +176,9 @@ Map<ColorToken, Color> _darkColors() => {
   mxt.color.onSurfaceVariant: const Color(0xFFA3A8B5),
   mxt.color.brandCardBg: const Color(0xFF0D0E12),
   mxt.color.brandCardOverlay: const Color(0xFF060708),
-  mxt.color.outline: const Color(0xFF6B7080),
-  mxt.color.outlineVariant: const Color(0xFF404350),
-  mxt.color.outlinePrimary: const Color(0xFF7B93FC),
+  mxt.color.outline: const Color(0xFF525868),
+  mxt.color.outlineVariant: const Color(0xFF32353E),
+  mxt.color.outlinePrimary: const Color(0xFF8DA2FF),
   mxt.color.primaryContainer: const Color(0xFF1E2F6E),
   mxt.color.infoContainer: const Color(0xFF1E2F6E),
   mxt.color.successContainer: const Color(0xFF0F2E1A),
@@ -231,8 +231,8 @@ const _lightColorScheme = ColorScheme(
   onSurface: Color(0xFF16181D),
   surfaceContainerHighest: Color(0xFFE4E8F0),
   onSurfaceVariant: Color(0xFF5F6470),
-  outline: Color(0xFF9196A4),
-  outlineVariant: Color(0xFFD0D4DC),
+  outline: Color(0xFFB0B6C1),
+  outlineVariant: Color(0xFFE8EBF0),
   surfaceTint: Color(0xFF3B5EF5),
 );
 
@@ -258,8 +258,8 @@ const _darkColorScheme = ColorScheme(
   onSurface: Color(0xFFE3E6EE),
   surfaceContainerHighest: Color(0xFF2A2D36),
   onSurfaceVariant: Color(0xFFA3A8B5),
-  outline: Color(0xFF6B7080),
-  outlineVariant: Color(0xFF404350),
+  outline: Color(0xFF525868),
+  outlineVariant: Color(0xFF32353E),
   surfaceTint: Color(0xFF7B93FC),
 );
 
