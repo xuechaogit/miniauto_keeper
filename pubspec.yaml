@@ -90,6 +90,9 @@ dependencies:
   # 评分
   flutter_rating_bar: ^4.0.1
 
+  # 筛选底部抽屉（SmartSelect）
+  flutter_filter_dialog: ^1.2.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

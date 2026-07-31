@@ -1,3 +1,26 @@
+class ProductListData {
+  final int page;
+  final int total;
+  final List<ProductModel> list;
+
+  ProductListData({
+    required this.page,
+    required this.total,
+    required this.list,
+  });
+
+  factory ProductListData.fromJson(Map<String, dynamic> json) {
+    return ProductListData(
+      page: json['page'] ?? 1,
+      total: json['total'] ?? 0,
+      list: (json['list'] as List?)
+              ?.map((e) => ProductModel.fromJson(e))
+              .toList() ??
+          [],
+    );
+  }
+}
+
 class ProductModel {
   final String id;
   final String title;

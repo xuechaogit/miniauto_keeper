@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:mix/mix.dart';
 import '../../../../models/product_model.dart';
 import '../../image/image.dart';
@@ -20,11 +19,11 @@ class ProductListLayout extends StatelessWidget {
     return Box(
       style: style,
       child: HBox(
-        style: Style($flex.gap(12), $flex.crossAxisAlignment.start()),
+        style: ProductStyle.listGap,
         children: [
           // 图片
           Box(
-            style: Style($box.width(w(100)), $box.height(w(100))),
+            style: ProductStyle.image.applyVariant(ProductMode.listMode),
             child: CustomImage(imageUrl: product.thumb, aspectRatio: 1),
           ),
 
@@ -35,13 +34,9 @@ class ProductListLayout extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
+                    StyledText(
                       product.brandName,
-                      style: TextStyle(
-                        color: Colors.blueAccent,
-                        fontWeight: FontWeight.bold,
-                        fontSize: sp(12),
-                      ),
+                      style: ProductStyle.brandName,
                     ),
                     StyledText(
                       product.title,

@@ -294,6 +294,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "3.1.0"
+  flutter_filter_dialog:
+    dependency: "direct main"
+    description:
+      name: flutter_filter_dialog
+      sha256: c6212241937cf12113cf36dc5ef69cba184e7a7f2f0cb2b0f79288c4a39ac48b
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.2.3"
   flutter_html:
     dependency: "direct main"
     description:
@@ -826,6 +834,14 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.12.1"
+  sticky_headers:
+    dependency: transitive
+    description:
+      name: sticky_headers
+      sha256: "9b3dd2cb0fd6a7038170af3261f855660cbb241cb56c501452cb8deed7023ede"
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.3.0+2"
   stream_channel:
     dependency: transitive
     description:
