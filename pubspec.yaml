@@ -93,6 +93,9 @@ dependencies:
   # 筛选底部抽屉（SmartSelect）
   flutter_filter_dialog: ^1.2.3
 
+  # 日历组件（翻月回调）
+  table_calendar: ^3.1.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
