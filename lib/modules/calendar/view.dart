@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:mix/mix.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/filter_chips/filter_chips.dart';
+import '../../models/product_model.dart';
 import 'controller.dart';
 import 'widgets/action_button/action_button.dart';
 import 'widgets/horizontal_calendar/horizontal_calendar.dart';
@@ -95,14 +96,14 @@ class CalendarView extends GetView<CalendarController> {
     );
   }
 
-  // 横向滚动日历：联动修改
+  // 横向滚动日历：只显示有数据的日期
   Widget _buildHorizontalCalendar() {
     return Obx(() {
-      // 1. 显式读取长度，确保 Obx 注册
       if (controller.dateList.isEmpty) return const CircularProgressIndicator();
+      if (controller.filteredDateList.isEmpty) return const SizedBox.shrink();
 
       return HorizontalCalendar(
-        dateList: controller.dateList,
+        dateList: controller.filteredDateList,
         selectedDateStr: controller.selectedDateStr,
         onDateSelected: (value) => controller.onDateSelected(value),
       );
@@ -163,16 +164,31 @@ class CalendarView extends GetView<CalendarController> {
 
   // 产品卡片列表
   Widget _buildReleaseList() {
-    return Obx(
-      () => Column(
-        children: controller.releases
-            .map((product) => _buildProductCard(product))
-            .toList(),
-      ),
-    );
+    return Obx(() {
+      final products = controller.currentDayProducts;
+      if (controller.isLoading.value) {
+        return const Center(
+          child: Padding(
+            padding: EdgeInsets.all(32),
+            child: CircularProgressIndicator(),
+          ),
+        );
+      }
+      if (products.isEmpty) {
+        return const Center(
+          child: Padding(
+            padding: EdgeInsets.all(32),
+            child: Text('当日无上新', style: TextStyle(color: Colors.grey)),
+          ),
+        );
+      }
+      return Column(
+        children: products.map((p) => _buildProductCard(p)).toList(),
+      );
+    });
   }
 
-  Widget _buildProductCard(dynamic product) {
+  Widget _buildProductCard(ProductModel product) {
     return Box(
       style: Style(
         $box.margin.bottom(16),
@@ -191,21 +207,32 @@ class CalendarView extends GetView<CalendarController> {
               $box.borderRadius(12),
               $box.color.white.withOpacity(0.05),
             ),
-            child: Center(child: Icon(Icons.directions_car, size: r(40))),
+            child: product.thumb.isNotEmpty
+                ? ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: Image.network(
+                      product.thumb,
+                      fit: BoxFit.cover,
+                      errorBuilder: (_, __, ___) =>
+                          const Icon(Icons.directions_car, size: 40),
+                    ),
+                  )
+                : const Center(child: Icon(Icons.directions_car, size: 40)),
           ),
           SizedBox(width: w(15)),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  product.brandName,
-                  style: TextStyle(
-                    color: Colors.blueAccent,
-                    fontWeight: FontWeight.bold,
-                    fontSize: sp(12),
+                if (product.code.isNotEmpty)
+                  Text(
+                    product.code,
+                    style: TextStyle(
+                      color: Colors.blueAccent,
+                      fontWeight: FontWeight.bold,
+                      fontSize: sp(12),
+                    ),
                   ),
-                ),
                 Text(
                   product.title,
                   style: TextStyle(
@@ -213,7 +240,8 @@ class CalendarView extends GetView<CalendarController> {
                     fontSize: sp(16),
                   ),
                 ),
-                Text(product.tags.last, style: TextStyle(fontSize: sp(13))),
+                if (product.dash.isNotEmpty)
+                  Text(product.dash, style: TextStyle(fontSize: sp(13))),
               ],
             ),
           ),

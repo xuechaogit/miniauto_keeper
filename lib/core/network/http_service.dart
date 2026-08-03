@@ -7,6 +7,7 @@ import 'interceptors/auth_interceptor.dart';
 class HttpService extends GetxService {
   static HttpService get to => Get.find();
   late final Dio _dio;
+  Dio get dio => _dio;
 
   Future<HttpService> init() async {
     _dio = Dio(

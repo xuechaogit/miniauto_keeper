@@ -31,6 +31,8 @@ class ProductModel {
   final String description;
   final String purchaseDate;
   final String? releaseDate; // 新品发售日期
+  final String code;
+  final String dash;
 
   ProductModel({
     required this.id,
@@ -42,6 +44,8 @@ class ProductModel {
     this.purchaseDate = '',
     this.description = '',
     this.releaseDate,
+    this.code = '',
+    this.dash = '',
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -55,6 +59,8 @@ class ProductModel {
       purchaseDate: json['purchaseDate'] ?? '',
       description: json['description'] ?? '',
       releaseDate: json['ship_at']?.toString() ?? '',
+      code: json['code'] ?? '',
+      dash: json['dash'] ?? '',
     );
   }
 }
