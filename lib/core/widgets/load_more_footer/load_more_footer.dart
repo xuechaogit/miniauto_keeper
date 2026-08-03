@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:miniauto_keeper/core/widgets/load_more_footer/load_more_footer.style.dart';
+import 'package:mix/mix.dart';
 
 enum LoadMoreStatus { loading, error, noMore }
 
@@ -15,48 +16,55 @@ class LoadMoreFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: LoadMoreFooterStyle.containerHeight,
-      child: Center(
-        child: switch (status) {
-          LoadMoreStatus.loading => _buildLoading(),
-          LoadMoreStatus.error => _buildError(),
-          LoadMoreStatus.noMore => _buildNoMore(),
-        },
-      ),
+    return Box(
+      style: LoadMoreFooterStyle.container,
+      child: switch (status) {
+        LoadMoreStatus.loading => _buildLoading(),
+        LoadMoreStatus.error => _buildError(),
+        LoadMoreStatus.noMore => _buildNoMore(),
+      },
     );
   }
 
   Widget _buildLoading() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        SizedBox(
-          width: LoadMoreFooterStyle.spinnerSize,
-          height: LoadMoreFooterStyle.spinnerSize,
-          child: const CircularProgressIndicator(strokeWidth: 2),
-        ),
-        const SizedBox(width: LoadMoreFooterStyle.spinnerGap),
-        Text('正在加载更多...', style: LoadMoreFooterStyle.textStyle),
-      ],
+    return Opacity(
+      opacity: 0.45,
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: LoadMoreFooterStyle.spinnerSize,
+            height: LoadMoreFooterStyle.spinnerSize,
+            child: const CircularProgressIndicator(strokeWidth: 2),
+          ),
+          const SizedBox(width: LoadMoreFooterStyle.spinnerGap),
+          StyledText('正在加载更多...', style: LoadMoreFooterStyle.loadingText),
+        ],
+      ),
     );
   }
 
   Widget _buildError() {
     return GestureDetector(
       onTap: onRetry,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.refresh, size: 16, color: Color(0xFF16181D)),
-          const SizedBox(width: 6),
-          Text('加载失败，点击重试', style: LoadMoreFooterStyle.errorTextStyle),
-        ],
+      child: Opacity(
+        opacity: 0.5,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            StyledIcon(Icons.refresh, style: LoadMoreFooterStyle.errorIcon),
+            const SizedBox(width: 6),
+            StyledText('加载失败，点击重试', style: LoadMoreFooterStyle.errorText),
+          ],
+        ),
       ),
     );
   }
 
   Widget _buildNoMore() {
-    return Text('—— 已经到底了 ——', style: LoadMoreFooterStyle.noMoreTextStyle);
+    return Opacity(
+      opacity: 0.25,
+      child: StyledText('—— 已经到底了 ——', style: LoadMoreFooterStyle.noMoreText),
+    );
   }
 }
