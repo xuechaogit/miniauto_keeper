@@ -1,12 +1,15 @@
 import 'package:get/get.dart';
+import 'package:miniauto_keeper/core/router/app_routes.dart';
+import 'package:miniauto_keeper/core/utils/snackbar_util.dart';
+import 'package:miniauto_keeper/models/brand_model.dart';
+import 'package:miniauto_keeper/models/product_model.dart';
 
-import '../../../core/utils/snackbar_util.dart';
-import '../../../models/brand_stats.dart';
-import '../../../models/product_model.dart';
 import 'repository.dart';
+import 'widgets/brand_selector_sheet/brand_selector_sheet.dart';
 
 class BrandDetailController extends GetxController {
-  BrandModel get brand => Get.arguments ?? BrandModel(name: 'Unknown');
+  dynamic get brand =>
+      Get.arguments ?? BrandModel(id: 0, pid: 0, name: 'Unknown', thumb: '');
 
   final _repository = BrandListRepository();
 
@@ -124,8 +127,11 @@ class BrandDetailController extends GetxController {
     _loadFirstPage();
   }
 
-  void switchBrand() {
-    SnackBarUtil.primary('切换品牌');
+  void switchBrand() async {
+    final selected = await showBrandSelectorSheet();
+    if (selected != null) {
+      Get.offNamed('/brand-detail', arguments: selected);
+    }
   }
 
   void reportMissing() {
@@ -133,6 +139,6 @@ class BrandDetailController extends GetxController {
   }
 
   void toProductDetail(ProductModel product) {
-    Get.toNamed('/product-detail', arguments: product);
+    Get.toNamed('${AppRoutes.productDetail}?id=${product.id}');
   }
 }

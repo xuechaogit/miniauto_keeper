@@ -12,44 +12,47 @@ class BrandSearchBar extends GetView<BrandDetailController> {
 
   @override
   Widget build(BuildContext context) {
-    return HBox(
-      children: [
-        IconButton(
-          icon: Icon(
-            Icons.arrow_back,
-            color: context.color(mxt.color.onSurface),
+    return SafeArea(
+      bottom: false,
+      child: HBox(
+        children: [
+          IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: context.color(mxt.color.onSurface),
+            ),
+            onPressed: () => Get.back(),
+            padding: EdgeInsets.zero,
+            constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
           ),
-          onPressed: () => Get.back(),
-          padding: EdgeInsets.zero,
-          constraints: const BoxConstraints(minWidth: 48, minHeight: 48),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: TextField(
-            textAlignVertical: TextAlignVertical.center,
-            style: context.textStyle(mxt.textStyle.body),
-            onChanged: controller.onSearchChanged,
-            decoration: InputDecoration(
-              hintText: '搜索商品...',
-              filled: true,
-              fillColor: context.color(mxt.color.surfaceVariant),
-              prefixIcon: Icon(
-                Icons.search,
-                color: context.color(mxt.color.primary),
-                size: 20,
-              ),
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.all(
-                  context.radius(mxt.radius.large),
+          const SizedBox(width: 8),
+          Expanded(
+            child: TextField(
+              textAlignVertical: TextAlignVertical.center,
+              style: context.textStyle(mxt.textStyle.body),
+              onChanged: controller.onSearchChanged,
+              decoration: InputDecoration(
+                hintText: '搜索商品...',
+                filled: true,
+                fillColor: context.color(mxt.color.surfaceVariant),
+                prefixIcon: Icon(
+                  Icons.search,
+                  color: context.color(mxt.color.primary),
+                  size: 20,
                 ),
-                borderSide: BorderSide.none,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    context.radius(mxt.radius.large),
+                  ),
+                  borderSide: BorderSide.none,
+                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                isDense: true,
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-              isDense: true,
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

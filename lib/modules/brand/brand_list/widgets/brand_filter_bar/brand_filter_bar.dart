@@ -9,11 +9,20 @@ import '../../controller.dart';
 import 'brand_filter_bar.style.dart';
 
 class BrandFilterBarDelegate extends SliverPersistentHeaderDelegate {
-  @override
-  double get minExtent => 48;
+  final double topPadding; // 状态栏高度
 
+  BrandFilterBarDelegate({required this.topPadding});
+
+  // 筛选栏本身的真实高度（比如 44）
+  double get _filterBarHeight => 48.0;
+
+  // 1. 最小高度：吸顶时的总占用高度 = 悬浮 AppBar 高度 + 筛选栏本身高度
   @override
-  double get maxExtent => 48;
+  double get minExtent => _filterBarHeight + kToolbarHeight + topPadding;
+
+  // 2. 最大高度：未吸顶展开时的总占用高度
+  @override
+  double get maxExtent => _filterBarHeight + kToolbarHeight + topPadding;
 
   @override
   Widget build(
@@ -21,12 +30,19 @@ class BrandFilterBarDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) {
-    return const BrandFilterBar();
+    return Container(
+      // 给筛选栏顶部留出【悬浮 AppBar 的空间】，确保内容只在 AppBar 下方绘制
+      padding: EdgeInsets.only(top: kToolbarHeight + topPadding),
+      color: context.color(mxt.color.background), // 背景色，避免向下滚动时透出底下的内容
+      child: const BrandFilterBar(), // 你的真实筛选栏 Widget
+    );
   }
 
   @override
-  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) =>
-      true;
+  bool shouldRebuild(covariant BrandFilterBarDelegate oldDelegate) {
+    // 确保比较逻辑准确，不要写成盲目返回 true
+    return oldDelegate.topPadding != topPadding;
+  }
 }
 
 class BrandFilterBar extends GetView<BrandDetailController> {
@@ -97,11 +113,7 @@ class BrandFilterBar extends GetView<BrandDetailController> {
   String _currentFilterValue(String uiKey) {
     switch (uiKey) {
       case 'sort':
-        const reverseSortMap = {
-          '默认': '综合',
-          '价格从低到高': '价格升',
-          '价格从高到低': '价格降',
-        };
+        const reverseSortMap = {'默认': '综合', '价格从低到高': '价格升', '价格从高到低': '价格降'};
         return reverseSortMap[controller.selectedSort.value] ??
             controller.selectedSort.value;
       case 'category':
@@ -118,24 +130,40 @@ class BrandFilterBar extends GetView<BrandDetailController> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: context.color(mxt.color.surface),
+      color: context.color(mxt.color.background),
       child: Box(
         style: BrandFilterBarStyle.barPadding,
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              _buildChip(context,
-                  label: '排序', uiKey: 'sort', options: _sortOptions),
+              _buildChip(
+                context,
+                label: '排序',
+                uiKey: 'sort',
+                options: _sortOptions,
+              ),
               SizedBox(width: BrandFilterBarStyle.chipGap),
-              _buildChip(context,
-                  label: '品类', uiKey: 'category', options: _categoryOptions),
+              _buildChip(
+                context,
+                label: '品类',
+                uiKey: 'category',
+                options: _categoryOptions,
+              ),
               SizedBox(width: BrandFilterBarStyle.chipGap),
-              _buildChip(context,
-                  label: '品牌', uiKey: 'brand', options: _brandOptions),
+              _buildChip(
+                context,
+                label: '品牌',
+                uiKey: 'brand',
+                options: _brandOptions,
+              ),
               SizedBox(width: BrandFilterBarStyle.chipGap),
-              _buildChip(context,
-                  label: '规格', uiKey: 'spec', options: _specOptions),
+              _buildChip(
+                context,
+                label: '规格',
+                uiKey: 'spec',
+                options: _specOptions,
+              ),
             ],
           ),
         ),
@@ -157,8 +185,9 @@ class BrandFilterBar extends GetView<BrandDetailController> {
           (uiKey == 'brand' && controller.selectedYear.value != '全部') ||
           (uiKey == 'spec' && controller.selectedScale.value != '全部');
 
-      final choiceItems =
-          options.map((o) => S2Choice<String>(value: o, title: o)).toList();
+      final choiceItems = options
+          .map((o) => S2Choice<String>(value: o, title: o))
+          .toList();
 
       return SmartSelect<String>.single(
         title: label,
@@ -196,8 +225,9 @@ class BrandFilterBar extends GetView<BrandDetailController> {
                     isActive ? currentValue : label,
                     style: TextStyle(
                       fontSize: 13,
-                      fontWeight:
-                          isActive ? FontWeight.w600 : FontWeight.normal,
+                      fontWeight: isActive
+                          ? FontWeight.w600
+                          : FontWeight.normal,
                       color: isActive
                           ? context.color(mxt.color.primary)
                           : context.color(mxt.color.onSurface).withOpacity(0.6),

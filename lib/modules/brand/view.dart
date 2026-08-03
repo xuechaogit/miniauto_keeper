@@ -41,6 +41,7 @@ class BrandView extends GetView<BrandsController> {
   @override
   Widget build(BuildContext context) {
     final settings = Get.find<SettingsService>();
+
     _setupScrollListener();
     return Scaffold(
       // 保持 AppBar 固定，或者你可以把它移入 CustomScrollView 变成 SliverAppBar
@@ -87,9 +88,7 @@ class BrandView extends GetView<BrandsController> {
                           ),
                           borderSide: BorderSide.none,
                         ),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: w(12),
-                        ),
+                        contentPadding: EdgeInsets.symmetric(horizontal: w(12)),
                       ),
                     ),
                   ),

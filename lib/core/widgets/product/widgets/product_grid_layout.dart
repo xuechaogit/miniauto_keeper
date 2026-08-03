@@ -11,8 +11,9 @@ import '../product.variant.dart';
 class ProductGridLayout extends StatefulWidget {
   final ProductModel product;
   final Widget? details;
+  final VoidCallback? onTap;
 
-  const ProductGridLayout(this.product, {super.key, this.details});
+  const ProductGridLayout(this.product, {super.key, this.details, this.onTap});
 
   @override
   State<ProductGridLayout> createState() => _ProductGridLayoutState();
@@ -47,9 +48,15 @@ class _ProductGridLayoutState extends State<ProductGridLayout> {
         style: ProductStyle.gridGap,
         children: [
           // 图片
-          Box(
-            style: ProductStyle.image.applyVariant(ProductMode.gridMode),
-            child: CustomImage(imageUrl: widget.product.thumb, aspectRatio: 1),
+          GestureDetector(
+            onTap: widget.onTap,
+            child: Box(
+              style: ProductStyle.image.applyVariant(ProductMode.gridMode),
+              child: CustomImage(
+                imageUrl: widget.product.thumb,
+                aspectRatio: 1,
+              ),
+            ),
           ),
 
           // title + action bar
@@ -57,12 +64,15 @@ class _ProductGridLayoutState extends State<ProductGridLayout> {
               VBox(
                 style: Style($flex.gap(6)),
                 children: [
-                  Box(
-                    style: Style($box.height(sp(40))),
-                    child: StyledText(
-                      widget.product.title,
-                      style: ProductStyle.title.applyVariant(
-                        ProductMode.gridMode,
+                  GestureDetector(
+                    onTap: widget.onTap,
+                    child: Box(
+                      style: Style($box.height(sp(40))),
+                      child: StyledText(
+                        widget.product.title,
+                        style: ProductStyle.title.applyVariant(
+                          ProductMode.gridMode,
+                        ),
                       ),
                     ),
                   ),

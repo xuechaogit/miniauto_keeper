@@ -17,135 +17,138 @@ class BrandInfoHeaderWidget extends GetView<BrandDetailController> {
   Widget build(BuildContext context) {
     final brand = controller.brand;
 
-    return ShaderMask(
-      shaderCallback: (bounds) => const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [Colors.white, Colors.white, Colors.transparent],
-        stops: [0.0, 0.90, 1.0],
-      ).createShader(bounds),
-      blendMode: BlendMode.dstIn,
-      child: Container(
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/racing_flags.jpg'),
-            fit: BoxFit.cover,
-            alignment: Alignment.topCenter,
-          ),
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/racing_flags.jpg'),
+          fit: BoxFit.fitWidth,
+          alignment: Alignment.topCenter,
         ),
-        child: Container(
-          color: context.color(mxt.color.surface).withOpacity(0.8),
-          child: VBox(
-            children: [
-              SizedBox(height: MediaQuery.of(context).padding.top),
-              Box(
-                style: Style(
-                  $box.padding.horizontal(w(12)),
-                  $box.padding.vertical(w(6)),
-                ),
-                child: BrandSearchBar(),
+      ),
+      child: Container(
+        color: context.color(mxt.color.surface).withOpacity(0.7),
+        child: VBox(
+          children: [
+            Box(
+              style: Style(
+                $box.padding.horizontal(w(12)),
+                $box.padding.vertical(w(6)),
               ),
+              child: BrandSearchBar(),
+            ),
 
-              Box(
-                style: BrandInfoHeaderStyle.outerPadding,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        // ── Logo ──
-                        Box(
-                          style: BrandInfoHeaderStyle.logoBox,
-                          child: CustomImage(
-                            imageUrl: brand.name,
-                            fit: BoxFit.cover,
-                          ),
+            Box(
+              style: BrandInfoHeaderStyle.outerPadding,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // ── Logo ──
+                      Box(
+                        style: BrandInfoHeaderStyle.logoBox,
+                        child: CustomImage(
+                          imageUrl: brand.name,
+                          fit: BoxFit.cover,
                         ),
-                        const SizedBox(width: BrandInfoHeaderStyle.logoSpacing),
+                      ),
+                      const SizedBox(width: BrandInfoHeaderStyle.logoSpacing),
 
-                        // ── 左侧：品牌名 + 切换品牌 ──
-                        VBox(
-                          style: Style(
-                            $box.height(64),
-                            $flex.mainAxisAlignment.start(),
-                            $flex.crossAxisAlignment.start(),
-                            $with.flexible(flex: 1, fit: FlexFit.tight),
+                      // ── 左侧：品牌名 + 切换品牌 ──
+                      VBox(
+                        style: Style(
+                          $box.height(64),
+                          $flex.mainAxisAlignment.start(),
+                          $flex.crossAxisAlignment.start(),
+                          $with.flexible(flex: 1, fit: FlexFit.tight),
+                        ),
+                        children: [
+                          StyledText(
+                            brand.name.toUpperCase(),
+                            style: BrandInfoHeaderStyle.brandName,
                           ),
-                          children: [
-                            StyledText(
-                              brand.name.toUpperCase(),
-                              style: BrandInfoHeaderStyle.brandName,
-                            ),
-                            const SizedBox(height: 4),
-                            PressableBox(
-                              onPress: controller.switchBrand,
-                              child: Box(
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    StyledIcon(
-                                      Icons.swap_horiz,
-                                      style:
-                                          BrandInfoHeaderStyle.switchBrandIcon,
-                                    ),
-                                    Box(style: Style($box.width(w(4)))),
-                                    StyledText(
-                                      '切换品牌',
-                                      style:
-                                          BrandInfoHeaderStyle.switchBrandText,
-                                    ),
-                                  ],
-                                ),
+                          const SizedBox(height: 4),
+                          PressableBox(
+                            onPress: controller.switchBrand,
+                            child: Box(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  StyledIcon(
+                                    Icons.swap_horiz,
+                                    style: BrandInfoHeaderStyle.switchBrandIcon,
+                                  ),
+                                  Box(style: Style($box.width(w(4)))),
+                                  StyledText(
+                                    '切换品牌',
+                                    style: BrandInfoHeaderStyle.switchBrandText,
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
+                      ),
 
-                        // ── 右侧：收录商品 + 缺失上报 ──
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            StyledText(
-                              '收录商品：10 款',
-                              style: BrandInfoHeaderStyle.countText,
-                            ),
-                            const SizedBox(height: 6),
-                            GestureDetector(
-                              onTap: controller.reportMissing,
-                              child: Box(
-                                style: BrandInfoHeaderStyle.pillContainer,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    StyledIcon(
-                                      Icons.report_outlined,
-                                      style: BrandInfoHeaderStyle.reportIcon,
-                                    ),
-                                    Box(style: Style($box.width(w(4)))),
-                                    StyledText(
-                                      '缺失上报',
-                                      style: BrandInfoHeaderStyle.reportText,
-                                    ),
-                                  ],
-                                ),
+                      // ── 右侧：收录商品 + 缺失上报 ──
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          StyledText(
+                            '收录商品：10 款',
+                            style: BrandInfoHeaderStyle.countText,
+                          ),
+                          const SizedBox(height: 6),
+                          GestureDetector(
+                            onTap: controller.reportMissing,
+                            child: Box(
+                              style: BrandInfoHeaderStyle.pillContainer,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  StyledIcon(
+                                    Icons.report_outlined,
+                                    style: BrandInfoHeaderStyle.reportIcon,
+                                  ),
+                                  Box(style: Style($box.width(w(4)))),
+                                  StyledText(
+                                    '缺失上报',
+                                    style: BrandInfoHeaderStyle.reportText,
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
 
-                    // ── 描述区 ──
-                    Box(
-                      style: BrandInfoHeaderStyle.descTopGap,
-                      child: _buildCollapsibleDescription(),
-                    ),
-                  ],
+                  // ── 描述区 ──
+                  Box(
+                    style: BrandInfoHeaderStyle.descTopGap,
+                    child: _buildCollapsibleDescription(),
+                  ),
+                ],
+              ),
+            ),
+
+            Box(
+              style: Style(
+                $box.height(w(16)),
+                $box.borderRadius.topLeft(r(16)),
+                $box.borderRadius.topRight(r(16)),
+                $box.color.ref(mxt.color.background),
+                $box.shadow(
+                  color: Colors.black.withOpacity(0.06), // 阴影颜色与透明度
+                  offset: const Offset(0, -4), // y 轴为负数，表示向上偏移
+                  blurRadius: 8, // 模糊半径
+                  spreadRadius: 0, // 扩散半径
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

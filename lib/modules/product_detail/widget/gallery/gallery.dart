@@ -17,7 +17,10 @@ class ProductImageGallery extends GetView<ProductDetailController> {
 
   @override
   Widget build(BuildContext context) {
-    final images = data.pics;
+    final images = <String>[
+      if (data.thumb.isNotEmpty) data.thumb,
+      ...data.pics,
+    ];
     if (images.isEmpty) {
       return const SizedBox.shrink();
     }
