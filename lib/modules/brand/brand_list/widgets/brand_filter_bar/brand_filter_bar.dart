@@ -8,43 +8,6 @@ import 'package:mix/mix.dart';
 import '../../controller.dart';
 import 'brand_filter_bar.style.dart';
 
-class BrandFilterBarDelegate extends SliverPersistentHeaderDelegate {
-  final double topPadding; // 状态栏高度
-
-  BrandFilterBarDelegate({required this.topPadding});
-
-  // 筛选栏本身的真实高度（比如 44）
-  double get _filterBarHeight => 48.0;
-
-  // 1. 最小高度：吸顶时的总占用高度 = 悬浮 AppBar 高度 + 筛选栏本身高度
-  @override
-  double get minExtent => _filterBarHeight + kToolbarHeight + topPadding;
-
-  // 2. 最大高度：未吸顶展开时的总占用高度
-  @override
-  double get maxExtent => _filterBarHeight + kToolbarHeight + topPadding;
-
-  @override
-  Widget build(
-    BuildContext context,
-    double shrinkOffset,
-    bool overlapsContent,
-  ) {
-    return Container(
-      // 给筛选栏顶部留出【悬浮 AppBar 的空间】，确保内容只在 AppBar 下方绘制
-      padding: EdgeInsets.only(top: kToolbarHeight + topPadding),
-      color: context.color(mxt.color.background), // 背景色，避免向下滚动时透出底下的内容
-      child: const BrandFilterBar(), // 你的真实筛选栏 Widget
-    );
-  }
-
-  @override
-  bool shouldRebuild(covariant BrandFilterBarDelegate oldDelegate) {
-    // 确保比较逻辑准确，不要写成盲目返回 true
-    return oldDelegate.topPadding != topPadding;
-  }
-}
-
 class BrandFilterBar extends GetView<BrandDetailController> {
   const BrandFilterBar({super.key});
 
@@ -129,8 +92,8 @@ class BrandFilterBar extends GetView<BrandDetailController> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: context.color(mxt.color.background),
+    return Box(
+      style: Style($box.width(double.infinity)),
       child: Box(
         style: BrandFilterBarStyle.barPadding,
         child: SingleChildScrollView(

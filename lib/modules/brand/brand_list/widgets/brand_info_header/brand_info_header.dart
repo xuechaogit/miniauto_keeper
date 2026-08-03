@@ -29,13 +29,7 @@ class BrandInfoHeaderWidget extends GetView<BrandDetailController> {
         color: context.color(mxt.color.surface).withOpacity(0.7),
         child: VBox(
           children: [
-            Box(
-              style: Style(
-                $box.padding.horizontal(w(12)),
-                $box.padding.vertical(w(6)),
-              ),
-              child: BrandSearchBar(),
-            ),
+            Box(child: BrandSearchBar()),
 
             Box(
               style: BrandInfoHeaderStyle.outerPadding,
@@ -142,8 +136,8 @@ class BrandInfoHeaderWidget extends GetView<BrandDetailController> {
                 $box.color.ref(mxt.color.background),
                 $box.shadow(
                   color: Colors.black.withOpacity(0.06), // 阴影颜色与透明度
-                  offset: const Offset(0, -4), // y 轴为负数，表示向上偏移
-                  blurRadius: 8, // 模糊半径
+                  offset: const Offset(0, -8), // y 轴为负数，表示向上偏移
+                  blurRadius: 10, // 模糊半径
                   spreadRadius: 0, // 扩散半径
                 ),
               ),

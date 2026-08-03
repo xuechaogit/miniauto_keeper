@@ -124,7 +124,7 @@ Map<ColorToken, Color> _lightColors() => {
   // 品牌主色：按钮、图标高亮、选中态、进度条
   mxt.color.primary: const Color(0xFF3B5EF5),
   // Scaffold 底色：页面最底层背景
-  mxt.color.background: const Color(0xF9F9F9F9),
+  mxt.color.background: const Color.fromARGB(255, 249, 249, 255),
   // 卡片色：Card、Dialog、Sheet、ListTile 滑出态
   mxt.color.surface: const Color(0xFFFFFFFF),
   // 输入框/容器填充：TextField、SearchBar、Chip 底色

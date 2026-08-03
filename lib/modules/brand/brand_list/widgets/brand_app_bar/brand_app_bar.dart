@@ -15,6 +15,11 @@ class BrandSearchBar extends GetView<BrandDetailController> {
     return SafeArea(
       bottom: false,
       child: HBox(
+        style: Style(
+          $box.padding.only(left: w(6)),
+          $box.padding.only(right: w(12)),
+          $box.padding.vertical(w(6)),
+        ),
         children: [
           IconButton(
             icon: Icon(

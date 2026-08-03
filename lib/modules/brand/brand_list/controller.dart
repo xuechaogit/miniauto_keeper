@@ -16,6 +16,7 @@ class BrandDetailController extends GetxController {
   final products = <ProductModel>[].obs;
   final isLoading = false.obs;
   final isLoadingMore = false.obs;
+  final isLoadMoreError = false.obs;
   final hasMore = true.obs;
   final total = 0.obs;
 

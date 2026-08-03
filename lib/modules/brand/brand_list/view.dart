@@ -12,6 +12,8 @@ import 'package:mix/mix.dart';
 import '../../../core/widgets/product/product.dart';
 import '../../../models/product_model.dart';
 
+import 'package:miniauto_keeper/core/widgets/load_more_footer/load_more_footer.dart';
+
 import 'controller.dart';
 
 class BrandDetailView extends GetView<BrandDetailController> {
@@ -22,7 +24,7 @@ class BrandDetailView extends GetView<BrandDetailController> {
     final topPadding = MediaQuery.of(context).padding.top;
 
     return Scaffold(
-      backgroundColor: context.color(mxt.color.surface),
+      backgroundColor: context.color(mxt.color.background),
       body: Stack(
         children: [
           // ── 1. 底层：普通的 Scroll 页面（包含你的 Header、筛选栏、列表） ──
@@ -44,14 +46,33 @@ class BrandDetailView extends GetView<BrandDetailController> {
                 // 动态高度 Header，正常贴顶绘制，不会被强行往下推
                 SliverToBoxAdapter(child: BrandInfoHeaderWidget()),
 
-                // 筛选栏（吸顶）
-                SliverPersistentHeader(
-                  pinned: true,
-                  delegate: BrandFilterBarDelegate(topPadding: topPadding),
-                ),
+                // 筛选栏：未滚动时在列表中展示，滚动后由悬浮层接管
+                Obx(() {
+                  if (controller.isScrolled.value) {
+                    return const SliverToBoxAdapter(child: SizedBox.shrink());
+                  }
+                  return const SliverToBoxAdapter(child: BrandFilterBar());
+                }),
 
                 // 商品列表
                 _buildProductGrid(context),
+
+                // 底部加载状态
+                if (!controller.isLoading.value && controller.products.isNotEmpty)
+                  SliverToBoxAdapter(
+                    child: Obx(() {
+                      if (controller.isLoadingMore.value)
+                        return const LoadMoreFooter(status: LoadMoreStatus.loading);
+                      if (controller.isLoadMoreError.value)
+                        return LoadMoreFooter(
+                          status: LoadMoreStatus.error,
+                          onRetry: controller.loadMore,
+                        );
+                      if (!controller.hasMore.value)
+                        return const LoadMoreFooter(status: LoadMoreStatus.noMore);
+                      return const SizedBox.shrink();
+                    }),
+                  ),
               ],
             ),
           ),
@@ -63,15 +84,19 @@ class BrandDetailView extends GetView<BrandDetailController> {
             return AnimatedPositioned(
               duration: const Duration(milliseconds: 200),
               curve: Curves.easeInOut,
-              // 未滚动时隐藏到屏幕上方（-100），滚动后贴紧最顶端（0）
-              top: isScrolled ? 0 : -(kToolbarHeight + topPadding),
+              // 未滚动时隐藏到屏幕上方，滚动后贴紧最顶端（0）
+              top: isScrolled ? 0 : -(kToolbarHeight + topPadding + 50),
               left: 0,
               right: 0,
               child: Container(
                 color: context.color(mxt.color.surface),
-                padding: EdgeInsets.only(top: topPadding),
-                height: kToolbarHeight + topPadding,
-                child: BrandSearchBar(),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    BrandSearchBar(),
+                    if (isScrolled) const BrandFilterBar(),
+                  ],
+                ),
               ),
             );
           }),
@@ -102,18 +127,8 @@ class BrandDetailView extends GetView<BrandDetailController> {
           crossAxisCount: 2,
           mainAxisSpacing: 12,
           crossAxisSpacing: 12,
-          childCount:
-              controller.products.length +
-              (controller.isLoadingMore.value ? 1 : 0),
+          childCount: controller.products.length,
           itemBuilder: (context, index) {
-            if (index >= controller.products.length) {
-              return const Center(
-                child: Padding(
-                  padding: EdgeInsets.all(16),
-                  child: CircularProgressIndicator(),
-                ),
-              );
-            }
             return ProductItem(
               controller.products[index],
               onTap: () =>
