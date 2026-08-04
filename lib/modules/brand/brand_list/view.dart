@@ -47,32 +47,54 @@ class BrandDetailView extends GetView<BrandDetailController> {
                 SliverToBoxAdapter(child: BrandInfoHeaderWidget()),
 
                 // 筛选栏：未滚动时在列表中展示，滚动后由悬浮层接管
-                Obx(() {
-                  if (controller.isScrolled.value) {
-                    return const SliverToBoxAdapter(child: SizedBox.shrink());
-                  }
-                  return const SliverToBoxAdapter(child: BrandFilterBar());
-                }),
+                SliverToBoxAdapter(
+                  child: Obx(() {
+                    if (controller.isScrolled.value) {
+                      return const SizedBox.shrink();
+                    }
+                    return const BrandFilterBar();
+                  }),
+                ),
 
                 // 商品列表
                 _buildProductGrid(context),
 
                 // 底部加载状态
-                if (!controller.isLoading.value && controller.products.isNotEmpty)
-                  SliverToBoxAdapter(
-                    child: Obx(() {
-                      if (controller.isLoadingMore.value)
-                        return const LoadMoreFooter(status: LoadMoreStatus.loading);
-                      if (controller.isLoadMoreError.value)
-                        return LoadMoreFooter(
-                          status: LoadMoreStatus.error,
-                          onRetry: controller.loadMore,
-                        );
-                      if (!controller.hasMore.value)
-                        return const LoadMoreFooter(status: LoadMoreStatus.noMore);
+                // 4. 底部加载状态（修正后的结构）
+                SliverToBoxAdapter(
+                  child: Obx(() {
+                    // 首次加载中，或者数据为空时，不展示加载底栏
+                    if (controller.isLoading.value ||
+                        controller.products.isEmpty) {
                       return const SizedBox.shrink();
-                    }),
-                  ),
+                    }
+
+                    // 状态 1：正在加载更多
+                    if (controller.isLoadingMore.value) {
+                      return const LoadMoreFooter(
+                        status: LoadMoreStatus.loading,
+                      );
+                    }
+
+                    // 状态 2：加载失败，支持点击重试
+                    if (controller.isLoadMoreError.value) {
+                      return LoadMoreFooter(
+                        status: LoadMoreStatus.error,
+                        onRetry: controller.loadMore,
+                      );
+                    }
+
+                    // 状态 3：没有更多数据了
+                    if (!controller.hasMore.value) {
+                      return const LoadMoreFooter(
+                        status: LoadMoreStatus.noMore,
+                      );
+                    }
+
+                    // 状态 4：空置（虽然有更多，但当前未触底）
+                    return const SizedBox.shrink();
+                  }),
+                ),
               ],
             ),
           ),

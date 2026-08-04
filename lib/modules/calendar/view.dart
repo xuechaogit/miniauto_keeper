@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:miniauto_keeper/core/theme/app_theme_tool.dart';
 import 'package:miniauto_keeper/core/widgets/divider/divider.dart';
 import 'package:mix/mix.dart';
 import '../../core/theme/app_theme.dart';
@@ -20,7 +21,7 @@ class CalendarView extends GetView<CalendarController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: context.color(mxt.color.surface),
         elevation: 0,
         title: StyledText(
           'PRECISION HUB',

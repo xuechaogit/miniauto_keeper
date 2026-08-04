@@ -75,7 +75,7 @@ class BrandDetailController extends GetxController {
   }
 
   Future<void> loadMore() async {
-    if (isLoadingMore.value || !hasMore.value) return;
+    if (isLoadingMore.value || !hasMore.value || isLoading.value) return;
     isLoadingMore.value = true;
 
     try {
