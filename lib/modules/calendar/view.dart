@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:miniauto_keeper/core/widgets/divider/divider.dart';
 import 'package:mix/mix.dart';
 import '../../core/theme/app_theme.dart';
-import '../../core/widgets/filter_chips/filter_chips.dart';
+import '../../core/widgets/product/product.dart';
 import '../../models/product_model.dart';
 import 'controller.dart';
 import 'widgets/action_button/action_button.dart';
 import 'widgets/horizontal_calendar/horizontal_calendar.dart';
-import 'widgets/horizontal_calendar/horizontal_calendar.style.dart';
+import 'widgets/note_paper/note_paper.dart';
 
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 
@@ -25,32 +26,26 @@ class CalendarView extends GetView<CalendarController> {
           'PRECISION HUB',
           style: Style($text.fontWeight.bold()),
         ),
-        actions: [
-          IconButton(icon: const Icon(Icons.search), onPressed: () {}),
-          const CircleAvatar(radius: 15),
-          SizedBox(width: w(16)),
-        ],
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(r(20)),
+        padding: EdgeInsets.all(w(12)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildHeader(context), // 传入 context
-            SizedBox(height: h(20)),
-            _buildHorizontalCalendar(),
-            SizedBox(height: h(20)),
-            FilterChips(
-              // 数据源：List<String>
-              filters: controller.brands,
-              // 选中的状态：RxString
-              selectedFilter: controller.selectedBrand,
-              // 点击回调：将点击的值传递给控制器逻辑
-              onSelected: (value) => controller.changeBrand(value),
+            NotePaper(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHeader(context),
+                  AppDivider(style: Style($box.margin.vertical(w(12)))),
+                  _buildHorizontalCalendar(),
+                ],
+              ),
             ),
             SizedBox(height: h(30)),
             _buildTodayIndicator(),
             SizedBox(height: h(16)),
+
             _buildReleaseList(),
           ],
         ),
@@ -58,8 +53,6 @@ class CalendarView extends GetView<CalendarController> {
     );
   }
 
-  // 标题栏：Release Calendar + 功能按钮
-  // Header：点击图标弹出日历
   Widget _buildHeader(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -67,41 +60,35 @@ class CalendarView extends GetView<CalendarController> {
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            StyledText(
               'Release Calendar',
-              style: TextStyle(fontSize: sp(28), fontWeight: FontWeight.bold),
+              style: Style(
+                $text.style.ref(mxt.textStyle.headline1),
+                $text.fontWeight.bold(),
+              ),
             ),
-            // 联动显示当前选中的月份
             Obx(
-              () => Text(
+              () => StyledText(
                 DateFormat(
                   'MMMM yyyy',
                 ).format(controller.currentSelectedDate.value),
-                style: TextStyle(fontSize: sp(16)),
+                style: Style($text.style.ref(mxt.textStyle.headline3)),
               ),
             ),
           ],
         ),
-        Row(
-          children: [
-            ActionButton(
-              icon: Icons.calendar_today_outlined,
-              onTap: () => controller.pickDate(context),
-            ),
-            // SizedBox(width: w(10)),
-            // ActionButton(icon: Icons.tune, onTap: () {}),
-          ],
+        ActionButton(
+          icon: Icons.calendar_today_outlined,
+          onTap: () => controller.pickDate(context),
         ),
       ],
     );
   }
 
-  // 横向滚动日历：只显示有数据的日期
   Widget _buildHorizontalCalendar() {
     return Obx(() {
       if (controller.dateList.isEmpty) return const CircularProgressIndicator();
       if (controller.filteredDateList.isEmpty) return const SizedBox.shrink();
-
       return HorizontalCalendar(
         dateList: controller.filteredDateList,
         selectedDateStr: controller.selectedDateStr,
@@ -182,72 +169,16 @@ class CalendarView extends GetView<CalendarController> {
           ),
         );
       }
-      return Column(
-        children: products.map((p) => _buildProductCard(p)).toList(),
+      return VBox(
+        style: Style(
+          $box.padding.all(w(6)),
+          $flex.gap(w(6)),
+          $box.color.ref(mxt.color.surface),
+        ),
+        children: products
+            .map((p) => ProductItem(p, isListMode: true))
+            .toList(),
       );
     });
-  }
-
-  Widget _buildProductCard(ProductModel product) {
-    return Box(
-      style: Style(
-        $box.margin.bottom(16),
-        $box.padding(16),
-        $box.borderRadius(20),
-        $box.color.white.withOpacity(0.03),
-        $box.border.color.ref(mxt.color.outlineVariant),
-      ),
-      child: Row(
-        children: [
-          // 模拟图片区域
-          Box(
-            style: Style(
-              $box.width(80),
-              $box.height(80),
-              $box.borderRadius(12),
-              $box.color.white.withOpacity(0.05),
-            ),
-            child: product.thumb.isNotEmpty
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Image.network(
-                      product.thumb,
-                      fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
-                          const Icon(Icons.directions_car, size: 40),
-                    ),
-                  )
-                : const Center(child: Icon(Icons.directions_car, size: 40)),
-          ),
-          SizedBox(width: w(15)),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (product.code.isNotEmpty)
-                  Text(
-                    product.code,
-                    style: TextStyle(
-                      color: Colors.blueAccent,
-                      fontWeight: FontWeight.bold,
-                      fontSize: sp(12),
-                    ),
-                  ),
-                Text(
-                  product.title,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: sp(16),
-                  ),
-                ),
-                if (product.dash.isNotEmpty)
-                  Text(product.dash, style: TextStyle(fontSize: sp(13))),
-              ],
-            ),
-          ),
-          const Icon(Icons.notifications_none),
-        ],
-      ),
-    );
   }
 }

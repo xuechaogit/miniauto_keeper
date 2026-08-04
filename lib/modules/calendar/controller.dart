@@ -9,16 +9,6 @@ import 'repository.dart';
 class CalendarController extends GetxController {
   final _repository = CalendarRepository();
 
-  // 品牌筛选
-  final selectedBrand = 'ALL BRANDS'.obs;
-  final List<Map<String, dynamic>> brands = [
-    {'label': 'ALL BRANDS', 'value': 'ALL'},
-    {'label': 'MINI GT', 'value': 'MINI GT'},
-    {'label': 'KAIDO HOUSE', 'value': 'KAIDO HOUSE'},
-    {'label': 'INNO64', 'value': 'INNO64'},
-    {'label': 'TARMAC', 'value': 'TARMAC'},
-  ];
-
   // 日期筛选
   final RxString selectedDateStr = ''.obs;
   final dateList = <Map<String, dynamic>>[].obs;
@@ -307,9 +297,5 @@ class CalendarController extends GetxController {
       currentSelectedDate.value = picked;
       _updateSelectedDateStr();
     }
-  }
-
-  void changeBrand(Map<String, dynamic> brandItem) {
-    selectedBrand.value = brandItem['value']!;
   }
 }
