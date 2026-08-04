@@ -13,6 +13,9 @@ class AppRoutes {
   static const notice = '/notice';
   static const noticeDetail = '/notice/detail';
 
+  // --- 我的想要 ---
+  static const wishlist = '/wishlist';
+
   // --- 忘记密码模块 ---
   static const forgotPassword = '/forgot-password';
   // 子页面路径

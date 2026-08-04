@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mix/mix.dart';
 
+import '../../core/router/app_routes.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/tag/tag.dart';
 import '../../core/widgets/tag/tag.variant.dart';
@@ -69,7 +70,12 @@ class ProfileView extends GetView<ProfileController> {
                   Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      onTap: () {},
+                      onTap: () {
+                        final id = item['id'] as String;
+                        if (id == 'wishlist') {
+                          Get.toNamed(AppRoutes.wishlist);
+                        }
+                      },
                       borderRadius: _getBorderRadius(
                         index,
                         controller.menuItems.length,
@@ -331,9 +337,10 @@ class ProfileView extends GetView<ProfileController> {
             context,
             icon: Icons.stars_outlined,
             label: 'Wishlist',
-            subtitle: '15 PENDING',
+            subtitle: 'MY FAVORITES',
             color: primaryColor,
             isReverse: true,
+            onTap: () => Get.toNamed(AppRoutes.wishlist),
           ),
         ]),
       ),
@@ -348,6 +355,7 @@ class ProfileView extends GetView<ProfileController> {
     required String subtitle,
     required Color color,
     required bool isReverse, // 控制裁剪方向和排版对齐
+    VoidCallback? onTap,
   }) {
     return Stack(
       fit: StackFit.expand,
@@ -363,7 +371,7 @@ class ProfileView extends GetView<ProfileController> {
             child: Material(
               color: const Color(0xFF0F0F0F), // 硬核深空黑
               child: InkWell(
-                onTap: () {},
+                onTap: onTap,
                 splashColor: color.withOpacity(0.12),
                 highlightColor: Colors.white.withOpacity(0.02),
                 child: Container(

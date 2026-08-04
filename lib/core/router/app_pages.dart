@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:miniauto_keeper/modules/calendar/binding.dart';
 import 'package:miniauto_keeper/modules/calendar/view.dart';
 import 'package:miniauto_keeper/modules/notice/notice_detail/view.dart';
+import 'package:miniauto_keeper/modules/wishlist/index.dart';
 
 //路由中间件
 
@@ -26,6 +27,7 @@ class AppPages {
     _splashRoute(),
     _loginRoute(),
     _profileRoute(),
+    _wishlistRoute(),
     _forgotPasswordRoute(), // 提取子路由逻辑
     _calendarRoute(),
     _brandDetailRoute(),
@@ -95,6 +97,14 @@ class AppPages {
       GetPage(name: '/verify', page: () => const VerifyIdentityView()),
       GetPage(name: '/reset', page: () => const SetNewPasswordView()),
     ],
+  );
+
+  static GetPage _wishlistRoute() => GetPage(
+    name: AppRoutes.wishlist,
+    page: () => const WishlistView(),
+    binding: WishlistBinding(),
+    transition: Transition.fadeIn,
+    middlewares: [AuthMiddleware()],
   );
 
   //公告
