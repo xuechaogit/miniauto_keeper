@@ -40,7 +40,6 @@ class AppPages {
     name: AppRoutes.initial,
     page: () => const MainView(),
     binding: MainBinding(),
-    middlewares: [AuthMiddleware()],
   );
 
   static GetPage _brandDetailRoute() => GetPage(
@@ -48,7 +47,6 @@ class AppPages {
     page: () => const BrandDetailView(),
     binding: BrandDetailBinding(), // 记得创建对应的 Binding
     transition: Transition.fadeIn,
-    middlewares: [AuthMiddleware()],
   );
 
   static GetPage _loginRoute() => GetPage(
@@ -78,7 +76,6 @@ class AppPages {
     page: () => const ProductDetailView(),
     binding: ProductDetailBinding(),
     transition: Transition.fadeIn,
-    middlewares: [AuthMiddleware()],
   );
 
   static GetPage _calendarRoute() => GetPage(
@@ -86,7 +83,6 @@ class AppPages {
     page: () => const CalendarView(),
     binding: CalendarBinding(),
     transition: Transition.fadeIn,
-    middlewares: [AuthMiddleware()],
   );
 
   static GetPage _forgotPasswordRoute() => GetPage(
@@ -113,7 +109,7 @@ class AppPages {
     page: () => const NoticeListView(),
     binding: NoticeBinding(),
     transition: Transition.fadeIn,
-    middlewares: [AuthMiddleware()],
+
     children: [
       GetPage(
         name: '/detail',

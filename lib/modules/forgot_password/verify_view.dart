@@ -73,18 +73,19 @@ class VerifyIdentityView extends GetView<ForgotPasswordController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            StyledText(
               "We've sent a 6-digit code to your email",
-              style: TextStyle(fontSize: sp(16)),
+              style: Style($text.style.ref(mxt.textStyle.body)),
             ),
-            SizedBox(height: h(32)),
-            Text(
+            SizedBox(height: h(24)),
+            StyledText(
               controller.emailController.text,
-              style: const TextStyle(
-                color: Colors.blueAccent,
-                fontWeight: FontWeight.bold,
+              style: Style(
+                $text.style.ref(mxt.textStyle.body),
+                $text.color.ref(mxt.color.primary),
               ),
             ),
+
             SizedBox(height: h(16)),
 
             // --- 优化后的验证码输入组件 ---
@@ -104,9 +105,9 @@ class VerifyIdentityView extends GetView<ForgotPasswordController> {
 
             SizedBox(height: h(16)),
             Center(
-              child: Text(
+              child: StyledText(
                 'Check your spam folder if you don\'t see it.',
-                style: TextStyle(fontSize: sp(13)),
+                style: Style($text.style.ref(mxt.textStyle.body)),
               ),
             ),
             const Spacer(),
@@ -141,19 +142,23 @@ class VerifyIdentityView extends GetView<ForgotPasswordController> {
                         color: Colors.grey,
                       ),
                       SizedBox(width: w(4)),
-                      Text(
+                      StyledText(
                         'Resend in 0:${controller.timer.value.toString().padLeft(2, '0')}',
-                        style: const TextStyle(color: Colors.grey),
+                        style: Style(
+                          $text.style.ref(mxt.textStyle.body),
+                          $text.color.ref(mxt.color.onSurfaceVariant),
+                        ),
                       ),
                     ],
                   )
                 : GestureDetector(
                     onTap: () => controller.resendCode(),
-                    child: const Text(
+                    child: StyledText(
                       'Resend Code',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w600,
-                        color: Colors.blueAccent,
+                      style: Style(
+                        $text.style.ref(mxt.textStyle.body),
+                        $text.color.ref(mxt.color.primary),
+                        $text.fontWeight.bold(),
                       ),
                     ),
                   ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:miniauto_keeper/core/theme/app_theme.dart';
 import 'package:mix/mix.dart';
 import '../../core/widgets/input/input.dart';
 import '../login/view.dart'; // 引入你的 LoginMixStyles
@@ -34,32 +35,32 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                         StyledText(
                           'Reset Password',
                           style: Style(
-                            $text.style.fontSize(28),
-                            $text.style.fontWeight.w800(),
+                            $text.style.fontSize(sp(28)),
+                            $text.style.fontWeight.bold(),
                           ),
                         ),
                         SizedBox(height: h(12)),
-                        Text(
+                        StyledText(
                           'Enter your email to receive a reset link. We\'ll help you get back to your collection.',
-                          style: TextStyle(fontSize: sp(14)),
+                          style: Style($text.style.ref(mxt.textStyle.body)),
                         ),
-                        SizedBox(height: h(32)),
+                        SizedBox(height: h(24)),
                         const LoginLabel('Email Address'),
 
-                        SizedBox(height: h(8)),
+                        SizedBox(height: h(12)),
                         CustomInput(
                           controller: controller.emailController,
                           hint: 'collector@apex.com',
                           icon: Icons.email_outlined,
                         ),
-                        SizedBox(height: h(32)),
+                        SizedBox(height: h(24)),
                         SubmitButton(
                           label: 'Send Reset Link',
                           icon: Icons.send_rounded,
                           isLoading: controller.isLoading,
                           onPressed: controller.sendResetLink,
                         ),
-                        SizedBox(height: h(32)),
+                        SizedBox(height: h(24)),
                         _buildBackToLogin(),
                       ],
                     ),
@@ -100,9 +101,9 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
           children: [
             Icon(Icons.arrow_back, size: r(16)),
             SizedBox(width: w(8)),
-            Text(
+            StyledText(
               'Back to Login',
-              style: TextStyle(fontWeight: FontWeight.w600),
+              style: Style($text.style.ref(mxt.textStyle.body)),
             ),
           ],
         ),

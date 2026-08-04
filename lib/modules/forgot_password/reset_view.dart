@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:miniauto_keeper/core/theme/app_theme.dart';
 import 'package:mix/mix.dart';
 import '../../core/widgets/input/input.dart';
 import '../login/view.dart';
@@ -22,26 +23,28 @@ class SetNewPasswordView extends GetView<ForgotPasswordController> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Get.back(),
         ),
-        title: const Text(
-          'Set New Password',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
+        title: StyledText('Set New Password'),
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(r(24.0)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Security Update',
-              style: TextStyle(fontSize: sp(26), fontWeight: FontWeight.w800),
+            StyledText(
+              'Set New Password',
+              style: Style(
+                $text.style.fontSize(sp(28)),
+                $text.style.fontWeight.bold(),
+              ),
             ),
-            const Text(
+            StyledText(
               'Create a strong, secure password to protect your collection.',
+              style: Style($text.style.ref(mxt.textStyle.body)),
             ),
-            SizedBox(height: h(40)),
+
+            SizedBox(height: h(32)),
             const LoginLabel('New Password'),
-            SizedBox(height: h(8)),
+            SizedBox(height: h(12)),
             CustomInput(
               controller: controller.newPwdController,
               hint: 'New Password',
@@ -51,7 +54,7 @@ class SetNewPasswordView extends GetView<ForgotPasswordController> {
             SizedBox(height: h(24)),
             const LoginLabel('Confirm New Password'),
 
-            SizedBox(height: h(8)),
+            SizedBox(height: h(12)),
             CustomInput(
               controller: controller.confirmPwdController,
               hint: 'Confirm New Password',

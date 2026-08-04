@@ -45,15 +45,19 @@ class CustomInput extends StatelessWidget {
               style: textSpec.style,
               decoration: InputDecoration(
                 hintText: hint,
-                hintStyle: TextStyle(fontSize: sp(16), color: Colors.grey),
+                hintStyle: TextStyle(
+                  fontSize: context.textStyle(mxt.textStyle.body).fontSize,
+                  color: Colors.grey,
+                ),
                 // 3. 使用 StyledIcon，它会自动根据 Style 中的 $icon 定义来渲染
                 prefixIcon: StyledIcon(icon, style: CustomInputStyle.iconStyle),
                 suffixIcon: suffixIcon,
 
                 border: InputBorder.none,
 
-                contentPadding: EdgeInsets.symmetric(horizontal: w(26),
-                  vertical: 18,
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: w(24),
+                  vertical: w(12),
                 ),
               ),
             );

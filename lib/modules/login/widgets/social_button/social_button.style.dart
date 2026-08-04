@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:mix/mix.dart';
 
 import '../../../../core/theme/app_theme.dart';
 
 class SocialButtonStyle {
   static Style get main => Style(
-    $box.height(54),
-    $box.borderRadius(14),
+    $box.height(h(46)),
+    $box.borderRadius(r(8)),
     $box.color.white.withOpacity(0.04),
     $box.border.color.ref(mxt.color.outline),
     $box.border.all(width: 1),
