@@ -1,14 +1,15 @@
 // lib/app/data/network/interceptors/auth_interceptor.dart
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response;
+import '../../services/user_service.dart';
 
 class AuthInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
-    // 从 GetStorage 或内存中读取 Token
-    final token = "your_stored_token";
+    // 从 UserService 中读取 Token
+    final token = Get.find<UserService>().token;
     if (token.isNotEmpty) {
-      // options.headers['Authorization'] = 'Bearer $token';
+      options.headers['Authorization'] = 'Bearer $token';
     }
     return handler.next(options);
   }

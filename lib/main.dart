@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:miniauto_keeper/core/services/user_service.dart';
 import 'core/utils/screen_adapter.dart';
 import 'package:get/get.dart';
 import 'package:mix/mix.dart';
@@ -36,6 +37,7 @@ void main() async {
   // 4. 异步注入 Service 并等待它初始化完成
   // 使用 putAsync 配合内部的 init 逻辑
   await Get.putAsync(() => SettingsService().init());
+  await Get.putAsync(() => UserService().init());
 
   runApp(const MyApp());
 }
@@ -56,31 +58,31 @@ class MyApp extends StatelessWidget {
         builder: (context, child) => MixTheme(
           data: isDark ? darkTheme : lightTheme,
           child: GetMaterialApp(
-          title: 'Flutter Demo',
-          //开启
-          scrollBehavior: const MaterialScrollBehavior().copyWith(
-            dragDevices: {
-              PointerDeviceKind.touch,
-              PointerDeviceKind.mouse,
-              PointerDeviceKind.trackpad,
-              PointerDeviceKind.stylus,
-            },
-          ),
-          //国际化
-          locale: Locale(settings.language),
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          //主体化
-          themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
-          theme: convertMixToThemeData(lightTheme, Brightness.light),
-          darkTheme: convertMixToThemeData(darkTheme, Brightness.dark),
-          // theme: ThemeData(brightness: Brightness.light),
-          // darkTheme: ThemeData(brightness: Brightness.dark),
-          //路由
-          initialRoute: AppPages.initial,
-          getPages: AppPages.routes,
-          //
-          // home: const MainView(),
+            title: 'Flutter Demo',
+            //开启
+            scrollBehavior: const MaterialScrollBehavior().copyWith(
+              dragDevices: {
+                PointerDeviceKind.touch,
+                PointerDeviceKind.mouse,
+                PointerDeviceKind.trackpad,
+                PointerDeviceKind.stylus,
+              },
+            ),
+            //国际化
+            locale: Locale(settings.language),
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            //主体化
+            themeMode: isDark ? ThemeMode.dark : ThemeMode.light,
+            theme: convertMixToThemeData(lightTheme, Brightness.light),
+            darkTheme: convertMixToThemeData(darkTheme, Brightness.dark),
+            // theme: ThemeData(brightness: Brightness.light),
+            // darkTheme: ThemeData(brightness: Brightness.dark),
+            //路由
+            initialRoute: AppPages.initial,
+            getPages: AppPages.routes,
+            //
+            // home: const MainView(),
           ),
         ),
       );

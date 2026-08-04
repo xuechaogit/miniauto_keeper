@@ -16,6 +16,7 @@ class StorageService extends GetxService {
 
     // 在这里预开常用的 Box
     await Hive.openBox('settings');
+    await Hive.openBox('user');
     await Hive.openBox('cache');
     await Hive.openBox<WishlistItem>('wishlist');
   }
