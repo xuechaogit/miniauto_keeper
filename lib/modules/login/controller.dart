@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../core/services/user_service.dart';
+import '../../models/member_model.dart';
+import 'repository.dart';
+
 class LoginController extends GetxController {
   // 1. 输入控制器
   final emailController = TextEditingController();
@@ -10,34 +14,46 @@ class LoginController extends GetxController {
   var isPasswordVisible = false.obs;
   var isLoading = false.obs;
 
+  final _repo = LoginRepository();
+
   // 切换密码显示/隐藏
   void togglePasswordVisibility() {
     isPasswordVisible.value = !isPasswordVisible.value;
   }
 
-  // 登录逻辑
   Future<void> login() async {
-    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
-      Get.snackbar(
-        'Tip',
-        'Please enter your credentials',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.redAccent.withOpacity(0.8),
-        colorText: Colors.white,
-      );
-      return;
-    }
-
-    isLoading.value = true;
-
     try {
-      // 模拟网络请求
-      await Future.delayed(const Duration(seconds: 2));
+      if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+        Get.snackbar('Error', 'Please enter email and password');
+        return;
+      }
+      isLoading.value = true;
 
-      // 登录成功，跳转到主壳页面
-      Get.offAllNamed('/main');
-    } finally {
+      final result = await _repo.login(
+        username: emailController.text.trim(),
+        password: passwordController.text,
+      );
+
       isLoading.value = false;
+
+      if (result.code != 1) throw new Exception(result.message);
+
+      final userService = Get.find<UserService>();
+      final data = result.data!;
+      final memberInfo = MemberInfo.fromJson(data['member_info']);
+
+      userService.saveLoginInfo(
+        token: data['token'] ?? '',
+        userId: memberInfo.id.toString(),
+        nickname: memberInfo.realname ?? memberInfo.username,
+      );
+      userService.memberInfo.value = memberInfo;
+
+      Get.offAllNamed('/main');
+    } catch (e) {
+      isLoading.value = false;
+      print('Login Failed: $e');
+      Get.snackbar('Login Error', e.toString());
     }
   }
 

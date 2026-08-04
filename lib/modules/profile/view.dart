@@ -60,80 +60,80 @@ class ProfileView extends GetView<ProfileController> {
             ),
           ),
           child: Column(
-            children: controller.menuItems.asMap().entries.map((entry) {
-              final index = entry.key;
-              final item = entry.value;
-              final isLast = index == controller.menuItems.length - 1;
+            children: [
+              ...controller.menuItems.asMap().entries.map((entry) {
+                final index = entry.key;
+                final item = entry.value;
+                final isLast = index == controller.menuItems.length - 1;
 
-              return Column(
-                children: [
-                  Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      onTap: () {
-                        final id = item['id'] as String;
-                        if (id == 'wishlist') {
-                          Get.toNamed(AppRoutes.wishlist);
-                        }
-                      },
-                      borderRadius: _getBorderRadius(
-                        index,
-                        controller.menuItems.length,
-                      ),
-                      highlightColor: Colors.white.withOpacity(0.02),
-                      splashColor: mxt.color.primary
-                          .resolve(context)
-                          .withOpacity(0.1),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: w(16),
-                          vertical: 14,
+                return Column(
+                  children: [
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () {
+                          final id = item['id'] as String;
+                          if (id == 'wishlist') {
+                            Get.toNamed(AppRoutes.wishlist);
+                          }
+                        },
+                        borderRadius: _getBorderRadius(
+                          index,
+                          controller.menuItems.length + 1,
                         ),
-                        child: Row(
-                          children: [
-                            // 1. 优化后的 Icon 容器：类似扫描模组
-                            Container(
-                              width: 42,
-                              height: 42,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF1A1A1A),
-                                borderRadius: BorderRadius.circular(r(12)),
-                                border: Border.all(
-                                  color: Colors.white.withOpacity(0.08),
+                        highlightColor: Colors.white.withOpacity(0.02),
+                        splashColor: mxt.color.primary
+                            .resolve(context)
+                            .withOpacity(0.1),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: w(16),
+                            vertical: 14,
+                          ),
+                          child: Row(
+                            children: [
+                              // 1. 优化后的 Icon 容器：类似扫描模组
+                              Container(
+                                width: 42,
+                                height: 42,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF1A1A1A),
+                                  borderRadius: BorderRadius.circular(r(12)),
+                                  border: Border.all(
+                                    color: Colors.white.withOpacity(0.08),
+                                  ),
+                                ),
+                                child: Icon(
+                                  item['icon'] as IconData,
+                                  color: Colors.white.withOpacity(0.8),
+                                  size: 22,
                                 ),
                               ),
-                              child: Icon(
-                                item['icon'] as IconData,
-                                color: Colors.white.withOpacity(0.8),
-                                size: 22,
-                              ),
-                            ),
-                            SizedBox(width: w(16)),
-                            // 2. 标题部分
-                            Expanded(
-                              child: Text(
-                                (item['title'] as String)
-                                    .toUpperCase(), // 全大写更具赛车味
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: sp(14),
-                                  fontWeight: FontWeight.w600,
-                                  letterSpacing: w(1.1),
+                              SizedBox(width: w(16)),
+                              // 2. 标题部分
+                              Expanded(
+                                child: Text(
+                                  (item['title'] as String)
+                                      .toUpperCase(), // 全大写更具赛车味
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: sp(14),
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: w(1.1),
+                                  ),
                                 ),
                               ),
-                            ),
-                            // 3. 右侧箭头：改用更轻盈的图标
-                            Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              color: Colors.white.withOpacity(0.15),
-                              size: 14,
-                            ),
-                          ],
+                              // 3. 右侧箭头：改用更轻盈的图标
+                              Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                color: Colors.white.withOpacity(0.15),
+                                size: 14,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  // 4. 优化后的分割线：不再横跨全屏
-                  if (!isLast)
+                    // 4. 优化后的分割线：不再横跨全屏
                     Padding(
                       padding: EdgeInsets.only(left: w(74), right: w(20)),
                       child: Divider(
@@ -142,9 +142,59 @@ class ProfileView extends GetView<ProfileController> {
                         color: Colors.white.withOpacity(0.05),
                       ),
                     ),
-                ],
-              );
-            }).toList(),
+                  ],
+                );
+              }),
+              // 退出登录按钮
+              Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () => controller.handleLogout(),
+                  borderRadius: BorderRadius.vertical(
+                    bottom: Radius.circular(r(20)),
+                  ),
+                  highlightColor: Colors.red.withOpacity(0.05),
+                  splashColor: Colors.red.withOpacity(0.1),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: w(16),
+                      vertical: 14,
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 42,
+                          height: 42,
+                          decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(r(12)),
+                            border: Border.all(
+                              color: Colors.red.withOpacity(0.2),
+                            ),
+                          ),
+                          child: const Icon(
+                            Icons.logout_rounded,
+                            color: Colors.redAccent,
+                            size: 22,
+                          ),
+                        ),
+                        SizedBox(width: w(16)),
+                        Expanded(
+                          child: Text(
+                            'LOG OUT',
+                            style: TextStyle(
+                              color: Colors.redAccent,
+                              fontSize: sp(14),
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: w(1.1),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),

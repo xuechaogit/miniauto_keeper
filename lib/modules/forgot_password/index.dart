@@ -4,3 +4,4 @@ export 'verify_view.dart';
 
 export 'controller.dart';
 export 'binding.dart';
+export 'repository.dart';

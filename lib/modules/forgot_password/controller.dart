@@ -3,8 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../core/router/app_routes.dart';
+import '../../core/services/user_service.dart';
+import 'repository.dart';
 
 class ForgotPasswordController extends GetxController {
+  final _repo = ForgotPasswordRepository();
+
   // --- 步骤一：邮箱 ---
   final emailController = TextEditingController();
 
@@ -38,18 +42,48 @@ class ForgotPasswordController extends GetxController {
     });
   }
 
-  // 发送重置邮件
+  // 发送验证码
   void sendResetLink() async {
-    if (emailController.text.isEmpty) return;
+    if (emailController.text.isEmpty) {
+      Get.snackbar("Error", "Please enter your email");
+      return;
+    }
     isLoading.value = true;
-    await Future.delayed(const Duration(seconds: 2)); // 模拟网络请求
-    isLoading.value = false;
-    Get.toNamed('/forgot-password/verify');
+    try {
+      final response = await _repo.sendVerifyCode(emailController.text.trim());
+      if (response.code == 1) {
+        Get.toNamed('/forgot-password/verify');
+      } else {
+        Get.snackbar("Error", response.message);
+      }
+    } catch (e) {
+      print("Resend Reset Link: $e");
+      Get.snackbar("Error", "Network error, please try again");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // 重新发送验证码
+  void resendCode() async {
+    timer.value = 59;
+    startTimer();
+    try {
+      final response = await _repo.sendVerifyCode(emailController.text.trim());
+      if (response.code == 1) {
+        Get.snackbar("Success", "Verification code resent");
+      } else {
+        Get.snackbar("Error", response.message);
+      }
+    } catch (e) {
+      print("Resend code error: $e");
+      Get.snackbar("Error", "Failed to resend verification code");
+    }
   }
 
   // 验证验证码
   void verifyCode(String pin) {
-    if (pin.length == 6) {
+    if (pin.length == 4) {
       print("正在验证: $pin");
       Get.toNamed(AppRoutes.forgotReset);
     } else {
@@ -58,18 +92,46 @@ class ForgotPasswordController extends GetxController {
   }
 
   // 更新密码
-  // lib/modules/forgot_password/controller.dart
-
   void updatePassword() async {
-    // 1. 确保在销毁前收起键盘并移除所有输入框焦点
+    final newPwd = newPwdController.text.trim();
+    final confirmPwd = confirmPwdController.text.trim();
+    final otpCode = otpController.text.trim();
+    final email = emailController.text.trim();
+
+    if (email.isEmpty ||
+        newPwd.isEmpty ||
+        confirmPwd.isEmpty ||
+        otpCode.isEmpty) {
+      Get.snackbar("Error", "All fields are required");
+      return;
+    }
+    if (newPwd != confirmPwd) {
+      Get.snackbar("Error", "Passwords do not match");
+      return;
+    }
+
+    // 收起键盘并移除焦点
     FocusManager.instance.primaryFocus?.unfocus();
 
-    // 2. 增加一帧或微小的延时，让 TextField 完成其自身的 dispose 过程
-    // 这一步是解决 "A TextEditingController was used after being disposed" 的关键
-    await Future.delayed(const Duration(milliseconds: 100));
-
-    // 3. 执行跳转。此时 Controller 销毁时，UI 已经不再依赖它了
-    Get.toNamed(AppRoutes.login);
+    isLoading.value = true;
+    try {
+      final response = await _repo.resetPassword(
+        username: email,
+        password: newPwd,
+        verifyCode: otpCode,
+      );
+      if (response.isSuccess) {
+        await Future.delayed(const Duration(milliseconds: 100));
+        Get.offAllNamed(AppRoutes.login);
+      } else {
+        Get.snackbar("Error", response.message);
+      }
+    } catch (e) {
+      print("Update password error: $e");
+      Get.snackbar("Error", "Network error, please try again");
+    } finally {
+      isLoading.value = false;
+    }
   }
 
   @override
@@ -80,8 +142,8 @@ class ForgotPasswordController extends GetxController {
     // 释放所有控制器
     emailController.dispose();
     otpController.dispose();
-    newPwdController.dispose(); // 补上这个
-    confirmPwdController.dispose(); // 补上这个
+    newPwdController.dispose();
+    confirmPwdController.dispose();
 
     super.onClose();
   }

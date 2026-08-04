@@ -5,6 +5,7 @@ import '../../core/widgets/input/input.dart';
 import '../login/view.dart'; // 引入你的 LoginMixStyles
 import '../login/widgets/login_label/login_label.dart';
 import 'controller.dart';
+import 'widgets/submit_button/submit_button.dart';
 
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 
@@ -52,10 +53,11 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                           icon: Icons.email_outlined,
                         ),
                         SizedBox(height: h(32)),
-                        _buildSubmitButton(
-                          'Send Reset Link',
-                          Icons.send_rounded,
-                          controller.sendResetLink,
+                        SubmitButton(
+                          label: 'Send Reset Link',
+                          icon: Icons.send_rounded,
+                          isLoading: controller.isLoading,
+                          onPressed: controller.sendResetLink,
                         ),
                         SizedBox(height: h(32)),
                         _buildBackToLogin(),
@@ -84,23 +86,6 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: const Color(0xFFE52E1D).withOpacity(0.05),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSubmitButton(String label, IconData icon, VoidCallback tap) {
-    return Pressable(
-      onPress: tap,
-      child: Box(
-        style: LoginMixStyles.loginButton,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            StyledText(label),
-            SizedBox(width: w(8)),
-            Icon(icon, color: Colors.white, size: r(18)),
-          ],
         ),
       ),
     );

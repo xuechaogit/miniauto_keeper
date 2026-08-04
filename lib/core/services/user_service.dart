@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import '../../models/member_model.dart';
 import 'storage_service.dart';
 
 class UserService extends GetxService {
@@ -12,6 +13,7 @@ class UserService extends GetxService {
   final _token = ''.obs;
   final _userId = ''.obs;
   final _nickname = ''.obs;
+  final memberInfo = Rxn<MemberInfo>();
 
   String get token => _token.value;
   String get userId => _userId.value;

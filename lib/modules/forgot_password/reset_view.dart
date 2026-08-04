@@ -5,6 +5,7 @@ import '../../core/widgets/input/input.dart';
 import '../login/view.dart';
 import '../login/widgets/login_label/login_label.dart';
 import 'controller.dart';
+import 'widgets/submit_button/submit_button.dart';
 
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 
@@ -73,23 +74,11 @@ class SetNewPasswordView extends GetView<ForgotPasswordController> {
             // _buildReqItem('Include at least one number', false),
             // _buildReqItem('Include one special character (!@#)', false),
             // SizedBox(height: h(60)),
-            Pressable(
-              onPress: controller.updatePassword,
-              child: Box(
-                style: LoginMixStyles.loginButton,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    StyledText('Update Password'),
-                    SizedBox(width: w(8)),
-                    Icon(
-                      Icons.verified_user_outlined,
-                      color: Colors.white,
-                      size: r(18),
-                    ),
-                  ],
-                ),
-              ),
+            SubmitButton(
+              label: 'Update Password',
+              icon: Icons.verified_user_outlined,
+              isLoading: controller.isLoading,
+              onPressed: controller.updatePassword,
             ),
           ],
         ),

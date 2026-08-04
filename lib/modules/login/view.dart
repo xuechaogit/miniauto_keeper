@@ -30,7 +30,7 @@ class LoginMixStyles {
   // 红色主登录按钮（带红色发光阴影）
   static Style get loginButton => Style(
     $box.height(58),
-    $box.borderRadius.all.ref(mxt.radius.medium),
+    $box.borderRadius.all.ref(mxt.radius.small),
     $box.color.ref(mxt.color.primary),
     $box.alignment.center(),
 
@@ -249,16 +249,19 @@ class LoginView extends GetView<LoginController> {
 
   // 组件：带状态的登录按钮
   Widget _buildLoginButton() {
-    return Pressable(
-      onPress: controller.login,
-      child: Obx(
-        () => Box(
+    return Obx(
+      () => Pressable(
+        onPress: controller.isLoading.value ? null : () => controller.login(),
+        child: Box(
           style: LoginMixStyles.loginButton,
           child: controller.isLoading.value
               ? SizedBox(
                   width: w(24),
                   height: h(24),
-                  child: CircularProgressIndicator(strokeWidth: 2.5),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    color: Colors.white,
+                  ),
                 )
               : Row(
                   mainAxisAlignment: MainAxisAlignment.center,

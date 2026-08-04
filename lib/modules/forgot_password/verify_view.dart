@@ -6,6 +6,7 @@ import 'package:pinput/pinput.dart'; // 导入 pinput
 import '../../core/theme/app_theme.dart';
 import '../login/view.dart';
 import 'controller.dart';
+import 'widgets/submit_button/submit_button.dart';
 
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 
@@ -89,7 +90,7 @@ class VerifyIdentityView extends GetView<ForgotPasswordController> {
             // --- 优化后的验证码输入组件 ---
             Center(
               child: Pinput(
-                length: 6,
+                length: 4,
                 controller: controller.otpController, // 控制器里改为单个 controller
                 defaultPinTheme: defaultPinTheme,
                 focusedPinTheme: focusedPinTheme,
@@ -110,13 +111,11 @@ class VerifyIdentityView extends GetView<ForgotPasswordController> {
             ),
             const Spacer(),
 
-            Pressable(
-              onPress: () =>
+            SubmitButton(
+              label: 'Verify and Continue',
+              isLoading: controller.isLoading,
+              onPressed: () =>
                   controller.verifyCode(controller.otpController.text),
-              child: Box(
-                style: LoginMixStyles.loginButton,
-                child: const Center(child: StyledText('Verify and Continue')),
-              ),
             ),
             SizedBox(height: h(24)),
             _buildResendSection(),
@@ -131,22 +130,33 @@ class VerifyIdentityView extends GetView<ForgotPasswordController> {
     return Center(
       child: Column(
         children: [
-          const Text(
-            'Resend Code',
-            style: TextStyle(fontWeight: FontWeight.w600),
-          ),
-          SizedBox(height: h(8)),
           Obx(
-            () => Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.timer_outlined, size: r(16)),
-                SizedBox(width: w(4)),
-                Text(
-                  'Resend in 0:${controller.timer.value.toString().padLeft(2, '0')}',
-                ),
-              ],
-            ),
+            () => controller.timer.value > 0
+                ? Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.timer_outlined,
+                        size: r(16),
+                        color: Colors.grey,
+                      ),
+                      SizedBox(width: w(4)),
+                      Text(
+                        'Resend in 0:${controller.timer.value.toString().padLeft(2, '0')}',
+                        style: const TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  )
+                : GestureDetector(
+                    onTap: () => controller.resendCode(),
+                    child: const Text(
+                      'Resend Code',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: Colors.blueAccent,
+                      ),
+                    ),
+                  ),
           ),
         ],
       ),

@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../core/services/user_service.dart';
+
 class ProfileController extends GetxController {
   // 响应式变量
   final totalModels = 1248.obs;
@@ -23,7 +25,7 @@ class ProfileController extends GetxController {
   }
 
   void handleLogout() {
-    // 退出登录逻辑
+    Get.find<UserService>().logout();
     Get.offAllNamed('/login');
   }
 }
