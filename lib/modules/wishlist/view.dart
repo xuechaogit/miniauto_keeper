@@ -45,7 +45,7 @@ class WishlistView extends GetView<WishlistController> {
         if (controller.isLoading.value) {
           return _buildShimmer();
         }
-        if (controller.isEmpty.value) {
+        if (controller.isEmpty) {
           return _buildEmptyState(context);
         }
         return controller.isGridMode.value

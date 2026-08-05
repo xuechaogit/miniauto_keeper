@@ -1,47 +1,27 @@
 import 'package:get/get.dart';
-import 'package:hive/hive.dart';
+import 'package:miniauto_keeper/core/services/wishlist_service.dart';
 import 'package:miniauto_keeper/models/wishlist_item.dart';
 
 enum WishlistSort { newest, oldest, priceHigh, priceLow }
 
 class WishlistController extends GetxController {
-  static const boxName = 'wishlist';
+  final _service = Get.find<WishlistService>();
 
-  final items = <WishlistItem>[].obs;
+  RxList<WishlistItem> get items => _service.items;
+
   final isLoading = false.obs;
-  final isEmpty = false.obs;
   final isGridMode = true.obs;
   final sortMode = WishlistSort.newest.obs;
 
-  late Box<WishlistItem> _box;
-
-  @override
-  void onInit() {
-    super.onInit();
-    _box = Hive.box<WishlistItem>(boxName);
-    loadItems();
-  }
-
-  Future<void> loadItems() async {
-    isLoading.value = true;
-    try {
-      final all = _box.values.toList();
-      sort(all);
-      items.value = all;
-      isEmpty.value = all.isEmpty;
-    } finally {
-      isLoading.value = false;
-    }
-  }
+  bool get isEmpty => items.isEmpty;
 
   void addItem(WishlistItem item) {
-    _box.put(item.id, item);
-    loadItems();
+    _service.addItem(item);
+    sort(items);
   }
 
   Future<void> removeItem(String id) async {
-    await _box.delete(id);
-    loadItems();
+    await _service.removeItem(id);
   }
 
   void toggleViewMode() {

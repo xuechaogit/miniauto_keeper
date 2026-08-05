@@ -10,6 +10,7 @@ import 'package:miniauto_keeper/modules/brand/brand_list/widgets/brand_info_head
 import 'package:mix/mix.dart';
 
 import '../../../core/widgets/product/product.dart';
+import '../../../core/widgets/product/product.style.dart';
 import '../../../models/product_model.dart';
 
 import 'package:miniauto_keeper/core/widgets/load_more_footer/load_more_footer.dart';
@@ -162,10 +163,47 @@ class BrandDetailView extends GetView<BrandDetailController> {
           crossAxisSpacing: 12,
           childCount: controller.products.length,
           itemBuilder: (context, index) {
+            final product = controller.products[index];
             return ProductItem(
-              controller.products[index],
-              onTap: () =>
-                  controller.toProductDetail(controller.products[index]),
+              product,
+              onTap: () => controller.toProductDetail(product),
+              actionBar: HBox(
+                style: ProductStyle.gridActionBar,
+                children: [
+                  PressableBox(
+                    onPress: () => controller.toggleFav(product),
+                    child: Obx(
+                      () => StyledIcon(
+                        controller.isFav(product)
+                            ? Icons.star_sharp
+                            : Icons.star_border_sharp,
+                        style: Style(
+                          $icon.size(sp(24)),
+                          $icon.color(
+                            controller.isFav(product)
+                                ? const Color(0xFFE54335)
+                                : const Color(0xFF888888),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: PressableBox(
+                      onPress: () => controller.addToGarage(product),
+                      child: HBox(
+                        style: ProductStyle.gridAddGarageBtn,
+                        children: [
+                          StyledText(
+                            '加入车库',
+                            style: ProductStyle.gridAddGarageBtnText,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             );
           },
         ),

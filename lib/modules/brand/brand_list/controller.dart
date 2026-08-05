@@ -1,8 +1,10 @@
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/router/app_routes.dart';
+import 'package:miniauto_keeper/core/services/wishlist_service.dart';
 import 'package:miniauto_keeper/core/utils/snackbar_util.dart';
 import 'package:miniauto_keeper/models/brand_model.dart';
 import 'package:miniauto_keeper/models/product_model.dart';
+import 'package:miniauto_keeper/models/wishlist_item.dart';
 
 import 'repository.dart';
 import 'widgets/brand_selector_sheet/brand_selector_sheet.dart';
@@ -34,6 +36,26 @@ class BrandDetailController extends GetxController {
 
   // 滚动状态（AppBar 透明 ↔ 实色切换）
   final isScrolled = false.obs;
+
+  // 收藏状态
+  final favIds = <String>{}.obs;
+  final favService = Get.find<WishlistService>();
+
+  bool isFav(ProductModel product) => favService.exists(product.id);
+
+  void toggleFav(ProductModel product) {
+    if (favService.exists(product.id)) {
+      favService.removeItem(product.id);
+    } else {
+      favService.addItem(product.toWishlistItem());
+    }
+    favIds.refresh();
+  }
+
+  void addToGarage(ProductModel product) {
+    Get.find<WishlistService>().addItem(product.toWishlistItem());
+    SnackBarUtil.primary('已加入我的想要');
+  }
 
   static const _pageSize = 10;
 

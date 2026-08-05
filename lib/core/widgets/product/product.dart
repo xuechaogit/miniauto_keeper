@@ -7,6 +7,7 @@ class ProductItem extends StatelessWidget {
   final bool isListMode;
   final ProductModel product;
   final Widget? details;
+  final Widget? actionBar;
   final VoidCallback? onTap;
 
   const ProductItem(
@@ -14,13 +15,14 @@ class ProductItem extends StatelessWidget {
     super.key,
     this.isListMode = false,
     this.details,
+    this.actionBar,
     this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return isListMode
-        ? ProductListLayout(product, details: details)
-        : ProductGridLayout(product, details: details, onTap: onTap);
+        ? ProductListLayout(product, details: details, actionBar: actionBar)
+        : ProductGridLayout(product, details: details, actionBar: actionBar, onTap: onTap);
   }
 }

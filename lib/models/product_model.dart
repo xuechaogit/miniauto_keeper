@@ -1,3 +1,5 @@
+import 'wishlist_item.dart';
+
 class ProductListData {
   final int page;
   final int total;
@@ -13,7 +15,8 @@ class ProductListData {
     return ProductListData(
       page: json['page'] ?? 1,
       total: json['total'] ?? 0,
-      list: (json['list'] as List?)
+      list:
+          (json['list'] as List?)
               ?.map((e) => ProductModel.fromJson(e))
               .toList() ??
           [],
@@ -61,6 +64,18 @@ class ProductModel {
       releaseDate: json['ship_at']?.toString() ?? '',
       code: json['code'] ?? '',
       dash: json['dash'] ?? '',
+    );
+  }
+
+  WishlistItem toWishlistItem() {
+    return WishlistItem(
+      id: id,
+      productId: id,
+      title: title,
+      thumb: thumb,
+      price: price,
+      brandName: brandName,
+      addedAt: DateTime.now().millisecondsSinceEpoch,
     );
   }
 }

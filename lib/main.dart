@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:mix/mix.dart';
 
 import 'core/services/settings_service.dart';
+import 'core/services/wishlist_service.dart';
 import 'core/l10n/arb/app_localizations.dart';
 import 'core/services/storage_service.dart';
 //主题色
@@ -38,6 +39,7 @@ void main() async {
   // 使用 putAsync 配合内部的 init 逻辑
   await Get.putAsync(() => SettingsService().init());
   await Get.putAsync(() => UserService().init());
+  Get.put(WishlistService());
 
   runApp(const MyApp());
 }

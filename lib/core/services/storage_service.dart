@@ -23,19 +23,19 @@ class StorageService extends GetxService {
 
   // 泛型写入：支持任何已注册适配器的类型
   Future<void> write<T>(String boxName, String key, T value) async {
-    var box = Hive.box(boxName);
+    var box = Hive.box<T>(boxName);
     await box.put(key, value);
   }
 
   // 泛型读取
   T read<T>(String boxName, String key, {required T defaultValue}) {
-    var box = Hive.box(boxName);
+    var box = Hive.box<T>(boxName);
     return box.get(key, defaultValue: defaultValue) as T;
   }
 
   // 删除
-  Future<void> remove(String boxName, String key) async {
-    var box = Hive.box(boxName);
+  Future<void> remove<T>(String boxName, String key) async {
+    var box = Hive.box<T>(boxName);
     await box.delete(key);
   }
 
