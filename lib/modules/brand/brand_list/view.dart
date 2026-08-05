@@ -49,10 +49,15 @@ class BrandDetailView extends GetView<BrandDetailController> {
                 // 筛选栏：未滚动时在列表中展示，滚动后由悬浮层接管
                 SliverToBoxAdapter(
                   child: Obx(() {
-                    if (controller.isScrolled.value) {
-                      return const SizedBox.shrink();
-                    }
-                    return const BrandFilterBar();
+                    final isScrolled = controller.isScrolled.value;
+
+                    return IgnorePointer(
+                      ignoring: isScrolled, // 隐藏时禁止点击交互
+                      child: Opacity(
+                        opacity: isScrolled ? 0.0 : 1.0, // 隐藏时设为透明（完全占位）
+                        child: const BrandFilterBar(),
+                      ),
+                    );
                   }),
                 ),
 
@@ -116,7 +121,13 @@ class BrandDetailView extends GetView<BrandDetailController> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     BrandSearchBar(),
-                    if (isScrolled) const BrandFilterBar(),
+                    if (isScrolled)
+                      VBox(
+                        children: [
+                          const BrandFilterBar(),
+                          SizedBox(height: w(12)),
+                        ],
+                      ),
                   ],
                 ),
               ),

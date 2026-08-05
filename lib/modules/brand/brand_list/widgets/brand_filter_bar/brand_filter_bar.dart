@@ -98,7 +98,7 @@ class BrandFilterBar extends GetView<BrandDetailController> {
         style: BrandFilterBarStyle.barPadding,
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,
-          child: Row(
+          child: HBox(
             children: [
               _buildChip(
                 context,
@@ -169,40 +169,23 @@ class BrandFilterBar extends GetView<BrandDetailController> {
         tileBuilder: (ctx, state) {
           return GestureDetector(
             onTap: state.showModal,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: isActive
-                      ? context.color(mxt.color.primary)
-                      : context.color(mxt.color.outline),
-                  width: isActive ? 1.5 : 1,
-                ),
-              ),
+            child: Box(
+              style: BrandFilterBarStyle.chipBase(isActive: isActive),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
+                  StyledText(
                     isActive ? currentValue : label,
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: isActive
-                          ? FontWeight.w600
-                          : FontWeight.normal,
-                      color: isActive
-                          ? context.color(mxt.color.primary)
-                          : context.color(mxt.color.onSurface).withOpacity(0.6),
-                    ),
+                    style: BrandFilterBarStyle.chipText(isActive: isActive),
                   ),
+
                   const SizedBox(width: 4),
                   Icon(
                     Icons.keyboard_arrow_down,
                     size: 16,
                     color: isActive
                         ? context.color(mxt.color.primary)
-                        : context.color(mxt.color.onSurface).withOpacity(0.6),
+                        : context.color(mxt.color.onSurface),
                   ),
                 ],
               ),

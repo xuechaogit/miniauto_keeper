@@ -171,14 +171,17 @@ class CalendarView extends GetView<CalendarController> {
         );
       }
       return VBox(
-        style: Style(
-          $box.padding.all(w(6)),
-          $flex.gap(w(6)),
-          $box.color.ref(mxt.color.surface),
-        ),
-        children: products
-            .map((p) => ProductItem(p, isListMode: true))
-            .toList(),
+        style: Style($box.padding.all(w(6)), $box.color.ref(mxt.color.surface)),
+        children: products.asMap().entries.expand((entry) {
+          final index = entry.key;
+          final p = entry.value;
+
+          return [
+            ProductItem(p, isListMode: true),
+            // 只要不是最后一个商品，就插入一条分割线
+            if (index < products.length - 1) AppDivider(),
+          ];
+        }).toList(),
       );
     });
   }
