@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
+import 'package:miniauto_keeper/core/widgets/product/product.style.dart';
 import 'package:mix/mix.dart';
 
 import '../../core/theme/app_theme.dart';
@@ -22,57 +24,198 @@ class WishlistView extends GetView<WishlistController> {
         backgroundColor: context.color(mxt.color.surface),
         elevation: 0,
         title: const Text('我的想要'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.sort_rounded),
-            tooltip: '排序',
-            onPressed: () => _showSortSheet(context),
-          ),
-          IconButton(
-            icon: Obx(
-              () => Icon(
-                controller.isGridMode.value
-                    ? Icons.view_list_rounded
-                    : Icons.grid_view_rounded,
-              ),
-            ),
-            tooltip: '切换视图',
-            onPressed: () => controller.toggleViewMode(),
-          ),
+      ),
+      body: Column(
+        children: [
+          _buildSearchBar(context),
+          // _buildBrandChips(context),
+          Expanded(child: _buildBody(context)),
         ],
       ),
-      body: Obx(() {
-        if (controller.isLoading.value) {
-          return _buildShimmer();
-        }
-        if (controller.isEmpty) {
-          return _buildEmptyState(context);
-        }
-        return controller.isGridMode.value
-            ? _buildGrid(context)
-            : _buildList(context);
-      }),
     );
   }
 
-  Widget _buildShimmer() {
-    return CustomShimmer(
-      child: GridView.builder(
-        padding: EdgeInsets.all(w(12)),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          childAspectRatio: 0.72,
-        ),
-        itemCount: 4,
-        itemBuilder: (_, __) => Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(r(12)),
+  Widget _buildSearchBar(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(w(12), h(8), w(12), h(4)),
+      child: TextField(
+        controller: TextEditingController(text: controller.keyword.value)
+          ..selection = TextSelection.fromPosition(
+            TextPosition(offset: controller.keyword.value.length),
+          ),
+        onChanged: (v) => controller.keyword.value = v,
+        decoration: InputDecoration(
+          hintText: '搜索商品名称或品牌',
+          hintStyle: TextStyle(
+            fontSize: sp(14),
+            color: context.color(mxt.color.onSurfaceVariant).withOpacity(0.5),
+          ),
+          prefixIcon: Icon(
+            Icons.search_rounded,
+            size: w(20),
+            color: context.color(mxt.color.onSurfaceVariant),
+          ),
+          suffixIcon: Obx(
+            () => controller.keyword.value.isNotEmpty
+                ? IconButton(
+                    icon: Icon(Icons.clear_rounded, size: w(18)),
+                    onPressed: () => controller.keyword.value = '',
+                  )
+                : const SizedBox.shrink(),
+          ),
+          filled: true,
+          fillColor: context.color(mxt.color.surface).withOpacity(0.3),
+          contentPadding: EdgeInsets.symmetric(vertical: h(10)),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(r(10)),
+            borderSide: BorderSide.none,
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildBrandChips(BuildContext context) {
+    return Obx(() {
+      final brands = controller.items.map((e) => e.brandName).toSet().toList();
+      if (brands.isEmpty) return const SizedBox.shrink();
+
+      return SizedBox(
+        height: h(40),
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          padding: EdgeInsets.symmetric(horizontal: w(12)),
+          itemCount: brands.length,
+          itemBuilder: (_, index) {
+            final brand = brands[index];
+            final isSelected = controller.selectedBrands.contains(brand);
+            return Padding(
+              padding: EdgeInsets.only(right: w(8)),
+              child: FilterChip(
+                label: Text(
+                  brand,
+                  style: TextStyle(
+                    fontSize: sp(12),
+                    color: isSelected
+                        ? context.color(mxt.color.primary)
+                        : context.color(mxt.color.onSurface),
+                  ),
+                ),
+                selected: isSelected,
+                onSelected: (v) {
+                  if (v) {
+                    controller.selectedBrands.add(brand);
+                  } else {
+                    controller.selectedBrands.remove(brand);
+                  }
+                  controller.selectedBrands.refresh();
+                },
+                backgroundColor: context
+                    .color(mxt.color.surface)
+                    .withOpacity(0.3),
+                selectedColor: context.color(mxt.color.primary),
+                checkmarkColor: context.color(mxt.color.primary),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(r(20)),
+                ),
+                side: BorderSide.none,
+                visualDensity: VisualDensity.compact,
+              ),
+            );
+          },
+        ),
+      );
+    });
+  }
+
+  Widget _buildBody(BuildContext context) {
+    return Obx(() {
+      if (controller.isEmpty) {
+        return _buildEmptyState(context);
+      }
+      if (controller.displayItems.isEmpty) {
+        return _buildSearchEmptyState(context);
+      }
+      return _buildGrid(context);
+    });
+  }
+
+  Widget _buildGrid(BuildContext context) {
+    return Obx(
+      () => MasonryGridView.count(
+        padding: EdgeInsets.all(w(12)),
+        crossAxisCount: 2,
+        mainAxisSpacing: w(12),
+        crossAxisSpacing: w(12),
+        itemCount: controller.displayItems.length,
+        itemBuilder: (context, index) {
+          final item = controller.displayItems[index];
+          return Dismissible(
+            key: Key(item.id),
+            direction: DismissDirection.endToStart,
+            background: Container(
+              alignment: Alignment.centerRight,
+              padding: EdgeInsets.only(right: w(24)),
+              decoration: BoxDecoration(
+                color: Colors.red.withOpacity(0.8),
+                borderRadius: BorderRadius.circular(r(12)),
+              ),
+              child: Icon(
+                Icons.delete_outline,
+                color: Colors.white,
+                size: w(28),
+              ),
+            ),
+            confirmDismiss: (_) async {
+              return await Get.defaultDialog<bool>(
+                    title: '移除心愿',
+                    middleText: '确定要移除「${item.title}」吗？',
+                    textConfirm: '确定',
+                    textCancel: '取消',
+                    confirmTextColor: Colors.white,
+                    onConfirm: () => Get.back(result: true),
+                    onCancel: () => Get.back(result: false),
+                  ) ??
+                  false;
+            },
+            onDismissed: (_) => controller.removeItem(item.productId),
+            child: ProductItem(
+              _toProductModel(item),
+              onTap: () => controller.openProductDetail(item.productId),
+              actionBar: _buildActionBar(item),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildActionBar(WishlistItem item) {
+    return HBox(
+      style: ProductStyle.gridActionBar,
+      children: [
+        PressableBox(
+          onPress: () => controller.removeItem(item.productId),
+          child: StyledIcon(
+            Icons.favorite_outline,
+            style: Style(
+              $icon.size(sp(24)),
+              $icon.color(const Color(0xFFE54335)),
+            ),
+          ),
+        ),
+        Expanded(
+          child: PressableBox(
+            onPress: () => controller.addToGarage(item),
+            child: HBox(
+              style: ProductStyle.gridAddGarageBtn,
+              children: [
+                StyledText('加入车库', style: ProductStyle.gridAddGarageBtnText),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -107,75 +250,25 @@ class WishlistView extends GetView<WishlistController> {
     );
   }
 
-  Widget _buildGrid(BuildContext context) {
-    return Obx(
-      () => GridView.builder(
-        padding: EdgeInsets.all(w(12)),
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          mainAxisSpacing: w(12),
-          crossAxisSpacing: w(12),
-          childAspectRatio: 0.72,
-        ),
-        itemCount: controller.items.length,
-        itemBuilder: (_, index) {
-          final item = controller.items[index];
-          return _buildDismissibleItem(item, context, isListMode: false);
-        },
-      ),
-    );
-  }
-
-  Widget _buildList(BuildContext context) {
-    return Obx(
-      () => ListView.builder(
-        padding: EdgeInsets.symmetric(horizontal: w(12), vertical: w(8)),
-        itemCount: controller.items.length,
-        itemBuilder: (_, index) {
-          final item = controller.items[index];
-          return Padding(
-            padding: EdgeInsets.only(bottom: w(8)),
-            child: _buildDismissibleItem(item, context, isListMode: true),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildDismissibleItem(
-    WishlistItem item,
-    BuildContext context, {
-    required bool isListMode,
-  }) {
-    return Dismissible(
-      key: Key(item.id),
-      direction: DismissDirection.endToStart,
-      background: Container(
-        alignment: Alignment.centerRight,
-        padding: EdgeInsets.only(right: w(24)),
-        decoration: BoxDecoration(
-          color: Colors.red.withOpacity(0.8),
-          borderRadius: BorderRadius.circular(r(12)),
-        ),
-        child: Icon(Icons.delete_outline, color: Colors.white, size: w(28)),
-      ),
-      confirmDismiss: (_) async {
-        return await Get.defaultDialog<bool>(
-              title: '移除心愿',
-              middleText: '确定要移除「${item.title}」吗？',
-              textConfirm: '确定',
-              textCancel: '取消',
-              confirmTextColor: Colors.white,
-              onConfirm: () => Get.back(result: true),
-              onCancel: () => Get.back(result: false),
-            ) ??
-            false;
-      },
-      onDismissed: (_) => controller.removeItem(item.id),
-      child: ProductItem(
-        _toProductModel(item),
-        isListMode: isListMode,
-        onTap: () => controller.openProductDetail(item.productId),
+  Widget _buildSearchEmptyState(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.search_off_rounded,
+            size: w(64),
+            color: context.color(mxt.color.onSurfaceVariant).withOpacity(0.3),
+          ),
+          SizedBox(height: h(16)),
+          Text(
+            '没有找到相关商品',
+            style: TextStyle(
+              fontSize: sp(16),
+              color: context.color(mxt.color.onSurfaceVariant),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -191,71 +284,5 @@ class WishlistView extends GetView<WishlistController> {
       description: item.note ?? '',
       purchaseDate: '',
     );
-  }
-
-  void _showSortSheet(BuildContext context) {
-    Get.bottomSheet(
-      Container(
-        decoration: BoxDecoration(
-          color: context.color(mxt.color.surface),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(r(16))),
-        ),
-        padding: EdgeInsets.all(w(16)),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: w(36),
-              height: w(4),
-              decoration: BoxDecoration(
-                color: context.color(mxt.color.outlineVariant),
-                borderRadius: BorderRadius.circular(r(2)),
-              ),
-            ),
-            SizedBox(height: h(16)),
-            Text(
-              '排序方式',
-              style: TextStyle(
-                fontSize: sp(16),
-                fontWeight: FontWeight.w600,
-                color: context.color(mxt.color.onSurface),
-              ),
-            ),
-            SizedBox(height: h(12)),
-            _sortOption(context, '最新添加', WishlistSort.newest),
-            _sortOption(context, '最早添加', WishlistSort.oldest),
-            _sortOption(context, '价格从高到低', WishlistSort.priceHigh),
-            _sortOption(context, '价格从低到高', WishlistSort.priceLow),
-            SizedBox(height: h(16)),
-          ],
-        ),
-      ),
-      backgroundColor: Colors.transparent,
-    );
-  }
-
-  Widget _sortOption(BuildContext context, String label, WishlistSort mode) {
-    return Obx(() {
-      final isSelected = controller.sortMode.value == mode;
-      return ListTile(
-        title: Text(
-          label,
-          style: TextStyle(
-            fontSize: sp(14),
-            color: isSelected
-                ? context.color(mxt.color.primary)
-                : context.color(mxt.color.onSurface),
-            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-          ),
-        ),
-        trailing: isSelected
-            ? Icon(Icons.check, color: context.color(mxt.color.primary))
-            : null,
-        onTap: () {
-          controller.setSortMode(mode);
-          Get.back();
-        },
-      );
-    });
   }
 }

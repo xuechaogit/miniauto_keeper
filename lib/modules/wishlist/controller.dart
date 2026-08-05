@@ -1,57 +1,58 @@
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/services/wishlist_service.dart';
+import 'package:miniauto_keeper/core/utils/snackbar_util.dart';
 import 'package:miniauto_keeper/models/wishlist_item.dart';
-
-enum WishlistSort { newest, oldest, priceHigh, priceLow }
 
 class WishlistController extends GetxController {
   final _service = Get.find<WishlistService>();
 
   RxList<WishlistItem> get items => _service.items;
 
-  final isLoading = false.obs;
-  final isGridMode = true.obs;
-  final sortMode = WishlistSort.newest.obs;
+  final keyword = ''.obs;
+  final selectedBrands = <String>{}.obs;
+  final displayItems = <WishlistItem>[].obs;
 
   bool get isEmpty => items.isEmpty;
 
+  @override
+  void onInit() {
+    super.onInit();
+    _applyFilters();
+    everAll([keyword, selectedBrands], (_) => _applyFilters());
+  }
+
   void addItem(WishlistItem item) {
     _service.addItem(item);
-    sort(items);
+    _applyFilters();
   }
 
-  Future<void> removeItem(String id) async {
-    await _service.removeItem(id);
+  Future<void> removeItem(String productId) async {
+    await _service.removeItem(productId);
+    _applyFilters();
   }
 
-  void toggleViewMode() {
-    isGridMode.toggle();
+  void addToGarage(WishlistItem item) {
+    SnackBarUtil.primary('已加入车库');
   }
 
   void openProductDetail(String productId) {
     Get.toNamed('/detail', arguments: {'id': productId});
   }
 
-  void setSortMode(WishlistSort mode) {
-    sortMode.value = mode;
-    sort(items);
-  }
+  void _applyFilters() {
+    var list = items.toList();
 
-  void sort(List<WishlistItem> list) {
-    switch (sortMode.value) {
-      case WishlistSort.newest:
-        list.sort((a, b) => b.addedAt.compareTo(a.addedAt));
-        break;
-      case WishlistSort.oldest:
-        list.sort((a, b) => a.addedAt.compareTo(b.addedAt));
-        break;
-      case WishlistSort.priceHigh:
-        list.sort((a, b) => b.price.compareTo(a.price));
-        break;
-      case WishlistSort.priceLow:
-        list.sort((a, b) => a.price.compareTo(b.price));
-        break;
+    if (keyword.value.isNotEmpty) {
+      final kw = keyword.value.toLowerCase();
+      list = list.where((e) =>
+          e.title.toLowerCase().contains(kw) ||
+          e.brandName.toLowerCase().contains(kw)).toList();
     }
-    items.refresh();
+
+    if (selectedBrands.isNotEmpty) {
+      list = list.where((e) => selectedBrands.contains(e.brandName)).toList();
+    }
+
+    displayItems.value = list;
   }
 }

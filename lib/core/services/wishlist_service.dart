@@ -19,8 +19,8 @@ class WishlistService extends GetxService {
   }
 
   void loadItems() {
-    final box = Hive.box<WishlistItem>(_boxName);
-    items.value = box.values.toList();
+    final box = Hive.box(_boxName);
+    items.value = box.values.cast<WishlistItem>().toList();
   }
 
   void addItem(WishlistItem item) {
