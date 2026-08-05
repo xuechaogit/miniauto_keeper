@@ -7,6 +7,7 @@ class AppRoutes {
 
   //品牌
   static const brandDetail = '/brand-detail';
+  static const reportMissing = '/brand-detail/report-missing';
   static const productDetail = '/detail';
 
   //公告

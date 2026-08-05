@@ -9,6 +9,7 @@ import 'package:miniauto_keeper/modules/wishlist/index.dart';
 //路由中间件
 
 //路由路径
+import '../../modules/brand/report_missing/index.dart';
 import '../../modules/modules.dart';
 import '../../modules/notice/index.dart';
 import '../../modules/product_detail/index.dart';
@@ -31,6 +32,7 @@ class AppPages {
     _forgotPasswordRoute(), // 提取子路由逻辑
     _calendarRoute(),
     _brandDetailRoute(),
+    _reportMissingRoute(),
     _productDetailRoute(),
     _noticeRoute(), // 公告
   ];
@@ -69,6 +71,13 @@ class AppPages {
     binding: ProfileBinding(),
     transition: Transition.fadeIn,
     middlewares: [AuthMiddleware()],
+  );
+
+  static GetPage _reportMissingRoute() => GetPage(
+    name: AppRoutes.reportMissing,
+    page: () => const ReportMissingView(),
+    binding: ReportMissingBinding(),
+    transition: Transition.fadeIn,
   );
 
   static GetPage _productDetailRoute() => GetPage(

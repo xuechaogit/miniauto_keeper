@@ -68,8 +68,11 @@ dependencies:
   #轮播图
   flutter_carousel_widget: ^3.1.0
 
-  #分享连接
+  # 分享连接
   share_plus: ^10.0.0 # 建议使用当前稳定版本
+
+  # 图片选择
+  image_picker: ^1.1.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

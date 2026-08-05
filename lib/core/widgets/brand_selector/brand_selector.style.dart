@@ -1,7 +1,7 @@
 import 'package:miniauto_keeper/core/theme/app_theme.dart';
 import 'package:mix/mix.dart';
 
-class BrandSelectorSheetStyle {
+class BrandSelectorStyle {
   static Style get sheetContainer => Style(
     $box.color.ref(mxt.color.surface),
     $box.borderRadius.topLeft.ref(mxt.radius.medium),
@@ -36,11 +36,6 @@ class BrandSelectorSheetStyle {
 
   static Style get searchIcon =>
       Style($icon.size(18), $icon.color.ref(mxt.color.onSurfaceVariant));
-
-  static Style get searchInput => Style(
-    $text.style.ref(mxt.textStyle.body),
-    $text.color.ref(mxt.color.onSurface),
-  );
 
   static const crossAxisCount = 4;
   static const mainAxisSpacing = 12.0;

@@ -7,7 +7,7 @@ import 'package:miniauto_keeper/models/product_model.dart';
 import 'package:miniauto_keeper/models/wishlist_item.dart';
 
 import 'repository.dart';
-import 'widgets/brand_selector_sheet/brand_selector_sheet.dart';
+import 'package:miniauto_keeper/core/widgets/brand_selector/brand_selector.dart';
 
 class BrandDetailController extends GetxController {
   dynamic get brand =>
@@ -158,7 +158,7 @@ class BrandDetailController extends GetxController {
   }
 
   void reportMissing() {
-    SnackBarUtil.primary('缺失商品已上报');
+    Get.toNamed(AppRoutes.reportMissing);
   }
 
   void toProductDetail(ProductModel product) {

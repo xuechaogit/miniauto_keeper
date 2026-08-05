@@ -7,10 +7,17 @@ import 'package:miniauto_keeper/core/widgets/image/image.dart';
 import 'package:miniauto_keeper/models/brand_model.dart';
 import 'package:mix/mix.dart';
 
-import 'brand_selector_sheet.style.dart';
+import 'brand_selector.style.dart';
 
 class BrandSelectorSheet extends StatefulWidget {
-  const BrandSelectorSheet({super.key});
+  final String title;
+  final List<BrandModel>? brands;
+
+  const BrandSelectorSheet({
+    super.key,
+    this.title = '选择品牌',
+    this.brands,
+  });
 
   @override
   State<BrandSelectorSheet> createState() => _BrandSelectorSheetState();
@@ -36,6 +43,12 @@ class _BrandSelectorSheetState extends State<BrandSelectorSheet> {
   }
 
   void _loadBrands() {
+    if (widget.brands != null) {
+      _brands.addAll(widget.brands!);
+      _filteredBrands.value = widget.brands!;
+      return;
+    }
+
     try {
       final box = Hive.box('cache');
       final cached = box.get('brands');
@@ -61,30 +74,29 @@ class _BrandSelectorSheetState extends State<BrandSelectorSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     final sheetHeight = MediaQuery.of(context).size.height * 0.75;
 
     return SizedBox(
       height: sheetHeight,
       child: Box(
-        style: BrandSelectorSheetStyle.sheetContainer,
+        style: BrandSelectorStyle.sheetContainer,
         child: Column(
           children: [
-            Center(child: Box(style: BrandSelectorSheetStyle.dragHandle)),
+            Center(child: Box(style: BrandSelectorStyle.dragHandle)),
             Box(
               style: Style($box.margin.bottom(12)),
-              child: StyledText('选择品牌', style: BrandSelectorSheetStyle.title),
+              child: StyledText(widget.title, style: BrandSelectorStyle.title),
             ),
 
             // 搜索框
             Box(
-              style: BrandSelectorSheetStyle.searchBar,
+              style: BrandSelectorStyle.searchBar,
               child: HBox(
                 style: Style($flex.gap(8), $flex.crossAxisAlignment.center()),
                 children: [
                   StyledIcon(
                     Icons.search,
-                    style: BrandSelectorSheetStyle.searchIcon,
+                    style: BrandSelectorStyle.searchIcon,
                   ),
                   Expanded(
                     child: TextField(
@@ -101,7 +113,6 @@ class _BrandSelectorSheetState extends State<BrandSelectorSheet> {
               ),
             ),
 
-            // 品牌网格（固定高度区域，内部滚动，防止内容变化时抖动）
             Expanded(
               child: Obx(() {
                 if (_filteredBrands.isEmpty) {
@@ -119,10 +130,10 @@ class _BrandSelectorSheetState extends State<BrandSelectorSheet> {
                 return GridView.builder(
                   padding: EdgeInsets.zero,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: BrandSelectorSheetStyle.crossAxisCount,
-                    mainAxisSpacing: BrandSelectorSheetStyle.mainAxisSpacing,
-                    crossAxisSpacing: BrandSelectorSheetStyle.crossAxisSpacing,
-                    childAspectRatio: BrandSelectorSheetStyle.childAspectRatio,
+                    crossAxisCount: BrandSelectorStyle.crossAxisCount,
+                    mainAxisSpacing: BrandSelectorStyle.mainAxisSpacing,
+                    crossAxisSpacing: BrandSelectorStyle.crossAxisSpacing,
+                    childAspectRatio: BrandSelectorStyle.childAspectRatio,
                   ),
                   itemCount: _filteredBrands.length,
                   itemBuilder: (_, i) =>
@@ -148,13 +159,13 @@ class _BrandTile extends StatelessWidget {
     return GestureDetector(
       onTap: () => onTap(brand),
       child: VBox(
-        style: BrandSelectorSheetStyle.tileContainer,
+        style: BrandSelectorStyle.tileContainer,
         children: [
           Box(
-            style: BrandSelectorSheetStyle.tileImageBox,
+            style: BrandSelectorStyle.tileImageBox,
             child: CustomImage(imageUrl: brand.thumb, aspectRatio: 1),
           ),
-          StyledText(brand.name, style: BrandSelectorSheetStyle.tileName),
+          StyledText(brand.name, style: BrandSelectorStyle.tileName),
         ],
       ),
     );
@@ -162,9 +173,12 @@ class _BrandTile extends StatelessWidget {
 }
 
 /// 弹出品牌选择器 bottom sheet，返回用户选中的 BrandModel
-Future<BrandModel?> showBrandSelectorSheet() {
+Future<BrandModel?> showBrandSelectorSheet({
+  List<BrandModel>? brands,
+  String title = '选择品牌',
+}) {
   return Get.bottomSheet<BrandModel>(
-    const BrandSelectorSheet(),
+    BrandSelectorSheet(brands: brands, title: title),
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     enterBottomSheetDuration: const Duration(milliseconds: 350),
