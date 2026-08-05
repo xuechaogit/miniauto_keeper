@@ -9,7 +9,7 @@ import '../../core/widgets/input/input.dart';
 import 'controller.dart';
 
 import 'widgets/login_label/login_label.dart';
-import 'widgets/social_button/social_button.dart';
+import 'package:miniauto_keeper/core/widgets/social_button/social_button.dart';
 
 /// 1. 定义专属登录页的 Mix 样式，保持代码整洁
 class LoginMixStyles {

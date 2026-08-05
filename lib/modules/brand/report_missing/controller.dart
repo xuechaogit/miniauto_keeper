@@ -7,11 +7,12 @@ import 'package:image_picker/image_picker.dart';
 import '../../../core/utils/snackbar_util.dart';
 import '../../../core/widgets/brand_selector/brand_selector.dart';
 import '../../../models/brand_model.dart';
+import 'form_field_config.dart';
 
 class ReportMissingController extends GetxController {
   final ImagePicker _picker = ImagePicker();
 
-  // ── 模拟品牌数据（车模品牌 & 汽车品牌共用） ──
+  // ── 模拟品牌数据 ──
   static final mockBrands = [
     BrandModel(id: 1, pid: 0, name: 'AUTOart', thumb: ''),
     BrandModel(id: 2, pid: 0, name: 'Minichamps', thumb: ''),
@@ -45,28 +46,50 @@ class ReportMissingController extends GetxController {
   static const colorOptions = [
     '白色', '黑色', '红色', '蓝色', '黄色', '绿色', '银色', '灰色', '多色',
   ];
-  static const materialOptions = [
-    '合金', '树脂', '塑料', '复合材料',
-  ];
+  static const materialOptions = ['合金', '树脂', '塑料', '复合材料'];
   static const limitedOptions = [
     '不限量', '限量500', '限量1000', '限量2000', '限量3000', '限量5000', '限量10000',
   ];
 
+  // ── 字段配置（所有录入字段的定义集中在此） ──
+  static final sections = [
+    FormSection(title: '基本信息', fields: [
+      const FormFieldConfig(type: FieldType.text, key: 'productName', label: '车模名称', hint: '请输入车模名称'),
+      const FormFieldConfig(type: FieldType.brand, key: 'modelBrand', label: '车模品牌', brandKind: BrandFieldKind.model),
+      const FormFieldConfig(type: FieldType.brand, key: 'carBrand', label: '汽车品牌', brandKind: BrandFieldKind.car),
+      const FormFieldConfig(type: FieldType.text, key: 'releaseYear', label: '发行年份', hint: '如 2024', keyboardType: TextInputType.number),
+    ]),
+    FormSection(title: '规格详情', fields: [
+      const FormFieldConfig(type: FieldType.select, key: 'scale', label: '比例', pickOptions: scaleOptions),
+      const FormFieldConfig(type: FieldType.text, key: 'productCode', label: '车模编号', hint: '如 ABC123'),
+      const FormFieldConfig(type: FieldType.select, key: 'version', label: '版本', pickOptions: versionOptions),
+      const FormFieldConfig(type: FieldType.select, key: 'color', label: '颜色', pickOptions: colorOptions),
+      const FormFieldConfig(type: FieldType.select, key: 'material', label: '材质', pickOptions: materialOptions),
+      const FormFieldConfig(type: FieldType.select, key: 'limitedInfo', label: '限量信息', pickOptions: limitedOptions),
+      const FormFieldConfig(type: FieldType.text, key: 'releasePrice', label: '发售价', hint: '如 299.00', keyboardType: const TextInputType.numberWithOptions(decimal: true)),
+    ]),
+  ];
+
   // ── 表单状态 ──
   final images = <File>[].obs;
+  final formValues = <String, dynamic>{}.obs;
 
-  final modelBrand = Rxn<BrandModel>();
-  final carBrand = Rxn<BrandModel>();
-  final scale = ''.obs;
-  final version = ''.obs;
-  final color = ''.obs;
-  final material = ''.obs;
-  final limitedInfo = ''.obs;
+  // 文本输入控制器
+  final _textCtrls = <String, TextEditingController>{};
 
-  final productNameCtrl = TextEditingController();
-  final releaseYearCtrl = TextEditingController();
-  final productCodeCtrl = TextEditingController();
-  final releasePriceCtrl = TextEditingController();
+  @override
+  void onInit() {
+    super.onInit();
+    for (final section in sections) {
+      for (final field in section.fields) {
+        if (field.type == FieldType.text) {
+          _textCtrls[field.key] = TextEditingController();
+        }
+      }
+    }
+  }
+
+  TextEditingController? textCtrl(String key) => _textCtrls[key];
 
   // ── 图片操作 ──
   Future<void> pickImages() async {
@@ -87,65 +110,34 @@ class ReportMissingController extends GetxController {
   void removeImage(int index) => images.removeAt(index);
 
   // ── 品牌选择 ──
-  Future<void> selectModelBrand() async {
-    final result = await showBrandSelectorSheet(
-      brands: mockBrands,
-      title: '选择车模品牌',
-    );
-    if (result != null) modelBrand.value = result;
-  }
-
-  Future<void> selectCarBrand() async {
-    final result = await showBrandSelectorSheet(
-      brands: mockBrands,
-      title: '选择汽车品牌',
-    );
-    if (result != null) carBrand.value = result;
-  }
-
-  // ── 选择器回写 ──
-  void onScaleChanged(String? value) {
-    if (value != null) scale.value = value;
-  }
-
-  void onVersionChanged(String? value) {
-    if (value != null) version.value = value;
-  }
-
-  void onColorChanged(String? value) {
-    if (value != null) color.value = value;
-  }
-
-  void onMaterialChanged(String? value) {
-    if (value != null) material.value = value;
-  }
-
-  void onLimitedChanged(String? value) {
-    if (value != null) limitedInfo.value = value;
+  Future<void> selectBrand(BrandFieldKind kind) async {
+    final title = kind == BrandFieldKind.model ? '选择车模品牌' : '选择汽车品牌';
+    final key = kind == BrandFieldKind.model ? 'modelBrand' : 'carBrand';
+    final result = await showBrandSelectorSheet(brands: mockBrands, title: title);
+    if (result != null) formValues[key] = result;
   }
 
   // ── 提交 ──
   void submit() {
-    if (productNameCtrl.text.trim().isEmpty) {
+    final productName = formValues['productName'] as String?;
+    if (productName == null || productName.trim().isEmpty) {
       SnackBarUtil.primary('请输入车模名称');
       return;
     }
-    if (modelBrand.value == null) {
+    if (formValues['modelBrand'] == null) {
       SnackBarUtil.primary('请选择车模品牌');
       return;
     }
 
-    // 模拟提交
     SnackBarUtil.primary('缺失商品已上报');
     Get.back();
   }
 
   @override
   void onClose() {
-    productNameCtrl.dispose();
-    releaseYearCtrl.dispose();
-    productCodeCtrl.dispose();
-    releasePriceCtrl.dispose();
+    for (final ctrl in _textCtrls.values) {
+      ctrl.dispose();
+    }
     super.onClose();
   }
 }

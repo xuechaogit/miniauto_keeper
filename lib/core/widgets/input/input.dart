@@ -47,7 +47,9 @@ class CustomInput extends StatelessWidget {
                 hintText: hint,
                 hintStyle: TextStyle(
                   fontSize: context.textStyle(mxt.textStyle.body).fontSize,
-                  color: Colors.grey,
+                  color: context
+                      .color(mxt.color.onSurfaceVariant)
+                      .withOpacity(0.5),
                 ),
                 // 3. 使用 StyledIcon，它会自动根据 Style 中的 $icon 定义来渲染
                 prefixIcon: StyledIcon(icon, style: CustomInputStyle.iconStyle),
