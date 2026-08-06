@@ -192,7 +192,7 @@ class BrandDetailView extends GetView<BrandDetailController> {
                   ),
                   Expanded(
                     child: SocialButton(
-                      onTap: () => controller.addToGarage(product),
+                      onTap: () => controller.showAddGarageSheet(product),
                       type: SocialButtonTypeVariant.primary,
                       size: SocialButtonSizeVariant.small,
                       shape: SocialButtonShapeVariant.rounded,

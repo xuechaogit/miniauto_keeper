@@ -17,6 +17,10 @@ class FormTextField extends StatelessWidget {
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final FormTextFieldVariant variant;
+  final int? maxLines;
+  final int? minLines;
+  final String? prefixText;
+  final String? suffixText;
 
   const FormTextField({
     super.key,
@@ -28,6 +32,10 @@ class FormTextField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.variant = FormTextFieldVariant.underline,
+    this.maxLines,
+    this.minLines,
+    this.prefixText,
+    this.suffixText,
   });
 
   @override
@@ -46,11 +54,33 @@ class FormTextField extends StatelessWidget {
             showCursor: true,
             decoration: _buildDecoration(context),
             controller: controller,
-            keyboardType: keyboardType ?? TextInputType.text,
+            maxLines: maxLines,
+            minLines: minLines,
+            keyboardType: _isMultiline
+                ? TextInputType.multiline
+                : (keyboardType ?? TextInputType.text),
             textAlign: TextAlign.start,
+            textAlignVertical: _isMultiline
+                ? TextAlignVertical.top
+                : TextAlignVertical.center,
           ),
         ),
       ],
+    );
+  }
+
+  bool get _isMultiline => maxLines != null && maxLines! > 1;
+
+  Widget _buildAffixText(BuildContext context, String text) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: w(4)),
+      child: Text(
+        text,
+        style: TextStyle(
+          fontSize: context.textStyle(mxt.textStyle.body).fontSize,
+          color: context.color(mxt.color.onSurfaceVariant),
+        ),
+      ),
     );
   }
 
@@ -63,6 +93,8 @@ class FormTextField extends StatelessWidget {
       ),
       prefixIcon: prefixIcon,
       suffixIcon: suffixIcon,
+      prefix: prefixText != null ? _buildAffixText(context, prefixText!) : null,
+      suffix: suffixText != null ? _buildAffixText(context, suffixText!) : null,
     );
 
     switch (variant) {

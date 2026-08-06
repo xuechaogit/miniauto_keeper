@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/router/app_routes.dart';
 import 'package:miniauto_keeper/core/services/wishlist_service.dart';
@@ -8,6 +9,7 @@ import 'package:miniauto_keeper/models/wishlist_item.dart';
 
 import 'repository.dart';
 import 'package:miniauto_keeper/core/widgets/brand_selector/brand_selector.dart';
+import 'package:miniauto_keeper/modules/brand/brand_list/widgets/add_garage_sheet/add_garage_sheet.dart';
 
 class BrandDetailController extends GetxController {
   dynamic get brand =>
@@ -52,9 +54,23 @@ class BrandDetailController extends GetxController {
     favIds.refresh();
   }
 
-  void addToGarage(ProductModel product) {
-    Get.find<WishlistService>().addItem(product.toWishlistItem());
-    SnackBarUtil.primary('已加入我的想要');
+  void showAddGarageSheet(ProductModel product) {
+    showModalBottomSheet(
+      context: Get.context!,
+      isScrollControlled: true,
+      builder: (_) => FractionallySizedBox(
+        heightFactor: 0.75,
+        child: AddGarageSheet(
+          productName: product.title,
+          onSubmit: (values) => _submitGarageEntry(product, values),
+        ),
+      ),
+    );
+  }
+
+  void _submitGarageEntry(ProductModel product, Map<String, dynamic> values) {
+    // TODO: 接入车库 API
+    SnackBarUtil.primary('已加入车库');
   }
 
   static const _pageSize = 10;
