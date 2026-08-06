@@ -3,7 +3,7 @@ import 'package:miniauto_keeper/core/theme/app_theme.dart';
 import 'package:miniauto_keeper/core/theme/app_theme_tool.dart';
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:mix/mix.dart';
-import '../form_field_label/form_field_label.dart';
+import 'package:miniauto_keeper/core/widgets/form/form_field_label/form_field_label.dart';
 import 'form_text_field.style.dart';
 
 enum FormTextFieldVariant { outlined, underline }
@@ -12,6 +12,7 @@ class FormTextField extends StatelessWidget {
   final String label;
   final TextEditingController? controller;
   final String? hint;
+  final bool isRequired;
   final TextInputType? keyboardType;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
@@ -22,22 +23,23 @@ class FormTextField extends StatelessWidget {
     required this.label,
     required this.controller,
     this.hint,
+    this.isRequired = false,
     this.keyboardType,
     this.prefixIcon,
     this.suffixIcon,
-    this.variant = FormTextFieldVariant.outlined,
+    this.variant = FormTextFieldVariant.underline,
   });
 
   @override
   Widget build(BuildContext context) {
     return VBox(
       children: [
-        FormFieldLabel(text: label),
+        FormFieldLabel(text: label, isRequired: isRequired),
         Box(
           style: FormTextFieldStyle.inputField,
           child: TextField(
             style: TextStyle(
-              fontSize: context.textStyle(mxt.textStyle.caption).fontSize,
+              fontSize: context.textStyle(mxt.textStyle.body).fontSize,
               color: context.color(mxt.color.onSurface),
             ),
             cursorColor: context.color(mxt.color.primary),
@@ -57,7 +59,7 @@ class FormTextField extends StatelessWidget {
       hintText: hint ?? '请输入$label',
       hintStyle: TextStyle(
         color: context.color(mxt.color.onSurfaceVariant).withOpacity(0.5),
-        fontSize: context.textStyle(mxt.textStyle.caption).fontSize,
+        fontSize: context.textStyle(mxt.textStyle.body).fontSize,
       ),
       prefixIcon: prefixIcon,
       suffixIcon: suffixIcon,
@@ -73,7 +75,7 @@ class FormTextField extends StatelessWidget {
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(r(8)),
             borderSide: BorderSide(
-              color: context.color(mxt.color.outline).withOpacity(0.5),
+              color: context.color(mxt.color.outlineVariant),
               width: 1.0,
             ),
           ),
@@ -91,7 +93,7 @@ class FormTextField extends StatelessWidget {
           contentPadding: EdgeInsets.symmetric(horizontal: 0, vertical: w(10)),
           enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(
-              color: context.color(mxt.color.outline),
+              color: context.color(mxt.color.outlineVariant),
               width: 1.0,
             ),
           ),

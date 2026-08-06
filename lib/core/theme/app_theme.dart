@@ -16,6 +16,10 @@ class MyThemeToken {
 class MyThemeColorToken {
   const MyThemeColorToken();
   ColorToken get primary => const ColorToken('primary');
+  ColorToken get error => const ColorToken('error');
+  ColorToken get warning => const ColorToken('warning');
+  ColorToken get success => const ColorToken('success');
+  ColorToken get info => const ColorToken('info');
 
   // 基础背景：用于 Scaffold 的底层
   ColorToken get background => const ColorToken('background');
@@ -123,6 +127,10 @@ final _sharedSpaces = <SpaceToken, double>{
 Map<ColorToken, Color> _lightColors() => {
   // 品牌主色：按钮、图标高亮、选中态、进度条
   mxt.color.primary: const Color(0xFF3B5EF5),
+  mxt.color.success: const Color(0xFF5ac725),
+  mxt.color.warning: const Color(0xFFf9ae3d),
+  mxt.color.error: const Color(0xFFf56c6c),
+  mxt.color.info: const Color(0xFF909399),
   // Scaffold 底色：页面最底层背景
   mxt.color.background: const Color.fromARGB(255, 249, 249, 255),
   // 卡片色：Card、Dialog、Sheet、ListTile 滑出态
@@ -169,6 +177,11 @@ Map<ColorToken, Color> _lightColors() => {
 
 Map<ColorToken, Color> _darkColors() => {
   mxt.color.primary: const Color(0xFF7B93FC),
+  mxt.color.primary: const Color(0xFF3B5EF5),
+  mxt.color.success: const Color(0xFF5ac725),
+  mxt.color.warning: const Color(0xFFf9ae3d),
+  mxt.color.error: const Color(0xFFf56c6c),
+  mxt.color.info: const Color(0xFF909399),
   mxt.color.background: const Color(0xFF13151A),
   mxt.color.surface: const Color(0xFF1C1E24),
   mxt.color.surfaceVariant: const Color(0xFF2A2D36),

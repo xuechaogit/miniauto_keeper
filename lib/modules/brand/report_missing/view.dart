@@ -5,6 +5,7 @@ import 'package:miniauto_keeper/core/theme/app_theme.dart';
 import 'package:miniauto_keeper/core/theme/app_theme_tool.dart';
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:miniauto_keeper/core/widgets/social_button/social_button.dart';
+import 'package:miniauto_keeper/core/widgets/social_button/social_button.variant.dart';
 import 'package:miniauto_keeper/models/brand_model.dart';
 import 'package:miniauto_keeper/modules/product_detail/widget/card_panel/card_panel.dart';
 import 'package:mix/mix.dart';
@@ -12,9 +13,9 @@ import 'package:mix/mix.dart';
 import 'controller.dart';
 import 'form_field_config.dart';
 import 'style.dart';
-import 'widgets/form_text_field/form_text_field.dart';
-import 'widgets/form_select_field/form_select_field.dart';
-import 'widgets/form_brand_field/form_brand_field.dart';
+import 'package:miniauto_keeper/core/widgets/form/form_text_field/form_text_field.dart';
+import 'package:miniauto_keeper/core/widgets/form/form_select_field/form_select_field.dart';
+import 'package:miniauto_keeper/core/widgets/form/form_picker_field/form_picker_field.dart';
 
 class ReportMissingView extends GetView<ReportMissingController> {
   const ReportMissingView({super.key});
@@ -53,6 +54,10 @@ class ReportMissingView extends GetView<ReportMissingController> {
           icon: Icons.upload_rounded,
           label: '提交缺失上报',
           onTap: controller.submit,
+          type: SocialButtonTypeVariant.primary,
+          fill: SocialButtonFillVariant.outline,
+          size: SocialButtonSizeVariant.defaults,
+          shape: SocialButtonShapeVariant.rounded,
         ),
       ),
     );
@@ -162,6 +167,7 @@ class ReportMissingView extends GetView<ReportMissingController> {
     if (f.type == FieldType.text) {
       return FormTextField(
         label: f.label,
+        isRequired: f.isRequired,
         controller: controller.textCtrl(f.key),
         hint: f.hint,
         keyboardType: f.keyboardType,
@@ -175,6 +181,7 @@ class ReportMissingView extends GetView<ReportMissingController> {
         final current = (controller.formValues[f.key] as String?) ?? '';
         return FormSelectField(
           label: f.label,
+          isRequired: f.isRequired,
           current: current,
           hint: '请选择',
           choices: choices,
@@ -184,8 +191,9 @@ class ReportMissingView extends GetView<ReportMissingController> {
     }
     return Obx(() {
       final brand = controller.formValues[f.key] as BrandModel?;
-      return FormBrandField(
+      return FormPickerField(
         label: f.label,
+        isRequired: f.isRequired,
         displayText: brand?.name,
         onTap: () => controller.selectBrand(f.brandKind!),
       );

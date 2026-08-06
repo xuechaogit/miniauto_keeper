@@ -4,15 +4,18 @@ import 'package:miniauto_keeper/core/theme/app_theme.dart';
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:mix/mix.dart';
 
-import '../form_field_label/form_field_label.dart';
+import 'package:miniauto_keeper/core/widgets/form/form_field_label/form_field_label.dart';
 import 'form_select_field.style.dart';
+import 'form_select_field.variant.dart';
 
 class FormSelectField extends StatelessWidget {
   final String label;
   final String current;
   final String hint;
+  final bool isRequired;
   final List<S2Choice<String>> choices;
   final ValueChanged<String> onChanged;
+  final FormSelectFieldVariant variant;
 
   const FormSelectField({
     super.key,
@@ -21,6 +24,8 @@ class FormSelectField extends StatelessWidget {
     required this.hint,
     required this.choices,
     required this.onChanged,
+    this.isRequired = false,
+    this.variant = FormSelectFieldVariant.underline,
   });
 
   @override
@@ -28,7 +33,7 @@ class FormSelectField extends StatelessWidget {
     final hasValue = current.isNotEmpty;
     return VBox(
       children: [
-        FormFieldLabel(text: label),
+        FormFieldLabel(text: label, isRequired: isRequired),
         SmartSelect<String>.single(
           title: label,
           selectedValue: hasValue ? current : hint,
@@ -40,7 +45,7 @@ class FormSelectField extends StatelessWidget {
             return GestureDetector(
               onTap: state.showModal,
               child: Box(
-                style: FormSelectFieldStyle.formValueBox,
+                style: FormSelectFieldStyle(variant: variant).formValueBox,
                 child: HBox(
                   style: Style($flex.crossAxisAlignment.center()),
                   children: [

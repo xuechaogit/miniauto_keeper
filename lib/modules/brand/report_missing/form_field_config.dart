@@ -14,6 +14,7 @@ class FormSection {
 class FormFieldConfig {
   final FieldType type;
   final String key;
+  final bool isRequired;
   final String label;
   final String? hint;
   final List<String>? pickOptions;
@@ -24,6 +25,7 @@ class FormFieldConfig {
     required this.type,
     required this.key,
     required this.label,
+    this.isRequired = false,
     this.hint,
     this.pickOptions,
     this.keyboardType,
