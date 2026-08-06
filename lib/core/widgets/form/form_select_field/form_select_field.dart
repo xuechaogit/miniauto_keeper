@@ -53,7 +53,7 @@ class FormSelectField extends StatelessWidget {
                       hasValue ? current : hint,
                       style: hasValue
                           ? FormSelectFieldStyle.formValue
-                          : FormSelectFieldStyle.formPlaceholder,
+                          : FormSelectFieldStyle.formPlaceholder(context),
                     ),
                     const Spacer(),
                     StyledIcon(

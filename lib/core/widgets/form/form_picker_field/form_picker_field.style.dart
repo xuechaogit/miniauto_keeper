@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flutter/material.dart';
 import 'package:miniauto_keeper/core/theme/app_theme.dart';
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:mix/mix.dart';
@@ -39,8 +40,8 @@ class FormPickerFieldStyle {
     $text.style.ref(mxt.textStyle.body),
   );
 
-  static Style get formPlaceholder => Style(
-    $text.color.ref(mxt.color.onSurfaceVariant),
+  static Style formPlaceholder(BuildContext context) => Style(
+    $text.color(mxt.color.onSurfaceVariant.resolve(context).withOpacity(0.5)),
     $text.style.ref(mxt.textStyle.body),
   );
 }

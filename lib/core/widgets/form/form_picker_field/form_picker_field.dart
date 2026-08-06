@@ -41,7 +41,7 @@ class FormPickerField extends StatelessWidget {
                   displayText ?? '请选择',
                   style: hasValue
                       ? FormPickerFieldStyle.formValue
-                      : FormPickerFieldStyle.formPlaceholder,
+                      : FormPickerFieldStyle.formPlaceholder(context),
                 ),
                 const Spacer(),
                 StyledIcon(
