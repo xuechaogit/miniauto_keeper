@@ -1,27 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_filter_dialog/flutter_filter_dialog.dart';
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/theme/app_theme.dart';
 import 'package:miniauto_keeper/core/theme/app_theme_tool.dart';
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+import 'package:miniauto_keeper/core/widgets/form/form_builder/form_builder.dart';
+import 'package:miniauto_keeper/core/widgets/form/form_builder/form_field_config.dart';
+import 'package:miniauto_keeper/core/widgets/form/form_picker_field/form_picker_field.dart';
+import 'package:miniauto_keeper/core/widgets/form/form_picker_field/form_picker_field.variant.dart';
 import 'package:miniauto_keeper/core/widgets/social_button/social_button.dart';
 import 'package:miniauto_keeper/core/widgets/social_button/social_button.variant.dart';
 import 'package:miniauto_keeper/models/brand_model.dart';
-import 'package:miniauto_keeper/modules/product_detail/widget/card_panel/card_panel.dart';
 import 'package:mix/mix.dart';
 
 import 'controller.dart';
-import 'form_field_config.dart';
 import 'style.dart';
-import 'package:miniauto_keeper/core/widgets/form/form_text_field/form_text_field.dart';
-import 'package:miniauto_keeper/core/widgets/form/form_select_field/form_select_field.dart';
-import 'package:miniauto_keeper/core/widgets/form/form_picker_field/form_picker_field.dart';
 
 class ReportMissingView extends GetView<ReportMissingController> {
-  const ReportMissingView({super.key});
+  ReportMissingView({super.key});
+
+  final _formKeys = <GlobalKey<FormBuilderState>>[];
 
   @override
   Widget build(BuildContext context) {
+    // 每个 section 一个 FormBuilder → 等量 GlobalKey
+    if (_formKeys.length != ReportMissingController.sections.length) {
+      _formKeys.clear();
+      for (var i = 0; i < ReportMissingController.sections.length; i++) {
+        _formKeys.add(GlobalKey<FormBuilderState>());
+      }
+    }
+
     return Scaffold(
       backgroundColor: context.color(mxt.color.background),
       appBar: AppBar(
@@ -35,16 +43,43 @@ class ReportMissingView extends GetView<ReportMissingController> {
             $flex.gap.ref(mxt.space.medium),
             $box.padding.bottom(h(40)),
           ),
-          children: [
-            _buildImageSection(),
-            for (final section in ReportMissingController.sections)
-              _buildSectionCard(section),
-          ],
+          children: [_buildImageSection(), ..._buildFormSections()],
         ),
       ),
       bottomNavigationBar: _buildBottomBar(),
     );
   }
+
+  List<Widget> _buildFormSections() {
+    final widgets = <Widget>[];
+    final sections = ReportMissingController.sections;
+
+    for (var i = 0; i < sections.length; i++) {
+      final s = sections[i];
+      widgets.add(
+        CardPanel(
+          title: s.title,
+          content: FormBuilder(
+            key: _formKeys[i],
+            fields: s.fields,
+            valueGetters: _brandGetters,
+            customBuilders: _brandCustomBuilders,
+          ),
+        ),
+      );
+    }
+    return widgets;
+  }
+
+  Map<String, dynamic Function()> get _brandGetters => {
+    'modelBrand': () => controller.formValues['modelBrand'],
+    'carBrand': () => controller.formValues['carBrand'],
+  };
+
+  Map<FormFieldType, Widget Function(BuildContext, FormFieldConfig)>
+  get _brandCustomBuilders => {FormFieldType.brand: _buildBrandField};
+
+  // ── Bottom Bar ──
 
   Widget _buildBottomBar() {
     return SafeArea(
@@ -53,7 +88,13 @@ class ReportMissingView extends GetView<ReportMissingController> {
         child: SocialButton(
           prefixIcon: Icons.upload_rounded,
           label: '提交缺失上报',
-          onTap: controller.submit,
+          onTap: () {
+            final allValues = <String, dynamic>{};
+            for (final key in _formKeys) {
+              allValues.addAll(key.currentState!.collectValues());
+            }
+            controller.onFormSubmit(allValues);
+          },
           type: SocialButtonTypeVariant.primary,
           fill: SocialButtonFillVariant.fill,
           size: SocialButtonSizeVariant.defaults,
@@ -62,6 +103,8 @@ class ReportMissingView extends GetView<ReportMissingController> {
       ),
     );
   }
+
+  // ── 图片区 ──
 
   Widget _buildImageSection() {
     return Box(
@@ -148,55 +191,55 @@ class ReportMissingView extends GetView<ReportMissingController> {
     );
   }
 
-  Widget _buildSectionCard(FormSection section) {
-    final fieldWidgets = <Widget>[];
-    final fields = section.fields;
-    for (int i = 0; i < fields.length; i++) {
-      fieldWidgets.add(_buildField(fields[i]));
-
-      if (i < fields.length - 1) fieldWidgets.add(SizedBox(height: w(16)));
-    }
-
-    return CardPanel(
-      title: section.title,
-      content: VBox(style: Style($flex.gap(0)), children: fieldWidgets),
-    );
-  }
-
-  Widget _buildField(FormFieldConfig f) {
-    if (f.type == FieldType.text) {
-      return FormTextField(
-        label: f.label,
-        isRequired: f.isRequired,
-        controller: controller.textCtrl(f.key),
-        hint: f.hint,
-        keyboardType: f.keyboardType,
-      );
-    }
-    if (f.type == FieldType.select) {
-      final choices = f.pickOptions!
-          .map((o) => S2Choice<String>(value: o, title: o))
-          .toList();
-      return Obx(() {
-        final current = (controller.formValues[f.key] as String?) ?? '';
-        return FormSelectField(
-          label: f.label,
-          isRequired: f.isRequired,
-          current: current,
-          hint: '请选择',
-          choices: choices,
-          onChanged: (v) => controller.formValues[f.key] = v,
-        );
-      });
-    }
+  // ── Brand 字段自定义渲染 ──
+  Widget _buildBrandField(BuildContext context, FormFieldConfig f) {
+    final kind = f.extra as BrandFieldKind;
     return Obx(() {
       final brand = controller.formValues[f.key] as BrandModel?;
       return FormPickerField(
         label: f.label,
         isRequired: f.isRequired,
         displayText: brand?.name,
-        onTap: () => controller.selectBrand(f.brandKind!),
+        variant: FormPickerFieldVariant.outlined,
+        onTap: () => controller.selectBrand(kind),
       );
     });
+  }
+}
+
+// ── 简易 CardPanel ──
+
+class CardPanel extends StatelessWidget {
+  final String title;
+  final Widget content;
+
+  const CardPanel({super.key, required this.title, required this.content});
+
+  @override
+  Widget build(BuildContext context) {
+    return Box(
+      style: Style(
+        $box.color.ref(mxt.color.surface),
+        $box.borderRadius(r(12)),
+        $box.padding.horizontal.ref(mxt.space.medium),
+        $box.padding.vertical.ref(mxt.space.medium),
+      ),
+      child: VBox(
+        style: Style($flex.gap.ref(mxt.space.small)),
+        children: [
+          StyledText(
+            title,
+            style: Style(
+              $text.style.fontWeight.w600(),
+              $text.style.fontSize(16),
+              $text.style.color.ref(mxt.color.onSurface),
+            ),
+          ),
+          Divider(height: h(1)),
+          SizedBox(height: h(8)),
+          content,
+        ],
+      ),
+    );
   }
 }

@@ -6,8 +6,18 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../core/utils/snackbar_util.dart';
 import '../../../core/widgets/brand_selector/brand_selector.dart';
+import '../../../core/widgets/form/form_builder/form_field_config.dart';
 import '../../../models/brand_model.dart';
-import 'form_field_config.dart';
+
+enum BrandFieldKind { model, car }
+
+/// 本地分组结构，仅用于 report_missing 模块内部组织字段。
+class ReportFieldSection {
+  final String title;
+  final List<FormFieldConfig> fields;
+
+  const ReportFieldSection({required this.title, required this.fields});
+}
 
 class ReportMissingController extends GetxController {
   final ImagePicker _picker = ImagePicker();
@@ -38,142 +48,101 @@ class ReportMissingController extends GetxController {
 
   // ── 固定枚举 ──
   static const scaleOptions = [
-    '1:12',
-    '1:18',
-    '1:24',
-    '1:43',
-    '1:64',
-    '1:87',
-    '其他',
+    '1:12', '1:18', '1:24', '1:43', '1:64', '1:87', '其他',
   ];
-  static const versionOptions = ['普通版', '限定版', '特别版', '初回限定', '店铺限定', '展会限定'];
+  static const versionOptions = [
+    '普通版', '限定版', '特别版', '初回限定', '店铺限定', '展会限定',
+  ];
   static const colorOptions = [
-    '白色',
-    '黑色',
-    '红色',
-    '蓝色',
-    '黄色',
-    '绿色',
-    '银色',
-    '灰色',
-    '多色',
+    '白色', '黑色', '红色', '蓝色', '黄色', '绿色', '银色', '灰色', '多色',
   ];
   static const materialOptions = ['合金', '树脂', '塑料', '复合材料'];
   static const limitedOptions = [
-    '不限量',
-    '限量500',
-    '限量1000',
-    '限量2000',
-    '限量3000',
-    '限量5000',
-    '限量10000',
+    '不限量', '限量500', '限量1000', '限量2000', '限量3000', '限量5000', '限量10000',
   ];
 
-  // ── 字段配置（所有录入字段的定义集中在此） ──
+  // ── 字段配置（分组） ──
   static final sections = [
-    FormSection(
-      title: '基本信息',
-      fields: [
-        const FormFieldConfig(
-          type: FieldType.text,
-          key: 'productName',
-          label: '车模名称',
-          hint: '请输入车模名称',
-          isRequired: true,
-        ),
-        const FormFieldConfig(
-          type: FieldType.brand,
-          key: 'modelBrand',
-          label: '车模品牌',
-          brandKind: BrandFieldKind.model,
-        ),
-        const FormFieldConfig(
-          type: FieldType.brand,
-          key: 'carBrand',
-          label: '汽车品牌',
-          brandKind: BrandFieldKind.car,
-          isRequired: true,
-        ),
-        const FormFieldConfig(
-          type: FieldType.text,
-          key: 'releaseYear',
-          label: '发行年份',
-          hint: '如 2024',
-          keyboardType: TextInputType.number,
-        ),
-      ],
-    ),
-    FormSection(
-      title: '规格详情',
-      fields: [
-        const FormFieldConfig(
-          type: FieldType.select,
-          key: 'scale',
-          label: '比例',
-          pickOptions: scaleOptions,
-          isRequired: true,
-        ),
-        const FormFieldConfig(
-          type: FieldType.text,
-          key: 'productCode',
-          label: '车模编号',
-          hint: '如 ABC123',
-        ),
-        const FormFieldConfig(
-          type: FieldType.select,
-          key: 'version',
-          label: '版本',
-          pickOptions: versionOptions,
-        ),
-        const FormFieldConfig(
-          type: FieldType.select,
-          key: 'color',
-          label: '颜色',
-          pickOptions: colorOptions,
-        ),
-        const FormFieldConfig(
-          type: FieldType.select,
-          key: 'material',
-          label: '材质',
-          pickOptions: materialOptions,
-        ),
-        const FormFieldConfig(
-          type: FieldType.select,
-          key: 'limitedInfo',
-          label: '限量信息',
-          pickOptions: limitedOptions,
-        ),
-        const FormFieldConfig(
-          type: FieldType.text,
-          key: 'releasePrice',
-          label: '发售价',
-          hint: '如 299.00',
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-        ),
-      ],
-    ),
+    ReportFieldSection(title: '基本信息', fields: const [
+      FormFieldConfig(
+        type: FormFieldType.text,
+        key: 'productName',
+        label: '车模名称',
+        hint: '请输入车模名称',
+        isRequired: true,
+      ),
+      FormFieldConfig(
+        type: FormFieldType.brand,
+        key: 'modelBrand',
+        label: '车模品牌',
+        extra: BrandFieldKind.model,
+      ),
+      FormFieldConfig(
+        type: FormFieldType.brand,
+        key: 'carBrand',
+        label: '汽车品牌',
+        isRequired: true,
+        extra: BrandFieldKind.car,
+      ),
+      FormFieldConfig(
+        type: FormFieldType.text,
+        key: 'releaseYear',
+        label: '发行年份',
+        hint: '如 2024',
+        keyboardType: TextInputType.number,
+      ),
+    ]),
+    ReportFieldSection(title: '规格详情', fields: const [
+      FormFieldConfig(
+        type: FormFieldType.select,
+        key: 'scale',
+        label: '比例',
+        pickOptions: scaleOptions,
+        isRequired: true,
+      ),
+      FormFieldConfig(
+        type: FormFieldType.text,
+        key: 'productCode',
+        label: '车模编号',
+        hint: '如 ABC123',
+      ),
+      FormFieldConfig(
+        type: FormFieldType.select,
+        key: 'version',
+        label: '版本',
+        pickOptions: versionOptions,
+      ),
+      FormFieldConfig(
+        type: FormFieldType.select,
+        key: 'color',
+        label: '颜色',
+        pickOptions: colorOptions,
+      ),
+      FormFieldConfig(
+        type: FormFieldType.select,
+        key: 'material',
+        label: '材质',
+        pickOptions: materialOptions,
+      ),
+      FormFieldConfig(
+        type: FormFieldType.select,
+        key: 'limitedInfo',
+        label: '限量信息',
+        pickOptions: limitedOptions,
+      ),
+      FormFieldConfig(
+        type: FormFieldType.text,
+        key: 'releasePrice',
+        label: '发售价',
+        hint: '如 299.00',
+        keyboardType: TextInputType.numberWithOptions(decimal: true),
+      ),
+    ]),
   ];
 
   // ── 表单状态 ──
   final images = <File>[].obs;
   final formValues = <String, dynamic>{}.obs;
-
-  // 文本输入控制器
-  final _textCtrls = <String, TextEditingController>{};
-
-  @override
-  void onInit() {
-    super.onInit();
-    for (final section in sections) {
-      for (final field in section.fields) {
-        if (field.type == FieldType.text) {
-          _textCtrls[field.key] = TextEditingController();
-        }
-      }
-    }
-  }
-
-  TextEditingController? textCtrl(String key) => _textCtrls[key];
 
   // ── 图片操作 ──
   Future<void> pickImages() async {
@@ -181,7 +150,6 @@ class ReportMissingController extends GetxController {
       SnackBarUtil.primary('最多上传5张图片');
       return;
     }
-
     try {
       final picked = await _picker.pickMultiImage();
       for (final xfile in picked) {
@@ -204,8 +172,11 @@ class ReportMissingController extends GetxController {
     if (result != null) formValues[key] = result;
   }
 
-  // ── 提交 ──
-  void submit() {
+  // ── 提交流水 ──
+  /// 合并各 FormBuilder 的收集结果，走校验与提交。
+  void onFormSubmit(Map<String, dynamic> values) {
+    formValues.addAll(values);
+
     final productName = formValues['productName'] as String?;
     if (productName == null || productName.trim().isEmpty) {
       SnackBarUtil.primary('请输入车模名称');
@@ -218,13 +189,5 @@ class ReportMissingController extends GetxController {
 
     SnackBarUtil.primary('缺失商品已上报');
     Get.back();
-  }
-
-  @override
-  void onClose() {
-    for (final ctrl in _textCtrls.values) {
-      ctrl.dispose();
-    }
-    super.onClose();
   }
 }

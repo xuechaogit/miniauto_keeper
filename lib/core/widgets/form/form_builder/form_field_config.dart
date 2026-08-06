@@ -1,25 +1,16 @@
 import 'package:flutter/material.dart';
 
-enum FieldType { text, select, brand }
-
-enum BrandFieldKind { model, car }
-
-class FormSection {
-  final String title;
-  final List<FormFieldConfig> fields;
-
-  const FormSection({required this.title, required this.fields});
-}
+enum FormFieldType { text, number, price, select, date, textarea, brand }
 
 class FormFieldConfig {
-  final FieldType type;
+  final FormFieldType type;
   final String key;
-  final bool isRequired;
   final String label;
+  final bool isRequired;
   final String? hint;
   final List<String>? pickOptions;
   final TextInputType? keyboardType;
-  final BrandFieldKind? brandKind;
+  final dynamic extra;
 
   const FormFieldConfig({
     required this.type,
@@ -29,6 +20,6 @@ class FormFieldConfig {
     this.hint,
     this.pickOptions,
     this.keyboardType,
-    this.brandKind,
+    this.extra,
   });
 }

@@ -75,7 +75,7 @@ class AppPages {
 
   static GetPage _reportMissingRoute() => GetPage(
     name: AppRoutes.reportMissing,
-    page: () => const ReportMissingView(),
+    page: () => ReportMissingView(),
     binding: ReportMissingBinding(),
     transition: Transition.fadeIn,
   );
