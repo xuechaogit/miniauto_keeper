@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/theme/app_theme.dart';
+import 'package:miniauto_keeper/core/widgets/social_button/social_button.dart';
+import 'package:miniauto_keeper/core/widgets/social_button/social_button.variant.dart';
 import 'package:mix/mix.dart';
 import '../../core/widgets/input/input.dart';
 import '../login/view.dart'; // 引入你的 LoginMixStyles
@@ -54,12 +56,20 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                           icon: Icons.email_outlined,
                         ),
                         SizedBox(height: h(24)),
-                        SubmitButton(
-                          label: 'Send Reset Link',
-                          icon: Icons.send_rounded,
-                          isLoading: controller.isLoading,
-                          onPressed: controller.sendResetLink,
+                        Obx(
+                          () => Box(
+                            style: Style($box.width(double.infinity)),
+                            child: SocialButton(
+                              onTap: controller.sendResetLink,
+                              loading: controller.isLoading.value,
+                              type: SocialButtonTypeVariant.primary,
+                              size: SocialButtonSizeVariant.defaults,
+                              suffixIcon: Icons.send_rounded,
+                              label: 'Send Reset Link',
+                            ),
+                          ),
                         ),
+
                         SizedBox(height: h(24)),
                         _buildBackToLogin(),
                       ],

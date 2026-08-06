@@ -8,12 +8,6 @@ class ProductDetailStyle {
   static const accent = Color(0xFFE54335);
 
   // 底部操作按钮
-  static Style get primaryActionBtn => Style(
-    $box.color(accent),
-    $box.height(50),
-    $box.alignment.center(),
-    $box.borderRadius.all.ref(mxt.radius.small),
-  );
 
   // 底栏图标+文字按钮
   static Style get bottomIconBtn => Style(

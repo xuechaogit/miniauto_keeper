@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/widgets/divider/divider.dart';
 import 'package:miniauto_keeper/core/widgets/price_tag/price_tag.dart';
+import 'package:miniauto_keeper/core/widgets/social_button/social_button.dart';
+import 'package:miniauto_keeper/core/widgets/social_button/social_button.variant.dart';
 import 'package:mix/mix.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../../core/widgets/html_renderer/html_renderer.dart';
@@ -300,9 +302,10 @@ class ProductDetailView extends GetView<ProductDetailController> {
 
           // 提货按钮
           Expanded(
-            child: PressableBox(
-              style: ProductDetailStyle.primaryActionBtn,
-              onPress: () {
+            child: SocialButton(
+              prefixIcon: Icons.upload_rounded,
+              label: '加入到我的车库',
+              onTap: () {
                 Get.snackbar(
                   'SYSTEM',
                   '入库单生成中...',
@@ -310,7 +313,10 @@ class ProductDetailView extends GetView<ProductDetailController> {
                   colorText: Colors.white,
                 );
               },
-              child: StyledText('加入到我的车库', style: ProductDetailStyle.btnText),
+              type: SocialButtonTypeVariant.primary,
+              fill: SocialButtonFillVariant.fill,
+              size: SocialButtonSizeVariant.defaults,
+              shape: SocialButtonShapeVariant.rounded,
             ),
           ),
         ],
@@ -432,9 +438,10 @@ class ProductDetailView extends GetView<ProductDetailController> {
                     ),
                     SizedBox(width: w(12)),
                     Expanded(
-                      child: PressableBox(
-                        style: ProductDetailStyle.primaryActionBtn,
-                        onPress: () {
+                      child: SocialButton(
+                        prefixIcon: Icons.upload_rounded,
+                        label: '确认',
+                        onTap: () {
                           Navigator.pop(context);
                           Get.snackbar(
                             'SUCCESS',
@@ -445,10 +452,10 @@ class ProductDetailView extends GetView<ProductDetailController> {
                             duration: const Duration(seconds: 1),
                           );
                         },
-                        child: StyledText(
-                          '确认',
-                          style: ProductDetailStyle.btnText,
-                        ),
+                        type: SocialButtonTypeVariant.primary,
+                        fill: SocialButtonFillVariant.fill,
+                        size: SocialButtonSizeVariant.defaults,
+                        shape: SocialButtonShapeVariant.rounded,
                       ),
                     ),
                   ],

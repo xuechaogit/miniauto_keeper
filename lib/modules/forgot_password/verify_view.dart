@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/theme/app_theme_tool.dart';
+import 'package:miniauto_keeper/core/widgets/social_button/social_button.dart';
+import 'package:miniauto_keeper/core/widgets/social_button/social_button.variant.dart';
 import 'package:mix/mix.dart';
 import 'package:pinput/pinput.dart'; // 导入 pinput
 import '../../core/theme/app_theme.dart';
@@ -112,11 +114,19 @@ class VerifyIdentityView extends GetView<ForgotPasswordController> {
             ),
             const Spacer(),
 
-            SubmitButton(
-              label: 'Verify and Continue',
-              isLoading: controller.isLoading,
-              onPressed: () =>
-                  controller.verifyCode(controller.otpController.text),
+            Obx(
+              () => Box(
+                style: Style($box.width(double.infinity)),
+                child: SocialButton(
+                  onTap: () =>
+                      controller.verifyCode(controller.otpController.text),
+                  loading: controller.isLoading.value,
+                  type: SocialButtonTypeVariant.primary,
+                  size: SocialButtonSizeVariant.defaults,
+                  suffixIcon: Icons.send_rounded,
+                  label: 'Verify and Continue',
+                ),
+              ),
             ),
             SizedBox(height: h(24)),
             _buildResendSection(),

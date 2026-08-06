@@ -51,11 +51,11 @@ class ReportMissingView extends GetView<ReportMissingController> {
       child: Box(
         style: ReportMissingStyle.bottomBar,
         child: SocialButton(
-          icon: Icons.upload_rounded,
+          prefixIcon: Icons.upload_rounded,
           label: '提交缺失上报',
           onTap: controller.submit,
           type: SocialButtonTypeVariant.primary,
-          fill: SocialButtonFillVariant.outline,
+          fill: SocialButtonFillVariant.fill,
           size: SocialButtonSizeVariant.defaults,
           shape: SocialButtonShapeVariant.rounded,
         ),

@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/theme/app_theme_tool.dart';
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:miniauto_keeper/core/widgets/image/image.dart';
+import 'package:miniauto_keeper/core/widgets/social_button/social_button.dart';
+import 'package:miniauto_keeper/core/widgets/social_button/social_button.variant.dart';
 import 'package:mix/mix.dart';
 
 import 'package:miniauto_keeper/core/theme/app_theme.dart';
@@ -63,6 +65,7 @@ class BrandInfoHeaderWidget extends GetView<BrandDetailController> {
                             style: BrandInfoHeaderStyle.brandName,
                           ),
                           const SizedBox(height: 4),
+
                           PressableBox(
                             onPress: controller.switchBrand,
                             child: Box(
@@ -94,25 +97,13 @@ class BrandInfoHeaderWidget extends GetView<BrandDetailController> {
                             style: BrandInfoHeaderStyle.countText,
                           ),
                           const SizedBox(height: 6),
-                          GestureDetector(
+                          SocialButton(
                             onTap: controller.reportMissing,
-                            child: Box(
-                              style: BrandInfoHeaderStyle.pillContainer,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  StyledIcon(
-                                    Icons.report_outlined,
-                                    style: BrandInfoHeaderStyle.reportIcon,
-                                  ),
-                                  Box(style: Style($box.width(w(4)))),
-                                  StyledText(
-                                    '缺失上报',
-                                    style: BrandInfoHeaderStyle.reportText,
-                                  ),
-                                ],
-                              ),
-                            ),
+                            type: SocialButtonTypeVariant.error,
+                            size: SocialButtonSizeVariant.small,
+                            shape: SocialButtonShapeVariant.pill,
+                            prefixIcon: Icons.report_outlined,
+                            label: 'Missing Report',
                           ),
                         ],
                       ),

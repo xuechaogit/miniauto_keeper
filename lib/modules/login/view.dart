@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/widgets/app_logo/app_logo.dart';
+import 'package:miniauto_keeper/core/widgets/social_button/social_button.variant.dart';
 import 'package:mix/mix.dart';
 import '../../core/router/app_routes.dart';
 import '../../core/theme/app_theme.dart';
@@ -161,7 +162,19 @@ class LoginView extends GetView<LoginController> {
                         SizedBox(height: h(32)),
 
                         // 登录按钮 (带加载状态)
-                        _buildLoginButton(),
+                        Obx(
+                          () => Box(
+                            style: Style($box.width(double.infinity)),
+                            child: SocialButton(
+                              onTap: controller.login,
+                              loading: controller.isLoading.value,
+                              type: SocialButtonTypeVariant.primary,
+                              size: SocialButtonSizeVariant.defaults,
+                              suffixIcon: Icons.arrow_forward_rounded,
+                              label: 'Login to Hub',
+                            ),
+                          ),
+                        ),
 
                         SizedBox(height: h(28)),
                         Center(
@@ -180,7 +193,9 @@ class LoginView extends GetView<LoginController> {
                           children: [
                             Expanded(
                               child: SocialButton(
-                                icon: Icons.g_mobiledata_rounded,
+                                prefixIcon: Icons.g_mobiledata_rounded,
+                                type: SocialButtonTypeVariant.info,
+                                fill: SocialButtonFillVariant.outline,
                                 label: 'Google',
                                 onTap: () => controller
                                     .loginWithGoogle(), // 在 controller 里实现
@@ -189,7 +204,9 @@ class LoginView extends GetView<LoginController> {
                             SizedBox(width: w(16)),
                             Expanded(
                               child: SocialButton(
-                                icon: Icons.apple_rounded,
+                                prefixIcon: Icons.apple_rounded,
+                                type: SocialButtonTypeVariant.info,
+                                fill: SocialButtonFillVariant.outline,
                                 label: 'Apple',
                                 onTap: () => controller.loginWithApple(),
                               ),
@@ -237,39 +254,6 @@ class LoginView extends GetView<LoginController> {
           $text.color.ref(mxt.color.primary),
           $text.style.ref(mxt.textStyle.body),
           $text.style.fontWeight.w600(),
-        ),
-      ),
-    );
-  }
-
-  // 组件：带状态的登录按钮
-  Widget _buildLoginButton() {
-    return Obx(
-      () => Pressable(
-        onPress: controller.isLoading.value ? null : () => controller.login(),
-        child: Box(
-          style: LoginMixStyles.loginButton,
-          child: controller.isLoading.value
-              ? SizedBox(
-                  width: w(24),
-                  height: h(24),
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.5,
-                    color: Colors.white,
-                  ),
-                )
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    StyledText('Login to Hub'),
-                    SizedBox(width: w(10)),
-                    Icon(
-                      Icons.arrow_forward_rounded,
-                      color: Colors.white,
-                      size: r(20),
-                    ),
-                  ],
-                ),
         ),
       ),
     );

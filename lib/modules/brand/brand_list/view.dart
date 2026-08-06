@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/theme/app_theme.dart';
 import 'package:miniauto_keeper/core/theme/app_theme_tool.dart';
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+import 'package:miniauto_keeper/core/widgets/social_button/social_button.dart';
+import 'package:miniauto_keeper/core/widgets/social_button/social_button.variant.dart';
 import 'package:miniauto_keeper/modules/brand/brand_list/widgets/brand_app_bar/brand_app_bar.dart';
 import 'package:miniauto_keeper/modules/brand/brand_list/widgets/brand_filter_bar/brand_filter_bar.dart';
 import 'package:miniauto_keeper/modules/brand/brand_list/widgets/brand_info_header/brand_info_header.dart';
@@ -189,17 +191,12 @@ class BrandDetailView extends GetView<BrandDetailController> {
                     ),
                   ),
                   Expanded(
-                    child: PressableBox(
-                      onPress: () => controller.addToGarage(product),
-                      child: HBox(
-                        style: ProductStyle.gridAddGarageBtn,
-                        children: [
-                          StyledText(
-                            '加入车库',
-                            style: ProductStyle.gridAddGarageBtnText,
-                          ),
-                        ],
-                      ),
+                    child: SocialButton(
+                      onTap: () => controller.addToGarage(product),
+                      type: SocialButtonTypeVariant.primary,
+                      size: SocialButtonSizeVariant.small,
+                      shape: SocialButtonShapeVariant.rounded,
+                      label: 'Join the garage',
                     ),
                   ),
                 ],

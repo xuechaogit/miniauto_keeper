@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/theme/app_theme.dart';
+import 'package:miniauto_keeper/core/widgets/social_button/social_button.dart';
+import 'package:miniauto_keeper/core/widgets/social_button/social_button.variant.dart';
 import 'package:mix/mix.dart';
 import '../../core/widgets/input/input.dart';
 import '../login/view.dart';
@@ -77,11 +79,18 @@ class SetNewPasswordView extends GetView<ForgotPasswordController> {
             // _buildReqItem('Include at least one number', false),
             // _buildReqItem('Include one special character (!@#)', false),
             // SizedBox(height: h(60)),
-            SubmitButton(
-              label: 'Update Password',
-              icon: Icons.verified_user_outlined,
-              isLoading: controller.isLoading,
-              onPressed: controller.updatePassword,
+            Obx(
+              () => Box(
+                style: Style($box.width(double.infinity)),
+                child: SocialButton(
+                  onTap: controller.updatePassword,
+                  loading: controller.isLoading.value,
+                  type: SocialButtonTypeVariant.primary,
+                  size: SocialButtonSizeVariant.defaults,
+                  suffixIcon: Icons.verified_user_outlined,
+                  label: 'Update Password',
+                ),
+              ),
             ),
           ],
         ),

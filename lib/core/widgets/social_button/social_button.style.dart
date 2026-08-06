@@ -22,14 +22,16 @@ class SocialButtonStyle {
     // -- shape --
     SocialButtonShapeVariant.sharp($box.borderRadius.all(r(0))),
     SocialButtonShapeVariant.rounded(
-      $box.borderRadius.all.ref(mxt.radius.small),
+      SocialButtonSizeVariant.small($box.borderRadius.all(r(4))),
+      SocialButtonSizeVariant.defaults($box.borderRadius.all(r(6))),
+      SocialButtonSizeVariant.large($box.borderRadius.all(r(8))),
     ),
     SocialButtonShapeVariant.pill($box.borderRadius.all(r(999))),
 
     // -- size --
     SocialButtonSizeVariant.small(
-      $box.height(h(36)),
-      $box.padding.horizontal(h(16)),
+      $box.height(h(28)),
+      $box.padding.horizontal(h(12)),
     ),
     SocialButtonSizeVariant.defaults(
       $box.height(h(46)),
@@ -122,7 +124,16 @@ class SocialButtonStyle {
       case SocialButtonShapeVariant.sharp:
         return BorderRadius.zero;
       case SocialButtonShapeVariant.rounded:
-        return BorderRadius.circular(r(8));
+        switch (size) {
+          case SocialButtonSizeVariant.small:
+            return BorderRadius.circular(r(4));
+          case SocialButtonSizeVariant.defaults:
+            return BorderRadius.circular(r(6));
+          case SocialButtonSizeVariant.large:
+            return BorderRadius.circular(r(8));
+          default:
+            return BorderRadius.circular(r(6));
+        }
       case SocialButtonShapeVariant.pill:
         return BorderRadius.circular(r(999));
       default:
