@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/router/app_routes.dart';
 import 'package:miniauto_keeper/core/services/wishlist_service.dart';
 import 'package:miniauto_keeper/core/utils/snackbar_util.dart';
+import 'package:miniauto_keeper/core/widgets/form/form_builder/form_builder.dart';
 import 'package:miniauto_keeper/models/brand_model.dart';
 import 'package:miniauto_keeper/models/product_model.dart';
 import 'package:miniauto_keeper/models/wishlist_item.dart';
@@ -55,12 +56,14 @@ class BrandDetailController extends GetxController {
   }
 
   void showAddGarageSheet(ProductModel product) {
+    final formKey = GlobalKey<FormBuilderState>(); // ← 提到 builder 之外
     showModalBottomSheet(
       context: Get.context!,
       isScrollControlled: true,
       builder: (_) => FractionallySizedBox(
         heightFactor: 0.75,
         child: AddGarageSheet(
+          formKey: formKey,
           productName: product.title,
           onSubmit: (values) => _submitGarageEntry(product, values),
         ),

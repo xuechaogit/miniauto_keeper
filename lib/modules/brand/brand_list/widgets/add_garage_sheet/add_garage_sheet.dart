@@ -12,11 +12,13 @@ import 'add_garage_sheet.style.dart';
 
 class AddGarageSheet extends StatelessWidget {
   final String productName;
+  final GlobalKey<FormBuilderState> formKey;
   final void Function(Map<String, dynamic> values) onSubmit;
 
   const AddGarageSheet({
     super.key,
     required this.productName,
+    required this.formKey,
     required this.onSubmit,
   });
 
@@ -78,8 +80,6 @@ class AddGarageSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormBuilderState>();
-
     return Box(
       style: Style($box.color.ref(mxt.color.surface), $box.borderRadius(r(16))),
       child: Column(
