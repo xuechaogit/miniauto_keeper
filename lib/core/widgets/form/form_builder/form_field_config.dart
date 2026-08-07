@@ -12,6 +12,11 @@ class FormFieldConfig {
   final TextInputType? keyboardType;
   final dynamic extra;
 
+  // ── number 类型步进器参数 ──
+  final num stepperMin;
+  final num stepperMax;
+  final num stepperStep;
+
   const FormFieldConfig({
     required this.type,
     required this.key,
@@ -21,5 +26,8 @@ class FormFieldConfig {
     this.pickOptions,
     this.keyboardType,
     this.extra,
+    this.stepperMin = 0,
+    this.stepperMax = 9999,
+    this.stepperStep = 1,
   });
 }

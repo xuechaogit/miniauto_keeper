@@ -6,6 +6,7 @@ import 'package:miniauto_keeper/core/widgets/form/form_picker_field/form_picker_
 import 'package:miniauto_keeper/core/widgets/form/form_select_field/form_select_field.dart';
 import 'package:miniauto_keeper/core/widgets/form/form_select_field/form_select_field.variant.dart';
 import 'package:miniauto_keeper/core/widgets/form/form_text_field/form_text_field.dart';
+import 'package:miniauto_keeper/core/widgets/form/form_number_field/form_number_field.dart';
 import 'package:mix/mix.dart';
 
 import 'form_builder.style.dart';
@@ -15,7 +16,7 @@ class FormBuilder extends StatefulWidget {
   final List<FormFieldConfig> fields;
   final Map<String, dynamic Function()>? valueGetters;
   final Map<FormFieldType, Widget Function(BuildContext, FormFieldConfig)>?
-      customBuilders;
+  customBuilders;
   final Map<String, String>? defaults;
 
   const FormBuilder({
@@ -34,10 +35,10 @@ class FormBuilderState extends State<FormBuilder> {
   final _controllers = <String, TextEditingController>{};
   final _selectValues = <String, String>{};
   final _dateValues = <String, DateTime?>{};
+  final _stepperValues = <String, num>{};
 
   static final _textLikeTypes = {
     FormFieldType.text,
-    FormFieldType.number,
     FormFieldType.price,
     FormFieldType.textarea,
   };
@@ -55,6 +56,9 @@ class FormBuilderState extends State<FormBuilder> {
       if (f.type == FormFieldType.date) {
         _dateValues[f.key] = null;
       }
+      if (f.type == FormFieldType.number) {
+        _stepperValues[f.key] = f.stepperMin;
+      }
     }
 
     if (widget.defaults != null) {
@@ -62,6 +66,9 @@ class FormBuilderState extends State<FormBuilder> {
         final ctrl = _controllers[entry.key];
         if (ctrl != null) {
           ctrl.text = entry.value;
+        }
+        if (_stepperValues.containsKey(entry.key)) {
+          _stepperValues[entry.key] = int.tryParse(entry.value) ?? 0;
         }
       }
     }
@@ -81,6 +88,8 @@ class FormBuilderState extends State<FormBuilder> {
     for (final f in widget.fields) {
       if (_textLikeTypes.contains(f.type)) {
         values[f.key] = _controllers[f.key]?.text ?? '';
+      } else if (f.type == FormFieldType.number) {
+        values[f.key] = _stepperValues[f.key]?.toString() ?? '';
       } else if (f.type == FormFieldType.select) {
         values[f.key] = _selectValues[f.key] ?? '';
       } else if (f.type == FormFieldType.date) {
@@ -145,14 +154,15 @@ class FormBuilderState extends State<FormBuilder> {
   }
 
   Widget _buildNumber(FormFieldConfig f) {
-    return FormTextField(
+    return FormNumberField(
       key: ValueKey(f.key),
       label: f.label,
       isRequired: f.isRequired,
-      controller: _controllers[f.key]!,
-      hint: f.hint,
-      keyboardType: TextInputType.number,
-      variant: FormTextFieldVariant.outlined,
+      value: _stepperValues[f.key] ?? f.stepperMin,
+      minVal: f.stepperMin,
+      maxVal: f.stepperMax,
+      steps: f.stepperStep,
+      onChanged: (val) => _stepperValues[f.key] = val,
     );
   }
 

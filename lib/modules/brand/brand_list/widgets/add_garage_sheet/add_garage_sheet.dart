@@ -39,6 +39,9 @@ class AddGarageSheet extends StatelessWidget {
       key: 'quantity',
       label: '数量',
       hint: '请输入数量',
+      stepperMin: 1,
+      stepperMax: 999,
+      stepperStep: 1,
     ),
     FormFieldConfig(
       type: FormFieldType.price,
