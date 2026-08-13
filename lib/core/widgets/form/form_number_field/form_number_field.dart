@@ -18,6 +18,8 @@ class FormNumberField extends StatelessWidget {
   final num maxVal;
   final num steps;
   final ValueChanged<num>? onChanged;
+  final VoidCallback? onEditingComplete;
+  final FocusNode? focusNode;
   final FormNumberFieldVariant variant;
 
   const FormNumberField({
@@ -29,12 +31,22 @@ class FormNumberField extends StatelessWidget {
     this.maxVal = 9999,
     this.steps = 1,
     this.onChanged,
+    this.onEditingComplete,
+    this.focusNode,
     this.variant = FormNumberFieldVariant.classic,
   });
 
   @override
   Widget build(BuildContext context) {
-    return VBox(
+    final node = focusNode ?? FocusNode();
+    return Focus(
+      focusNode: node,
+      onFocusChange: (hasFocus) {
+        if (!hasFocus) {
+          onEditingComplete?.call();
+        }
+      },
+      child: VBox(
       children: [
         FormFieldLabel(text: label, isRequired: isRequired),
         HBox(
@@ -52,7 +64,6 @@ class FormNumberField extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: mxt.textStyle.body.resolve(context),
                 cursorColor: context.color(mxt.color.primary),
-
                 enableTyping: true,
               ),
               decoration: QtyDecorationProps(
@@ -83,6 +94,7 @@ class FormNumberField extends StatelessWidget {
           ],
         ),
       ],
+    ),
     );
   }
 

@@ -13,8 +13,7 @@ class FormPickerFieldStyle {
 
   static const accent = Color(0xFF3B5EF5);
 
-  static Style get formField =>
-      Style($box.padding.vertical.ref(mxt.space.small));
+  static Style get formField => Style();
 
   Style get formValueBox => Style(
     $box.padding.horizontal(w(12)),

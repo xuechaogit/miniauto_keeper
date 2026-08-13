@@ -17,6 +17,9 @@ class FormFieldConfig {
   final num stepperMax;
   final num stepperStep;
 
+  // ── 自定义校验 ──
+  final String? Function(String? value)? validator;
+
   const FormFieldConfig({
     required this.type,
     required this.key,
@@ -29,5 +32,6 @@ class FormFieldConfig {
     this.stepperMin = 0,
     this.stepperMax = 9999,
     this.stepperStep = 1,
+    this.validator,
   });
 }

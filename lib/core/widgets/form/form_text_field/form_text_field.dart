@@ -21,6 +21,8 @@ class FormTextField extends StatelessWidget {
   final int? minLines;
   final String? prefixText;
   final String? suffixText;
+  final FocusNode? focusNode;
+  final VoidCallback? onFocusLost;
 
   const FormTextField({
     super.key,
@@ -36,11 +38,21 @@ class FormTextField extends StatelessWidget {
     this.minLines,
     this.prefixText,
     this.suffixText,
+    this.focusNode,
+    this.onFocusLost,
   });
 
   @override
   Widget build(BuildContext context) {
-    return VBox(
+    final node = focusNode ?? FocusNode();
+    return Focus(
+      focusNode: node,
+      onFocusChange: (hasFocus) {
+        if (!hasFocus) {
+          onFocusLost?.call();
+        }
+      },
+      child: VBox(
       children: [
         FormFieldLabel(text: label, isRequired: isRequired),
         Box(
@@ -66,6 +78,7 @@ class FormTextField extends StatelessWidget {
           ),
         ),
       ],
+    ),
     );
   }
 
