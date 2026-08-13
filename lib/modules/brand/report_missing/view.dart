@@ -89,8 +89,8 @@ class ReportMissingView extends GetView<ReportMissingController> {
           prefixIcon: Icons.upload_rounded,
           label: '提交缺失上报',
           onTap: () {
-            final values = FormBuilder.validateAndCollect(_formKeys);
-            if (values == null) return;
+            if (!FormBuilder.validateAll(_formKeys)) return;
+            final values = FormBuilder.collectAll(_formKeys);
             controller.onFormSubmit(values);
           },
           type: SocialButtonTypeVariant.primary,

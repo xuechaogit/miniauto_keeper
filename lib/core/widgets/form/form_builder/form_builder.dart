@@ -30,19 +30,25 @@ class FormBuilder extends StatefulWidget {
   @override
   FormBuilderState createState() => FormBuilderState();
 
-  /// 校验所有表单：全部通过返回合并后的 values，任一失败返回 null。
-  static Map<String, dynamic>? validateAndCollect(
-    List<GlobalKey<FormBuilderState>> keys,
-  ) {
+  /// 校验所有表单，全部通过返回 true。
+  static bool validateAll(List<GlobalKey<FormBuilderState>> keys) {
     var allValid = true;
-    final allValues = <String, dynamic>{};
     for (final key in keys) {
       final state = key.currentState;
       if (state == null) continue;
       if (!state.validate()) allValid = false;
-      allValues.addAll(state.collectValues());
     }
-    return allValid ? allValues : null;
+    return allValid;
+  }
+
+  /// 收集并合并所有表单的值。
+  static Map<String, dynamic> collectAll(List<GlobalKey<FormBuilderState>> keys) {
+    final allValues = <String, dynamic>{};
+    for (final key in keys) {
+      final state = key.currentState;
+      if (state != null) allValues.addAll(state.collectValues());
+    }
+    return allValues;
   }
 }
 
