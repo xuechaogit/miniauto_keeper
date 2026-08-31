@@ -1,0 +1,39 @@
+# iOS 云端构建（模拟器 / 无签名）流水线
+# 用途：在 GitHub Actions 的 macOS 机器上验证 Flutter iOS 编译链路，产出模拟器包
+# 触发方式：手动触发 workflow_dispatch，或推送代码到 master/main 分支
+# 注意：本流水线不签名，仅用于构建验证；正式签名打包（ipa / App Store）需在接入 Apple 开发者账号后另配
+
+name: iOS Build (Simulator, unsigned)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [master, main]
+
+jobs:
+  build-ios:
+    name: Build iOS Simulator
+    runs-on: macos-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.7'
+          channel: stable
+          cache: true
+
+      - name: Flutter pub get
+        run: flutter pub get
+
+      - name: Build iOS simulator (no codesign)
+        run: flutter build ios --simulator --no-codesign
+
+      - name: Upload simulator build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: miniauto-keeper-ios-simulator
+          path: build/ios/iphonesimulator/
+          if-no-files-found: error
