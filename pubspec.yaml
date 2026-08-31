@@ -117,6 +117,13 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
 
+# 依赖版本锁定（防止传递依赖升级引发编译错误）
+# flutter_html 3.0.0 依赖 html ^0.15.5，但 html 0.15.7 移除了
+# src/query_selector.dart 中的顶层 matches() 方法，导致编译报
+# "Method not found: 'matches'"。这里锁定 html 到 0.15.6。
+dependency_overrides:
+  html: 0.15.6
+
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
