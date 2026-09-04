@@ -1,0 +1,11 @@
+targets:
+  $default:
+    builders:
+      retrofit_generator:
+        options:
+          auto_cast_response: true
+          format_output: true
+      json_serializable:
+        options:
+          field_rename: snake # logo_url↔logoUrl 自动映射，字段注解零散写
+          explicit_to_json: true # 嵌套对象 toJson 更稳

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:get/get.dart';
+import 'package:miniauto_keeper/models/catalog_brand.dart';
 
 import '../../core/router/app_routes.dart';
 import '../../core/services/settings_service.dart';
@@ -114,7 +115,7 @@ class BrandView extends GetView<BrandsController> {
 
                 SliverToBoxAdapter(child: SizedBox(height: h(24))),
 
-                AppPagedListView<BrandModel>.sliver(
+                AppPagedListView<CatalogBrand>.sliver(
                   data: controller.brands,
                   isLoading: controller.isLoading,
                   isLoadingMore: controller.isLoadingMore,

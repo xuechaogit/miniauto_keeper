@@ -2,8 +2,6 @@ import 'package:hive/hive.dart';
 
 import '../core/services/hive_type_ids.dart';
 
-part 'wishlist_item.g.dart';
-
 @HiveType(typeId: HiveTypeIds.wishlistItem)
 class WishlistItem {
   @HiveField(0)
@@ -97,5 +95,43 @@ class WishlistItem {
       note: note ?? this.note,
       brandName: brandName ?? this.brandName,
     );
+  }
+}
+
+/// WishlistItem 手写 TypeAdapter（hive_generator 已移除，改手写避免依赖 .g.dart）
+class WishlistItemAdapter extends TypeAdapter<WishlistItem> {
+  @override
+  final int typeId = HiveTypeIds.wishlistItem;
+
+  @override
+  WishlistItem read(BinaryReader reader) {
+    final double originalPrice = reader.readDouble();
+    final String note = reader.readString();
+    return WishlistItem(
+      id: reader.readString(),
+      productId: reader.readString(),
+      title: reader.readString(),
+      thumb: reader.readString(),
+      price: reader.readDouble(),
+      originalPrice: originalPrice == -1 ? null : originalPrice,
+      addedAt: reader.readInt(),
+      priority: reader.readInt(),
+      note: note.isEmpty ? null : note,
+      brandName: reader.readString(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, WishlistItem obj) {
+    writer.writeString(obj.id);
+    writer.writeString(obj.productId);
+    writer.writeString(obj.title);
+    writer.writeString(obj.thumb);
+    writer.writeDouble(obj.price);
+    writer.writeDouble(obj.originalPrice ?? -1);
+    writer.writeInt(obj.addedAt);
+    writer.writeInt(obj.priority);
+    writer.writeString(obj.note ?? '');
+    writer.writeString(obj.brandName);
   }
 }

@@ -1,12 +1,13 @@
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+import 'package:miniauto_keeper/models/catalog_brand.dart';
 import 'package:mix/mix.dart';
 import '../../../../../models/brand_stats.dart';
 import 'brand_card.style.dart';
 
 class BrandCard extends StatelessWidget {
-  final BrandModel brand;
+  final CatalogBrand brand;
   final VoidCallback? onTap;
 
   const BrandCard({super.key, required this.brand, this.onTap});
@@ -14,7 +15,7 @@ class BrandCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // 准备数据
-    final brandColor = brand.themeColor ?? Colors.red;
+    final brandColor = Colors.red;
     final String brandName = (brand.name ?? 'UNKNOWN').toUpperCase();
 
     return Pressable(
@@ -97,10 +98,7 @@ class BrandCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
-              StyledText(
-                '${brand.totalCount}',
-                style: BrandCardStyle.countText,
-              ),
+              StyledText('${brand.country}', style: BrandCardStyle.countText),
               SizedBox(width: w(8)),
               StyledText('Total Inclusion', style: BrandCardStyle.subLabelText),
             ],

@@ -3,8 +3,14 @@ class ApiResponse<T> {
   final int code; // 业务状态码 (非 HTTP 状态码)
   final String message; // 提示信息
   final T? data; // 数据负载
+  final Map<String, dynamic>? meta; // 可选的元数据
 
-  ApiResponse({required this.code, required this.message, this.data});
+  ApiResponse({
+    required this.code,
+    required this.message,
+    this.data,
+    this.meta,
+  });
 
   // 是否成功
   bool get isSuccess => code == 200 || code == 0;
@@ -20,6 +26,7 @@ class ApiResponse<T> {
       data: (json['data'] != null && fromJsonT != null)
           ? fromJsonT(json['data'])
           : json['data'] as T?,
+      meta: json['meta'] as Map<String, dynamic>?,
     );
   }
 }

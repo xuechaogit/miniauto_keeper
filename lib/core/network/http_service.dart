@@ -1,8 +1,11 @@
 // lib/app/data/network/http_service.dart
 import 'package:dio/dio.dart';
-import 'package:get/get.dart' hide Response;
+import 'package:get/get.dart' hide Response, ResponseInterceptor;
 import 'api_response.dart';
 import 'interceptors/auth_interceptor.dart';
+import 'interceptors/response_interceptor.dart';
+
+import '../config/api_config.dart';
 
 class HttpService extends GetxService {
   static HttpService get to => Get.find();
@@ -12,17 +15,18 @@ class HttpService extends GetxService {
   Future<HttpService> init() async {
     _dio = Dio(
       BaseOptions(
-        baseUrl: 'https://api.macnninc.com/api/frontend',
+        baseUrl: ApiConfig.baseUrl,
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 10),
         contentType: 'application/json',
       ),
     );
 
-    // 添加拦截器链
+    // 添加拦截器链（ResponseInterceptor 负责统一剥壳，必须优先于业务读取）
     _dio.interceptors.addAll([
       AuthInterceptor(),
-      // LogInterceptor(responseBody: true, requestBody: true),
+      ResponseInterceptor(),
+      LogInterceptor(responseBody: true, requestBody: true),
     ]);
 
     return this;
@@ -44,8 +48,9 @@ class HttpService extends GetxService {
         options: Options(method: method),
       );
 
-      // 处理业务逻辑
-      return ApiResponse<T>.fromJson(response.data, fromJsonT);
+      // 拦截器已剥壳：优先使用剥壳前的原始响应体，保持 ApiResponse 语义不变
+      final raw = response.extra[ResponseInterceptor.rawKey] ?? response.data;
+      return ApiResponse<T>.fromJson(raw, fromJsonT);
     } on DioException catch (e) {
       return _handleDioError<T>(e);
     } catch (e) {
