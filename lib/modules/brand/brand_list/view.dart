@@ -13,7 +13,6 @@ import 'package:mix/mix.dart';
 
 import '../../../core/widgets/product/product.dart';
 import '../../../core/widgets/product/product.style.dart';
-import '../../../models/product_model.dart';
 
 import 'package:miniauto_keeper/core/widgets/load_more_footer/load_more_footer.dart';
 

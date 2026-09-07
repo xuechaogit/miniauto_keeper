@@ -5,13 +5,14 @@ import 'package:miniauto_keeper/core/router/app_routes.dart';
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:miniauto_keeper/core/widgets/image/image.dart';
 import 'package:miniauto_keeper/core/widgets/image/image.variant.dart';
-import 'package:miniauto_keeper/models/product_model.dart';
+import 'package:miniauto_keeper/models/car_model.dart';
+
 import 'package:mix/mix.dart';
 
 import 'hot_product.style.dart';
 
 class HotProduct extends StatefulWidget {
-  final List<ProductModel> products;
+  final List<CarModel> products;
   final VoidCallback? onViewMore;
 
   const HotProduct({super.key, required this.products, this.onViewMore});
@@ -41,83 +42,84 @@ class _HotProductState extends State<HotProduct> {
         '${AppRoutes.productDetail}?id=${widget.products[_currentIndex].id}',
       ),
       child: Box(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ZBox(
-            style: Style($with.aspectRatio(1)),
-            children: [
-              //背景图
-              Positioned.fill(
-                child: Box(
-                  style: HotProductStyle.bgContainer,
-                  child: StyledImage(
-                    image: const AssetImage(
-                      'assets/images/product_display_bg.jpg',
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ZBox(
+              style: Style($with.aspectRatio(1)),
+              children: [
+                //背景图
+                Positioned.fill(
+                  child: Box(
+                    style: HotProductStyle.bgContainer,
+                    child: StyledImage(
+                      image: const AssetImage(
+                        'assets/images/product_display_bg.jpg',
+                      ),
+                      style: HotProductStyle.bgImage,
                     ),
-                    style: HotProductStyle.bgImage,
                   ),
                 ),
-              ),
-              Center(
-                child: HBox(
-                  children: [
-                    SizedBox(width: w(8)),
-                    _buildArrow(isLeft: true),
-                    SizedBox(width: w(8)),
-                    Expanded(
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          return FlutterCarousel(
-                            items: widget.products.map((p) {
-                              return CustomImage(
-                                imageUrl: p.thumb,
-                                aspectRatio: 1.0,
-                                shape: CustomImageShape.square,
-                              );
-                            }).toList(),
-                            options: FlutterCarouselOptions(
-                              height: constraints.maxWidth,
-                              viewportFraction: 1.0,
-                              enableInfiniteScroll: true,
-                              showIndicator: false,
-                              autoPlay: false,
-                              controller: _carouselController,
-                              onPageChanged: (index, reason) {
-                                setState(() => _currentIndex = index);
-                              },
-                            ),
-                          );
-                        },
+                Center(
+                  child: HBox(
+                    children: [
+                      SizedBox(width: w(8)),
+                      _buildArrow(isLeft: true),
+                      SizedBox(width: w(8)),
+                      Expanded(
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            return FlutterCarousel(
+                              items: widget.products.map((p) {
+                                return CustomImage(
+                                  imageUrl: '',
+                                  aspectRatio: 1.0,
+                                  shape: CustomImageShape.square,
+                                );
+                              }).toList(),
+                              options: FlutterCarouselOptions(
+                                height: constraints.maxWidth,
+                                viewportFraction: 1.0,
+                                enableInfiniteScroll: true,
+                                showIndicator: false,
+                                autoPlay: false,
+                                controller: _carouselController,
+                                onPageChanged: (index, reason) {
+                                  setState(() => _currentIndex = index);
+                                },
+                              ),
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                    SizedBox(width: w(8)),
-                    _buildArrow(isLeft: false),
-                    SizedBox(width: w(8)),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          Box(
-            style: HotProductStyle.infoCard,
-            child: VBox(
-              style: HotProductStyle.infoArea,
-              children: [
-                StyledText(
-                  widget.products[_currentIndex].title,
-                  style: HotProductStyle.title,
-                ),
-                StyledText(
-                  widget.products[_currentIndex].brandName,
-                  style: HotProductStyle.brandName,
+                      SizedBox(width: w(8)),
+                      _buildArrow(isLeft: false),
+                      SizedBox(width: w(8)),
+                    ],
+                  ),
                 ),
               ],
             ),
-          ),
-        ],
+            Box(
+              style: HotProductStyle.infoCard,
+              child: VBox(
+                style: HotProductStyle.infoArea,
+                children: [
+                  StyledText(
+                    widget.products[_currentIndex].name,
+                    style: HotProductStyle.title,
+                  ),
+                  StyledText(
+                    widget.products[_currentIndex].brand.name,
+                    style: HotProductStyle.brandName,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
-    ));
+    );
   }
 
   Widget _buildArrow({required bool isLeft}) {

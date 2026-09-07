@@ -2,18 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/widgets/image/image.dart';
-import 'package:miniauto_keeper/models/product_model.dart';
+import 'package:miniauto_keeper/models/car_model.dart';
+
 import 'package:mix/mix.dart';
 
 import '../../../../core/utils/screen_adapter.dart';
-import '../../../../models/home_stats.dart';
+
 import 'new_arrival.style.dart';
 
 /// 新品上新（新版）
 /// 顶部为图片轮播（不自动播放，触屏滑动后下方详情卡片有右到左的切换动画），
 /// 下方展示当前选中卡片的品牌、标题、发货时间与开售提醒按钮。
 class NewArrival extends StatefulWidget {
-  final List<ProductModel> items;
+  final List<CarModel> items;
 
   const NewArrival({super.key, required this.items});
 
@@ -53,7 +54,7 @@ class _NewArrivalState extends State<NewArrival> {
   }
 
   // 顶部图片轮播
-  Widget _buildCarousel(List<ProductModel> items) {
+  Widget _buildCarousel(List<CarModel> items) {
     return SizedBox(
       height: w(280),
       child: FlutterCarousel.builder(
@@ -64,7 +65,7 @@ class _NewArrivalState extends State<NewArrival> {
             padding: EdgeInsets.only(right: w(8)),
             child: Box(
               style: NewArrivalStyle.carouselImage,
-              child: CustomImage(imageUrl: p.thumb, aspectRatio: 1),
+              child: CustomImage(imageUrl: '', aspectRatio: 1),
             ),
           );
         },
@@ -86,7 +87,7 @@ class _NewArrivalState extends State<NewArrival> {
   }
 
   // 下方详情面板：跟随轮播左右切换
-  Widget _buildDetailPanel(List<ProductModel> items) {
+  Widget _buildDetailPanel(List<CarModel> items) {
     return Obx(() {
       final index = _currentIndex.value;
       if (index >= items.length) {
@@ -117,7 +118,7 @@ class _NewArrivalState extends State<NewArrival> {
 }
 
 class _DetailCard extends StatelessWidget {
-  final ProductModel product;
+  final CarModel product;
   const _DetailCard({super.key, required this.product});
 
   @override
@@ -132,10 +133,13 @@ class _DetailCard extends StatelessWidget {
             child: VBox(
               style: NewArrivalStyle.infoColumn,
               children: [
-                StyledText(product.brandName, style: NewArrivalStyle.brandText),
-                StyledText(product.title, style: NewArrivalStyle.titleText),
                 StyledText(
-                  '发售时间：${(product.releaseDate?.isEmpty ?? true) ? '敬请期待' : product.releaseDate!}',
+                  product.brand.name,
+                  style: NewArrivalStyle.brandText,
+                ),
+                StyledText(product.name, style: NewArrivalStyle.titleText),
+                StyledText(
+                  '发售时间：${true ? '敬请期待' : '2024-06-15'}',
                   style: NewArrivalStyle.deliveryTimeText,
                 ),
               ],

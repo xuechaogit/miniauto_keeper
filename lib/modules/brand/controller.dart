@@ -37,8 +37,6 @@ class BrandsController extends GetxController {
       final envelope = await _api.getBrands(_page);
       final items = envelope.data;
       brands.assignAll(items);
-      print("品牌列表已刷新，当前页: $_page, 数据量: ${items.length}");
-      print(items);
       // meta 不在时回退为「拿到非空数据即视为有下一页」
       hasMore.value =
           (envelope.meta?.lastPage ?? (_page + 1)) > _page && items.isNotEmpty;

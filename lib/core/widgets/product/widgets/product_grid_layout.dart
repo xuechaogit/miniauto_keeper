@@ -1,19 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+import 'package:miniauto_keeper/models/car_model.dart';
+
 import 'package:mix/mix.dart';
-import '../../../../models/product_model.dart';
 
 import '../../image/image.dart';
 import '../product.style.dart';
 import '../product.variant.dart';
 
 class ProductGridLayout extends StatelessWidget {
-  final ProductModel product;
+  final CarModel product;
   final Widget? details;
   final Widget? actionBar;
   final VoidCallback? onTap;
 
-  const ProductGridLayout(this.product, {super.key, this.details, this.actionBar, this.onTap});
+  const ProductGridLayout(
+    this.product, {
+    super.key,
+    this.details,
+    this.actionBar,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,10 +37,7 @@ class ProductGridLayout extends StatelessWidget {
             onTap: onTap,
             child: Box(
               style: ProductStyle.image.applyVariant(ProductMode.gridMode),
-              child: CustomImage(
-                imageUrl: product.thumb,
-                aspectRatio: 1,
-              ),
+              child: CustomImage(imageUrl: product.coverImage, aspectRatio: 1),
             ),
           ),
 
@@ -44,7 +48,7 @@ class ProductGridLayout extends StatelessWidget {
                 child: Box(
                   style: Style($box.height(sp(40))),
                   child: StyledText(
-                    product.title,
+                    product.name,
                     style: ProductStyle.title.applyVariant(
                       ProductMode.gridMode,
                     ),

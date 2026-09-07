@@ -6,14 +6,15 @@ import 'package:miniauto_keeper/core/widgets/image/image.dart';
 import 'package:miniauto_keeper/core/widgets/image/image.variant.dart';
 import 'package:miniauto_keeper/core/widgets/tag/tag.dart';
 import 'package:miniauto_keeper/core/widgets/tag/tag.variant.dart';
-import 'package:miniauto_keeper/models/product_model.dart';
+import 'package:miniauto_keeper/models/car_model.dart';
+
 import 'package:mix/mix.dart';
 
 import '../../controller.dart';
 import 'carousel.style.dart';
 
 class HomeCarousel extends GetView<HomeController> {
-  final List<ProductModel> items;
+  final List<CarModel> items;
 
   const HomeCarousel({super.key, required this.items});
 
@@ -31,7 +32,7 @@ class HomeCarousel extends GetView<HomeController> {
             fit: StackFit.expand,
             children: [
               CustomImage(
-                imageUrl: p.thumb,
+                imageUrl: p.coverImage,
                 aspectRatio: 1,
                 shape: CustomImageShape.square,
               ),
@@ -65,10 +66,7 @@ class HomeCarousel extends GetView<HomeController> {
                       children: [
                         Box(
                           // style: CarouselStyle.titleWrapper,
-                          child: StyledText(
-                            p.title,
-                            style: CarouselStyle.title,
-                          ),
+                          child: StyledText(p.name, style: CarouselStyle.title),
                         ),
                         SizedBox(height: w(8)),
                         _buildIndicator(pageViewIndex, items.length),
@@ -80,7 +78,7 @@ class HomeCarousel extends GetView<HomeController> {
                         StyledText('PRICE', style: CarouselStyle.priceLabel),
                         SizedBox(height: w(8)),
                         StyledText(
-                          '\$ ${p.price.toStringAsFixed(0)}',
+                          '\$ ${p.marketPrice}',
                           style: CarouselStyle.price,
                         ),
                       ],

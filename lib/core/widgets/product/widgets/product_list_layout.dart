@@ -1,16 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:miniauto_keeper/models/car_model.dart';
+
 import 'package:mix/mix.dart';
-import '../../../../models/product_model.dart';
+
 import '../../image/image.dart';
 import '../product.style.dart';
 import '../product.variant.dart';
 
 class ProductListLayout extends StatelessWidget {
-  final ProductModel product;
+  final CarModel product;
   final Widget? details;
   final Widget? actionBar;
 
-  const ProductListLayout(this.product, {super.key, this.details, this.actionBar});
+  const ProductListLayout(
+    this.product, {
+    super.key,
+    this.details,
+    this.actionBar,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +32,7 @@ class ProductListLayout extends StatelessWidget {
           // 图片
           Box(
             style: ProductStyle.image.applyVariant(ProductMode.listMode),
-            child: CustomImage(imageUrl: product.thumb, aspectRatio: 1),
+            child: CustomImage(imageUrl: product.coverImage, aspectRatio: 1),
           ),
 
           // 右侧内容
@@ -38,11 +45,11 @@ class ProductListLayout extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         StyledText(
-                          product.brandName,
+                          product.brand.name,
                           style: ProductStyle.brandName,
                         ),
                         StyledText(
-                          product.title,
+                          product.name,
                           style: ProductStyle.title.applyVariant(
                             ProductMode.listMode,
                           ),

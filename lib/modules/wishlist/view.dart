@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/widgets/product/product.style.dart';
+import 'package:miniauto_keeper/models/car_model.dart';
+import 'package:miniauto_keeper/models/catalog_brand.dart';
+
 import 'package:mix/mix.dart';
 
 import '../../core/theme/app_theme.dart';
@@ -9,7 +12,7 @@ import '../../core/theme/app_theme_tool.dart';
 import '../../core/utils/screen_adapter.dart';
 import '../../core/widgets/custom_shimmer/custom_shimmer.dart';
 import '../../core/widgets/product/product.dart';
-import '../../models/product_model.dart';
+
 import '../../models/wishlist_item.dart';
 import 'controller.dart';
 
@@ -180,7 +183,7 @@ class WishlistView extends GetView<WishlistController> {
             },
             onDismissed: (_) => controller.removeItem(item.productId),
             child: ProductItem(
-              _toProductModel(item),
+              _toCarModel(item),
               onTap: () => controller.openProductDetail(item.productId),
               actionBar: _buildActionBar(item),
             ),
@@ -273,16 +276,12 @@ class WishlistView extends GetView<WishlistController> {
     );
   }
 
-  ProductModel _toProductModel(WishlistItem item) {
-    return ProductModel(
-      id: item.productId,
-      title: item.title,
-      brandName: item.brandName,
-      price: item.price,
-      thumb: item.thumb,
-      tags: const [],
+  CarModel _toCarModel(WishlistItem item) {
+    return CarModel(
+      id: int.parse(item.productId),
+      name: item.title,
+      brand: CatalogBrand(name: item.brandName),
       description: item.note ?? '',
-      purchaseDate: '',
     );
   }
 }

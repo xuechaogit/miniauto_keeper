@@ -1,10 +1,11 @@
 // lib/models/home_stats.dart
 
+import 'package:miniauto_keeper/models/car_model.dart';
+
 import 'brand_model.dart';
-import 'product_model.dart';
 
 class PreList {
-  final List<ProductModel> products;
+  final List<CarModel> products;
   final String title;
 
   PreList({required this.products, required this.title});
@@ -12,7 +13,7 @@ class PreList {
   factory PreList.fromJson(Map<String, dynamic> json) {
     return PreList(
       products: (json['items'] as List? ?? [])
-          .map((e) => ProductModel.fromJson(e))
+          .map((e) => CarModel.fromJson(e))
           .toList(),
       title: json['title'] ?? '',
     );

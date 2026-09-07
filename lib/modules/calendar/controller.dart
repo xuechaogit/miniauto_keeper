@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
+import 'package:miniauto_keeper/models/car_model.dart';
+
 import 'package:table_calendar/table_calendar.dart';
-import '../../models/product_model.dart';
+
 import 'repository.dart';
 
 class CalendarController extends GetxController {
@@ -18,10 +20,10 @@ class CalendarController extends GetxController {
   final isLoading = false.obs;
 
   // API 数据
-  final etaData = <String, List<ProductModel>>{}.obs;
+  final etaData = <String, List<CarModel>>{}.obs;
 
   // 当前选中日期的产品
-  List<ProductModel> get currentDayProducts {
+  List<CarModel> get currentDayProducts {
     final key = DateFormat('yyyy-MM-dd').format(currentSelectedDate.value);
     return etaData[key] ?? [];
   }

@@ -6,7 +6,7 @@ import 'package:miniauto_keeper/core/widgets/divider/divider.dart';
 import 'package:mix/mix.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/widgets/product/product.dart';
-import '../../models/product_model.dart';
+
 import 'controller.dart';
 import 'widgets/action_button/action_button.dart';
 import 'widgets/horizontal_calendar/horizontal_calendar.dart';

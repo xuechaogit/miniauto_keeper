@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../../models/product_model.dart';
+import 'package:miniauto_keeper/models/car_model.dart';
+
 import 'widgets/product_grid_layout.dart';
 import 'widgets/product_list_layout.dart';
 
 class ProductItem extends StatelessWidget {
   final bool isListMode;
-  final ProductModel product;
+  final CarModel product;
   final Widget? details;
   final Widget? actionBar;
   final VoidCallback? onTap;
@@ -23,6 +24,11 @@ class ProductItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return isListMode
         ? ProductListLayout(product, details: details, actionBar: actionBar)
-        : ProductGridLayout(product, details: details, actionBar: actionBar, onTap: onTap);
+        : ProductGridLayout(
+            product,
+            details: details,
+            actionBar: actionBar,
+            onTap: onTap,
+          );
   }
 }

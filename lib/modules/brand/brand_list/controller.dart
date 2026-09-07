@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:miniauto_keeper/core/network/api/catalog_api.dart';
+import 'package:miniauto_keeper/core/network/http_service.dart';
 import 'package:miniauto_keeper/core/router/app_routes.dart';
 import 'package:miniauto_keeper/core/services/wishlist_service.dart';
 import 'package:miniauto_keeper/core/utils/snackbar_util.dart';
 import 'package:miniauto_keeper/core/widgets/form/form_builder/form_builder.dart';
 import 'package:miniauto_keeper/models/brand_model.dart';
-import 'package:miniauto_keeper/models/product_model.dart';
+import 'package:miniauto_keeper/models/car_model.dart';
+import 'package:miniauto_keeper/models/catalog_brand.dart';
+
 import 'package:miniauto_keeper/models/wishlist_item.dart';
 
-import 'repository.dart';
 import 'package:miniauto_keeper/core/widgets/brand_selector/brand_selector.dart';
 import 'package:miniauto_keeper/modules/brand/brand_list/widgets/add_garage_sheet/add_garage_sheet.dart';
 
 class BrandDetailController extends GetxController {
-  dynamic get brand =>
-      Get.arguments ?? BrandModel(id: 0, pid: 0, name: 'Unknown', thumb: '');
+  //品牌详情信息
+  CatalogBrand get brand => Get.arguments ?? CatalogBrand();
 
-  final _repository = BrandListRepository();
-
-  final products = <ProductModel>[].obs;
+  final products = <CarModel>[].obs;
   final isLoading = false.obs;
   final isLoadingMore = false.obs;
   final isLoadMoreError = false.obs;
@@ -44,18 +45,18 @@ class BrandDetailController extends GetxController {
   final favIds = <String>{}.obs;
   final favService = Get.find<WishlistService>();
 
-  bool isFav(ProductModel product) => favService.exists(product.id);
+  bool isFav(CarModel product) => favService.exists(product.id.toString());
 
-  void toggleFav(ProductModel product) {
-    if (favService.exists(product.id)) {
-      favService.removeItem(product.id);
+  void toggleFav(CarModel product) {
+    if (favService.exists(product.id.toString())) {
+      favService.removeItem(product.id.toString());
     } else {
-      favService.addItem(product.toWishlistItem());
+      // favService.addItem(product.toWishlistItem());
     }
     favIds.refresh();
   }
 
-  void showAddGarageSheet(ProductModel product) {
+  void showAddGarageSheet(CarModel product) {
     final formKey = GlobalKey<FormBuilderState>(); // ← 提到 builder 之外
     showModalBottomSheet(
       context: Get.context!,
@@ -64,14 +65,14 @@ class BrandDetailController extends GetxController {
         heightFactor: 0.75,
         child: AddGarageSheet(
           formKey: formKey,
-          productName: product.title,
+          productName: product.name,
           onSubmit: (values) => _submitGarageEntry(product, values),
         ),
       ),
     );
   }
 
-  void _submitGarageEntry(ProductModel product, Map<String, dynamic> values) {
+  void _submitGarageEntry(CarModel product, Map<String, dynamic> values) {
     // TODO: 接入车库 API
     SnackBarUtil.primary('已加入车库');
   }
@@ -88,25 +89,28 @@ class BrandDetailController extends GetxController {
 
   void toggleDescription() => isDescriptionExpanded.toggle();
 
+  // retrofit 接口实例：复用 HttpService 的 dio（baseUrl 与剥壳拦截器已收敛于 HttpService）
+  final CatalogApi _api = CatalogApi(HttpService.to.dio);
+
   Future<void> _loadFirstPage() async {
     isLoading.value = true;
     _page = 1;
     hasMore.value = true;
 
     try {
-      final res = await _repository.fetchProductList(
-        page: _page,
-        size: _pageSize,
-        sort: _buildSortParam(),
-        keyword: keyword.value.isEmpty ? null : keyword.value,
+      final envelope = await _api.getModels(
+        _page,
+        _pageSize,
+        brand.id, // brandId
+        null, // seriesId：暂无系列筛选映射
+        null, // tagId：暂无标签筛选映射
+        keyword.value.isEmpty ? null : keyword.value, // search
       );
-
-      if (res.code != 1) throw new Exception(res.message);
-
-      final data = res.data!;
-      products.value = data.list;
-      total.value = data.total;
-      hasMore.value = data.list.length < data.total;
+      final items = envelope.data;
+      products.assignAll(items);
+      // meta 不在时回退为「拿到非空数据即视为有下一页」
+      hasMore.value =
+          (envelope.meta?.lastPage ?? (_page + 1)) > _page && items.isNotEmpty;
     } catch (_) {
       products.clear();
       total.value = 0;
@@ -120,19 +124,24 @@ class BrandDetailController extends GetxController {
     isLoadingMore.value = true;
 
     try {
-      final res = await _repository.fetchProductList(
-        page: _page + 1,
-        size: _pageSize,
-        sort: _buildSortParam(),
-        keyword: keyword.value.isEmpty ? null : keyword.value,
+      final nextPage = _page + 1;
+      final envelope = await _api.getModels(
+        nextPage,
+        _pageSize,
+        brand.id, // brandId
+        null, // seriesId：暂无系列筛选映射
+        null, // tagId：暂无标签筛选映射
+        keyword.value.isEmpty ? null : keyword.value, // search
       );
-
-      if (res.code != 1) throw new Exception(res.message);
-
-      final data = res.data!;
-      products.addAll(data.list);
-      _page = data.page;
-      hasMore.value = products.length < data.total;
+      final items = envelope.data;
+      if (items.isEmpty) {
+        // 返回空列表说明已到底
+        hasMore.value = false;
+      } else {
+        _page = envelope.meta?.currentPage ?? nextPage;
+        products.addAll(items);
+        hasMore.value = (envelope.meta?.lastPage ?? _page) > _page;
+      }
     } catch (_) {
       // 保持现有数据不变
     } finally {
@@ -158,12 +167,6 @@ class BrandDetailController extends GetxController {
     _loadFirstPage();
   }
 
-  String? _buildSortParam() {
-    final v = selectedSort.value;
-    if (v == '默认') return null;
-    return v;
-  }
-
   void onSearchChanged(String value) {
     keyword.value = value;
     _loadFirstPage();
@@ -180,7 +183,7 @@ class BrandDetailController extends GetxController {
     Get.toNamed(AppRoutes.reportMissing);
   }
 
-  void toProductDetail(ProductModel product) {
+  void toProductDetail(CarModel product) {
     Get.toNamed('${AppRoutes.productDetail}?id=${product.id}');
   }
 }

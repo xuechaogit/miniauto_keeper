@@ -196,7 +196,7 @@ class HomeView extends GetView<HomeController> {
                     style: Style($flex.gap(w(8))),
                     children: [
                       StyledText(
-                        '${p.brandName}',
+                        '${p.brand.name}',
                         style: Style(
                           $text.color.ref(mxt.color.onSurface),
                           $text.style.ref(mxt.textStyle.headline3),
@@ -222,7 +222,7 @@ class HomeView extends GetView<HomeController> {
                             ),
                             children: [
                               StyledText(
-                                '${p.title}',
+                                '${p.name}',
                                 style: Style(
                                   $text.color.ref(mxt.color.onSurface),
                                   $text.style.ref(mxt.textStyle.body),

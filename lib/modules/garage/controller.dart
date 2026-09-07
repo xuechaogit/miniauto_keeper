@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import '../../models/product_model.dart';
+import 'package:miniauto_keeper/models/car_model.dart';
+import 'package:miniauto_keeper/models/catalog_brand.dart';
+import 'package:miniauto_keeper/models/series.dart';
 
 /// 排序维度枚举
 enum SortType {
@@ -17,7 +18,7 @@ class GarageController extends GetxController {
   final isListMode = false.obs;
 
   // --- 原始数据源 ---
-  final RxList<ProductModel> _allModels = <ProductModel>[].obs;
+  final RxList<CarModel> _allModels = <CarModel>[].obs;
 
   // --- 状态变量 ---
   final searchQuery = ''.obs; // 搜索关键字
@@ -55,18 +56,18 @@ class GarageController extends GetxController {
 
   // --- 界面展示用的流 (计算属性) ---
   // 当搜索、排序或筛选发生变化时，filteredModels 会自动更新
-  List<ProductModel> get filteredModels {
-    List<ProductModel> list = _allModels.where((item) {
+  List<CarModel> get filteredModels {
+    List<CarModel> list = _allModels.where((item) {
       // 1. 搜索过滤 (名称或品牌)
       final matchesSearch =
-          item.title.toLowerCase().contains(searchQuery.value.toLowerCase()) ||
-          item.brandName.toLowerCase().contains(
+          item.name.toLowerCase().contains(searchQuery.value.toLowerCase()) ||
+          item.brand.name.toLowerCase().contains(
             searchQuery.value.toLowerCase(),
           );
 
       // 2. 品牌多选过滤
       final matchesBrand =
-          selectedBrands.isEmpty || selectedBrands.contains(item.brandName);
+          selectedBrands.isEmpty || selectedBrands.contains(item.brand.name);
 
       return matchesSearch && matchesBrand;
     }).toList();
@@ -74,16 +75,16 @@ class GarageController extends GetxController {
     // 3. 排序逻辑
     switch (currentSort.value) {
       case SortType.priceAsc:
-        list.sort((a, b) => a.price.compareTo(b.price));
+        // list.sort((a, b) => a.price.compareTo(b.price));
         break;
       case SortType.priceDesc:
-        list.sort((a, b) => b.price.compareTo(a.price));
+        // list.sort((a, b) => b.price.compareTo(a.price));
         break;
       case SortType.dateAsc:
-        list.sort((a, b) => a.purchaseDate.compareTo(b.purchaseDate));
+        // list.sort((a, b) => a.purchaseDate.compareTo(b.purchaseDate));
         break;
       case SortType.dateDesc:
-        list.sort((a, b) => b.purchaseDate.compareTo(a.purchaseDate));
+        // list.sort((a, b) => b.purchaseDate.compareTo(a.purchaseDate));
         break;
     }
     return list;
@@ -91,7 +92,7 @@ class GarageController extends GetxController {
 
   // 获取所有可用的品牌（去重，用于筛选面板）
   List<String> get availableBrands =>
-      _allModels.map((e) => e.brandName).toSet().toList()..sort();
+      _allModels.map((e) => e.brand.name).toSet().toList()..sort();
 
   @override
   void onInit() {
@@ -140,70 +141,42 @@ class GarageController extends GetxController {
   // --- 模拟数据填充 ---
   void _loadMockData() {
     _allModels.assignAll([
-      ProductModel(
-        id: '1',
-        title: 'Porsche 911 (992) GT3 RS - Ice Grey',
-        brandName: 'Porsche',
-        price: 299.0,
-        thumb:
-            'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=800',
-        tags: ['1:18', 'Limited'],
+      CarModel(
+        id: 1,
+        name: 'Porsche 911 (992) GT3 RS - Ice Grey',
+        brand: CatalogBrand(name: 'Porsche'),
       ),
-      ProductModel(
-        id: '2',
-        title: 'Ferrari SF90 Stradale Assetto Fiorano',
-        brandName: 'Ferrari',
-        price: 350.0,
-        thumb:
-            'https://images.unsplash.com/photo-1592198084033-aade902d1aae?q=80&w=800',
-        tags: ['1:18', 'Diecast'],
+      CarModel(
+        id: 2,
+        name: 'Ferrari SF90 Stradale Assetto Fiorano',
+        brand: CatalogBrand(name: 'Ferrari'),
       ),
-      ProductModel(
-        id: '3',
-        title: 'Lamborghini Huracán STO - Blue Laufey',
-        brandName: 'Lamborghini',
-        price: 280.0,
-        thumb:
-            'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=800',
-        tags: ['1:43', 'In Stock'],
+      CarModel(
+        id: 3,
+        name: 'Lamborghini Huracán STO - Blue Laufey',
+        brand: CatalogBrand(name: 'Lamborghini'),
       ),
-      ProductModel(
-        id: '4',
-        title:
+      CarModel(
+        id: 4,
+        name:
             'Lamborghini Huracán STO - Blue Laufey Lamborghini Huracán STO - Blue Laufey',
-        brandName: 'Lamborghini',
-        price: 280.0,
-        thumb:
-            'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=800',
-        tags: ['1:43', 'In Stock'],
+        brand: CatalogBrand(name: 'Lamborghini'),
       ),
-      ProductModel(
-        id: '5',
-        title:
+      CarModel(
+        id: 5,
+        name:
             'Lamborghini Huracán STO - Blue Laufey Lamborghini Huracán STO - Blue Laufey',
-        brandName: 'Lamborghini',
-        price: 280.0,
-        thumb:
-            'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?q=80&w=800',
-        tags: ['1:43', 'In Stock'],
+        brand: CatalogBrand(name: 'Lamborghini'),
       ),
-      ProductModel(
-        id: '6',
-        title: 'BMW M4 CSL (G82) - Frozen Grey',
-        brandName: 'BMW',
-        price: 180.0,
-        thumb:
-            'https://images.unsplash.com/photo-1555215695-3004980ad94e?q=80&w=800',
-        tags: ['1:18', 'New'],
+      CarModel(
+        id: 6,
+        name: 'BMW M4 CSL (G82) - Frozen Grey',
+        brand: CatalogBrand(name: 'BMW'),
       ),
-      ProductModel(
-        id: '7',
-        title: 'Audi RS6 Avant - Nardo Grey Custom',
-        brandName: 'Audi',
-        price: 150.0,
-        thumb:
-            'https://images.unsplash.com/photo-1606152421660-0e7829762957?q=80&w=800',
-        tags: ['1:43', 'Classic'],
+      CarModel(
+        id: 7,
+        name: 'Audi RS6 Avant - Nardo Grey Custom',
+        brand: CatalogBrand(name: 'Audi'),
       ),
     ]);
   }

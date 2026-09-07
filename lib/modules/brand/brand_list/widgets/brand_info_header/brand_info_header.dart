@@ -44,10 +44,7 @@ class BrandInfoHeaderWidget extends GetView<BrandDetailController> {
                       // ── Logo ──
                       Box(
                         style: BrandInfoHeaderStyle.logoBox,
-                        child: CustomImage(
-                          imageUrl: brand.name,
-                          fit: BoxFit.cover,
-                        ),
+                        child: CustomImage(imageUrl: '', fit: BoxFit.cover),
                       ),
                       const SizedBox(width: BrandInfoHeaderStyle.logoSpacing),
 
@@ -141,10 +138,7 @@ class BrandInfoHeaderWidget extends GetView<BrandDetailController> {
 
   Widget _buildCollapsibleDescription() {
     return Obx(() {
-      const desc =
-          '该品牌以精湛的工艺和卓越的设计闻名于世，自创立以来一直致力于为收藏家提供高精度的汽车模型。'
-          '每一款产品都经过严格的品质把控，从模具开发到涂装工艺，力求完美还原真车的每一个细节，'
-          '是车模收藏领域不可忽视的重要力量。';
+      final desc = controller.brand.description;
 
       final expanded = controller.isDescriptionExpanded.value;
 

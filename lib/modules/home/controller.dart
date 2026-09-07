@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:hive/hive.dart';
-import 'package:miniauto_keeper/models/product_model.dart';
+import 'package:miniauto_keeper/models/car_model.dart';
 
 import '../../core/services/settings_service.dart';
 import '../../core/services/storage_service.dart';
@@ -31,18 +31,7 @@ class HomeController extends GetxController {
   final notices = <NoticeModel>[].obs;
   final noticeCarouselController = FlutterCarouselController();
 
-  final hotProducts = [
-    ProductModel(
-      id: '1',
-      title: 'Porsche 911 (992) GT3 RS - Ice Grey',
-      brandName: 'Porsche',
-      price: 299.0,
-      thumb:
-          'https://images.unsplash.com/photo-1503376780353-7e6692767b70?q=80&w=800',
-      tags: ['1:18', 'Limited'],
-      releaseDate: '2026·08月15日·10:00',
-    ),
-  ].obs;
+  final hotProducts = [CarModel(id: 1)].obs;
 
   final brands = <BrandModel>[].obs;
 
