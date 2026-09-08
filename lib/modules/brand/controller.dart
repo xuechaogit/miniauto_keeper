@@ -35,7 +35,7 @@ class BrandsController extends GetxController {
     isLoading.value = true;
     try {
       final envelope = await _api.getBrands(_page);
-      final items = envelope.data;
+      final items = envelope.data!;
       brands.assignAll(items);
       // meta 不在时回退为「拿到非空数据即视为有下一页」
       hasMore.value =
@@ -56,7 +56,7 @@ class BrandsController extends GetxController {
     try {
       final nextPage = _page + 1;
       final envelope = await _api.getBrands(nextPage);
-      final items = envelope.data;
+      final items = envelope.data!;
       if (items.isEmpty) {
         // 返回空列表说明已到底
         hasMore.value = false;

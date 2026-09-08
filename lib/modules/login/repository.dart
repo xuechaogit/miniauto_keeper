@@ -1,19 +1,16 @@
-import 'package:get/get.dart';
+import 'package:miniauto_keeper/models/result.dart';
 
-import '../../core/network/api_response.dart';
+import '../../core/network/api/auth_api.dart';
 import '../../core/network/http_service.dart';
+import '../../models/auth_result.dart';
 
 class LoginRepository {
-  final _http = Get.find<HttpService>();
+  final _api = AuthApi(HttpService.to.dio);
 
-  Future<ApiResponse<Map<String, dynamic>>> login({
-    required String username,
+  Future<Result<AuthResult>> login({
+    required String email,
     required String password,
   }) {
-    return _http.request<Map<String, dynamic>>(
-      '/member/login',
-      method: 'POST',
-      data: {'username': username, 'password': password},
-    );
+    return _api.login({'email': email, 'password': password});
   }
 }

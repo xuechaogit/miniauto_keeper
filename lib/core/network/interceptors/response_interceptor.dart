@@ -12,6 +12,11 @@ class ResponseInterceptor extends Interceptor {
   /// 剥壳前的完整响应体 key，供 [HttpService.request]（ApiResponse 语义）读取
   static const String rawKey = '__raw__';
 
+  /// 保留完整 envelope（不剥壳）的请求标记 key，配合 retrofit @Extra 使用。
+  /// 如发送邮箱验证码接口需读取 message（开发模式验证码在 message），
+  /// 声明处带 @Extra({'keepEnvelope': true})，此处跳过剥壳返回完整响应体。
+  static const String keepEnvelopeKey = 'keepEnvelope';
+
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     final body = response.data;
@@ -19,6 +24,12 @@ class ResponseInterceptor extends Interceptor {
       final code = body['code'];
       if (code == 200) {
         response.extra[rawKey] = body;
+        // 标记 keepEnvelope 的接口不剥壳，保留完整 { code, message, data }，
+        // 由 retrofit 具体的 Envelope DTO 自行解析 message / data。
+        if (response.requestOptions.extra[keepEnvelopeKey] == true) {
+          handler.next(response);
+          return;
+        }
         final extra = body.keys.where((k) => k != 'code' && k != 'message' && k != 'data').toList();
         if (extra.isEmpty) {
           // 无额外字段：data 即本体

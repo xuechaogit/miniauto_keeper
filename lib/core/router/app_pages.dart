@@ -13,6 +13,7 @@ import '../../modules/brand/report_missing/index.dart';
 import '../../modules/modules.dart';
 import '../../modules/notice/index.dart';
 import '../../modules/product_detail/index.dart';
+import '../../modules/register/index.dart';
 import '../../modules/splash/index.dart';
 import '../middleware/auth_middleware.dart';
 import 'app_routes.dart';
@@ -27,6 +28,7 @@ class AppPages {
     _mainRoute(),
     _splashRoute(),
     _loginRoute(),
+    _registerRoute(),
     _profileRoute(),
     _wishlistRoute(),
     _forgotPasswordRoute(), // 提取子路由逻辑
@@ -55,6 +57,13 @@ class AppPages {
     name: AppRoutes.login,
     page: () => const LoginView(),
     binding: LoginBinding(),
+    transition: Transition.fadeIn,
+  );
+
+  static GetPage _registerRoute() => GetPage(
+    name: AppRoutes.register,
+    page: () => const RegisterView(),
+    binding: RegisterBinding(),
     transition: Transition.fadeIn,
   );
 

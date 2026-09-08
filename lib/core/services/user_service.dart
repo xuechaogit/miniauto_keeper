@@ -22,13 +22,25 @@ class UserService extends GetxService {
 
   Future<UserService> init() async {
     _token.value = _storage.read<String>(_boxName, _keyToken, defaultValue: '');
-    _userId.value = _storage.read<String>(_boxName, _keyUserId, defaultValue: '');
-    _nickname.value = _storage.read<String>(_boxName, _keyNickname, defaultValue: '');
+    _userId.value = _storage.read<String>(
+      _boxName,
+      _keyUserId,
+      defaultValue: '',
+    );
+    _nickname.value = _storage.read<String>(
+      _boxName,
+      _keyNickname,
+      defaultValue: '',
+    );
     return this;
   }
 
   /// 登录成功后调用
-  void saveLoginInfo({required String token, String? userId, String? nickname}) {
+  void saveLoginInfo({
+    required String token,
+    String? userId,
+    String? nickname,
+  }) {
     _token.value = token;
     _storage.write(_boxName, _keyToken, token);
     if (userId != null) {

@@ -220,7 +220,7 @@ class LoginView extends GetView<LoginController> {
                   SizedBox(height: h(32)),
                   // 底部注册跳转
                   _buildBottomLink('New collector? ', 'Create Account', () {
-                    Get.toNamed('/register');
+                    Get.toNamed(AppRoutes.register);
                   }),
                   // const SizedBox(height: 40),
                   // Row(

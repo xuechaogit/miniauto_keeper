@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:get/get.dart';
+import 'package:miniauto_keeper/models/result.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../../core/network/api/catalog_api.dart';
@@ -33,7 +34,8 @@ class ProductDetailController extends GetxController {
 
     isLoading.value = true;
     try {
-      product.value = await _catalog.getModelDetails(productId!);
+      Result<CarModel> response = await _catalog.getModelDetails(productId!);
+      product.value = response.data;
     } catch (e) {
       debugPrint('ProductDetail load error: $e');
     } finally {

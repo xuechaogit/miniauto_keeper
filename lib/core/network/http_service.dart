@@ -25,7 +25,7 @@ class HttpService extends GetxService {
     // 添加拦截器链（ResponseInterceptor 负责统一剥壳，必须优先于业务读取）
     _dio.interceptors.addAll([
       AuthInterceptor(),
-      ResponseInterceptor(),
+      // ResponseInterceptor(),
       LogInterceptor(responseBody: true, requestBody: true),
     ]);
 

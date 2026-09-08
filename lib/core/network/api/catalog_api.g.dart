@@ -20,12 +20,12 @@ class _CatalogApi implements CatalogApi {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<BrandListEnvelope> getBrands(int page) async {
+  Future<Result<List<CatalogBrand>>> getBrands(int page) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'page': page};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<BrandListEnvelope>(
+    final _options = _setStreamType<Result<List<CatalogBrand>>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -36,9 +36,18 @@ class _CatalogApi implements CatalogApi {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BrandListEnvelope _value;
+    late Result<List<CatalogBrand>> _value;
     try {
-      _value = BrandListEnvelope.fromJson(_result.data!);
+      _value = Result<List<CatalogBrand>>.fromJson(
+        _result.data!,
+        (json) => json is List<dynamic>
+            ? json
+                  .map<CatalogBrand>(
+                    (i) => CatalogBrand.fromJson(i as Map<String, dynamic>),
+                  )
+                  .toList()
+            : List.empty(),
+      );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -47,12 +56,12 @@ class _CatalogApi implements CatalogApi {
   }
 
   @override
-  Future<CatalogBrand> getBrandDetails(String id) async {
+  Future<Result<CatalogBrand>> getBrandDetails(String id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<CatalogBrand>(
+    final _options = _setStreamType<Result<CatalogBrand>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -63,9 +72,12 @@ class _CatalogApi implements CatalogApi {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late CatalogBrand _value;
+    late Result<CatalogBrand> _value;
     try {
-      _value = CatalogBrand.fromJson(_result.data!);
+      _value = Result<CatalogBrand>.fromJson(
+        _result.data!,
+        (json) => CatalogBrand.fromJson(json as Map<String, dynamic>),
+      );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -74,7 +86,7 @@ class _CatalogApi implements CatalogApi {
   }
 
   @override
-  Future<SeriesListEnvelope> getSeries(
+  Future<Result<List<Series>>> getSeries(
     int brand_id,
     int page,
     int page_size,
@@ -91,7 +103,7 @@ class _CatalogApi implements CatalogApi {
     };
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<SeriesListEnvelope>(
+    final _options = _setStreamType<Result<List<Series>>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -102,9 +114,18 @@ class _CatalogApi implements CatalogApi {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late SeriesListEnvelope _value;
+    late Result<List<Series>> _value;
     try {
-      _value = SeriesListEnvelope.fromJson(_result.data!);
+      _value = Result<List<Series>>.fromJson(
+        _result.data!,
+        (json) => json is List<dynamic>
+            ? json
+                  .map<Series>(
+                    (i) => Series.fromJson(i as Map<String, dynamic>),
+                  )
+                  .toList()
+            : List.empty(),
+      );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -113,12 +134,12 @@ class _CatalogApi implements CatalogApi {
   }
 
   @override
-  Future<Series> getSeriesDetails(String id) async {
+  Future<Result<Series>> getSeriesDetails(String id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<Series>(
+    final _options = _setStreamType<Result<Series>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -129,9 +150,12 @@ class _CatalogApi implements CatalogApi {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Series _value;
+    late Result<Series> _value;
     try {
-      _value = Series.fromJson(_result.data!);
+      _value = Result<Series>.fromJson(
+        _result.data!,
+        (json) => Series.fromJson(json as Map<String, dynamic>),
+      );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -140,7 +164,7 @@ class _CatalogApi implements CatalogApi {
   }
 
   @override
-  Future<CarListEnvelope> getModels(
+  Future<Result<List<CarModel>>> getModels(
     int page,
     int pageSize,
     int? brandId,
@@ -160,7 +184,7 @@ class _CatalogApi implements CatalogApi {
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<CarListEnvelope>(
+    final _options = _setStreamType<Result<List<CarModel>>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -171,9 +195,18 @@ class _CatalogApi implements CatalogApi {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late CarListEnvelope _value;
+    late Result<List<CarModel>> _value;
     try {
-      _value = CarListEnvelope.fromJson(_result.data!);
+      _value = Result<List<CarModel>>.fromJson(
+        _result.data!,
+        (json) => json is List<dynamic>
+            ? json
+                  .map<CarModel>(
+                    (i) => CarModel.fromJson(i as Map<String, dynamic>),
+                  )
+                  .toList()
+            : List.empty(),
+      );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -182,12 +215,12 @@ class _CatalogApi implements CatalogApi {
   }
 
   @override
-  Future<CarModel> getModelDetails(String id) async {
+  Future<Result<CarModel>> getModelDetails(String id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<CarModel>(
+    final _options = _setStreamType<Result<CarModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -198,9 +231,12 @@ class _CatalogApi implements CatalogApi {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late CarModel _value;
+    late Result<CarModel> _value;
     try {
-      _value = CarModel.fromJson(_result.data!);
+      _value = Result<CarModel>.fromJson(
+        _result.data!,
+        (json) => CarModel.fromJson(json as Map<String, dynamic>),
+      );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;

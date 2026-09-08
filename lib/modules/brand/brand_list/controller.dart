@@ -38,8 +38,7 @@ class BrandDetailController extends GetxController {
   final selectedSeriesId = Rx<int?>(null);
 
   /// 系列筛选项（首个为「全部」，选中它表示不按系列过滤）
-  List<String> get seriesOptions =>
-      ['全部', ...seriesList.map((s) => s.name)];
+  List<String> get seriesOptions => ['全部', ...seriesList.map((s) => s.name)];
 
   int? _seriesIdByName(String name) {
     for (final s in seriesList) {
@@ -108,7 +107,7 @@ class BrandDetailController extends GetxController {
   Future<void> _loadSeries() async {
     try {
       final envelope = await _api.getSeries(brand.id, 1, 100, '', '');
-      seriesList.assignAll(envelope.data);
+      seriesList.assignAll(envelope.data!);
     } catch (_) {
       seriesList.clear();
     }
@@ -134,7 +133,7 @@ class BrandDetailController extends GetxController {
         keyword.value.isEmpty ? null : keyword.value, // search
       );
       final items = envelope.data;
-      products.assignAll(items);
+      products.assignAll(items!);
       // meta 不在时回退为「拿到非空数据即视为有下一页」
       hasMore.value =
           (envelope.meta?.lastPage ?? (_page + 1)) > _page && items.isNotEmpty;
@@ -160,7 +159,7 @@ class BrandDetailController extends GetxController {
         null, // tagId：暂无标签筛选映射
         keyword.value.isEmpty ? null : keyword.value, // search
       );
-      final items = envelope.data;
+      final items = envelope.data!;
       if (items.isEmpty) {
         // 返回空列表说明已到底
         hasMore.value = false;
@@ -184,8 +183,7 @@ class BrandDetailController extends GetxController {
       case 'series':
         selectedSeries.value = value;
         // 「全部」映射为 null（不按系列过滤），否则解析为系列 id
-        selectedSeriesId.value =
-            value == '全部' ? null : _seriesIdByName(value);
+        selectedSeriesId.value = value == '全部' ? null : _seriesIdByName(value);
         break;
       case 'scale':
         selectedScale.value = value;

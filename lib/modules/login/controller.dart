@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../core/services/user_service.dart';
-import '../../models/member_model.dart';
 import 'repository.dart';
 
 class LoginController extends GetxController {
@@ -29,31 +28,28 @@ class LoginController extends GetxController {
       }
       isLoading.value = true;
 
-      final result = await _repo.login(
-        username: emailController.text.trim(),
+      final response = await _repo.login(
+        email: emailController.text.trim(),
         password: passwordController.text,
       );
 
+      final result = response.data!;
+
       isLoading.value = false;
 
-      if (result.code != 1) throw new Exception(result.message);
-
       final userService = Get.find<UserService>();
-      final data = result.data!;
-      final memberInfo = MemberInfo.fromJson(data['member_info']);
-
+      final user = result.user;
       userService.saveLoginInfo(
-        token: data['token'] ?? '',
-        userId: memberInfo.id.toString(),
-        nickname: memberInfo.realname ?? memberInfo.username,
+        token: result.token,
+        userId: user?.id?.toString(),
+        nickname: user?.nickname,
       );
-      userService.memberInfo.value = memberInfo;
 
       Get.offAllNamed('/main');
     } catch (e) {
       isLoading.value = false;
-      print('Login Failed: $e');
-      Get.snackbar('Login Error', e.toString());
+      final msg = e.toString().replaceFirst(RegExp(r'^Exception: '), '');
+      Get.snackbar('Login Error', msg);
     }
   }
 
