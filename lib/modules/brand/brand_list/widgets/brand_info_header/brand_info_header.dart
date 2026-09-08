@@ -22,13 +22,13 @@ class BrandInfoHeaderWidget extends GetView<BrandDetailController> {
     return Container(
       decoration: const BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/images/racing_flags.jpg'),
+          image: AssetImage('assets/images/brand-info-bg.jpg'),
           fit: BoxFit.fitWidth,
           alignment: Alignment.topCenter,
         ),
       ),
       child: Container(
-        color: context.color(mxt.color.surface).withOpacity(0.7),
+        color: context.color(mxt.color.surface).withOpacity(0.8),
         child: VBox(
           children: [
             Box(child: BrandSearchBar()),

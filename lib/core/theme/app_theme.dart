@@ -132,7 +132,7 @@ Map<ColorToken, Color> _lightColors() => {
   mxt.color.error: const Color(0xFFf56c6c),
   mxt.color.info: const Color(0xFF909399),
   // Scaffold 底色：页面最底层背景
-  mxt.color.background: const Color.fromARGB(255, 249, 249, 255),
+  mxt.color.background: const Color(0xFFF9F9F7),
   // 卡片色：Card、Dialog、Sheet、ListTile 滑出态
   mxt.color.surface: const Color(0xFFFFFFFF),
   // 输入框/容器填充：TextField、SearchBar、Chip 底色

@@ -3,16 +3,18 @@ import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import 'package:get/get.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../models/product_detail_model.dart';
-import 'repository.dart';
+import '../../core/network/api/catalog_api.dart';
+import '../../core/network/http_service.dart';
+import '../../models/car_model.dart';
 
 class ProductDetailController extends GetxController {
-  final ProductDetailRepository _repository = ProductDetailRepository();
+  final CatalogApi _catalog = CatalogApi(HttpService.to.dio);
 
-  final product = Rxn<ProductDetailModel>();
+  final product = Rxn<CarModel>();
   final isLoading = false.obs;
-  final isExpanded = false.obs;
-  final userRating = Rxn<double>();
+
+  /// 收藏态为本地展示状态，待后端收藏接口接通后替换为真实数据
+  final isFavourite = false.obs;
 
   final FlutterCarouselController carouselController =
       FlutterCarouselController();
@@ -23,7 +25,6 @@ class ProductDetailController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    print('Init Product Detail Page: ');
     _loadProductData();
   }
 
@@ -32,9 +33,7 @@ class ProductDetailController extends GetxController {
 
     isLoading.value = true;
     try {
-      final res = await _repository.fetchProductDetail(int.parse(productId!));
-      if (res.code != 1) throw Exception(res.message);
-      product.value = res.data;
+      product.value = await _catalog.getModelDetails(productId!);
     } catch (e) {
       debugPrint('ProductDetail load error: $e');
     } finally {
@@ -42,8 +41,15 @@ class ProductDetailController extends GetxController {
     }
   }
 
+  /// 加载失败后重试
+  Future<void> retry() => _loadProductData();
+
   void updateImageIndex(int index) {
     currentImgIndex.value = index;
+  }
+
+  void toggleFavourite() {
+    isFavourite.toggle();
   }
 
   Future<void> executeShare() async {
@@ -51,15 +57,17 @@ class ProductDetailController extends GetxController {
     if (data == null) return;
 
     final String shareText =
-        "SPECIFICATION: ${data.title}\n"
-        "Series: ${data.series ?? 'N/A'} | Code: ${data.code}\n"
+        "SPECIFICATION: ${data.name}\n"
+        "Brand: ${data.brand.name.isEmpty ? 'N/A' : data.brand.name} | "
+        "Series: ${data.series.name.isEmpty ? 'N/A' : data.series.name} | "
+        "Code: ${data.modelNumber}\n"
         "Check out full specs here:\n"
         "https://miniauto.keeper.com/product/${data.id}";
 
     try {
       final result = await Share.share(
         shareText,
-        subject: 'Product Specification: ${data.title}',
+        subject: 'Product Specification: ${data.name}',
       );
       if (result.status == ShareResultStatus.success) {
         debugPrint('Share succeeded via: ${result.raw}');

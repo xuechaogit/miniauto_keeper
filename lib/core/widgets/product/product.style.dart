@@ -93,4 +93,60 @@ class ProductStyle {
     $text.color(const Color(0xFFFFFFFF)),
     $text.style.ref(mxt.textStyle.caption),
   );
+
+  // ── 13. grid 模式 meta 区（名称/规格/价格）──
+
+  // 13.1 主价格语义：true=marketPrice 主价 + releasePrice 划线；false 反之
+  static const bool gridPriceMain = true;
+
+  // meta 区纵向间距
+  static Style get gridMeta => Style(
+    $flex.gap(6),
+    $flex.crossAxisAlignment.start(),
+    $box.width(double.infinity),
+  );
+
+  // 规格单行文字（1:64 · Diecast · White）
+  static Style get gridSpecText => Style(
+    $text.color.ref(mxt.color.onSurfaceVariant),
+    $text.style.ref(mxt.textStyle.caption),
+    $text.maxLines(1),
+    $text.overflow.ellipsis(),
+  );
+
+  // 价格行（主价 + 划线价 baseline 对齐）
+  static Style get gridPriceRow =>
+      Style($flex.gap(4), $flex.crossAxisAlignment.end());
+
+  // 主价格
+  static Style get gridPrice => Style(
+    $text.color(_gridAccent),
+    $text.style.ref(mxt.textStyle.body),
+    $text.fontSize(sp(13)),
+    $text.fontWeight.w700(),
+  );
+
+  // 划线价（市价/发售价对比）
+  static Style get gridPriceMarket => Style(
+    $text.color.ref(mxt.color.onSurfaceVariant),
+    $text.style.ref(mxt.textStyle.caption),
+    $text.decoration(TextDecoration.lineThrough),
+  );
+
+  // ── 14. LIMITED 限量徽章 ──
+
+  static Style get gridLimitedBadge => Style(
+    $box.color(_gridAccent),
+    $box.padding.horizontal(6),
+    $box.padding.vertical(2),
+    $box.borderRadius.all(4),
+  );
+
+  static Style get gridLimitedBadgeText => Style(
+    $text.color(const Color(0xFFFFFFFF)),
+    $text.style.ref(mxt.textStyle.caption),
+    $text.fontSize(sp(9)),
+    $text.fontWeight.w700(),
+    $text.letterSpacing(0.5),
+  );
 }

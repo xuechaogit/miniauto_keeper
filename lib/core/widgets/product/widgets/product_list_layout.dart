@@ -56,7 +56,7 @@ class ProductListLayout extends StatelessWidget {
                         ),
                       ],
                     ),
-                if (actionBar != null) actionBar!,
+                ?actionBar,
               ],
             ),
           ),

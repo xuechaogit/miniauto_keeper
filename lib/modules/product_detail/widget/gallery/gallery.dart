@@ -4,25 +4,32 @@ import 'package:miniauto_keeper/core/widgets/image/image.variant.dart';
 import 'package:mix/mix.dart';
 import 'package:flutter_carousel_widget/flutter_carousel_widget.dart';
 import '../../../../core/widgets/image/image.dart';
-import '../../../../models/product_detail_model.dart';
 import '../../controller.dart';
 import 'gallery.style.dart';
 
 import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 
 class ProductImageGallery extends GetView<ProductDetailController> {
-  final ProductDetailModel data;
+  final List<String> images;
 
-  const ProductImageGallery({Key? key, required this.data}) : super(key: key);
+  const ProductImageGallery({Key? key, required this.images}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final images = <String>[
-      if (data.thumb.isNotEmpty) data.thumb,
-      ...data.pics,
-    ];
     if (images.isEmpty) {
       return const SizedBox.shrink();
+    }
+
+    // 单图降级为静态图，避免显示无意义的轮播指示器
+    if (images.length == 1) {
+      return Box(
+        style: GalleryStyle.wrapper,
+        child: CustomImage(
+          imageUrl: images.first,
+          aspectRatio: 1,
+          shape: CustomImageShape.square,
+        ),
+      );
     }
 
     return ZBox(

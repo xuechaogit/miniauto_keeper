@@ -9,6 +9,7 @@ import 'package:miniauto_keeper/core/widgets/form/form_builder/form_builder.dart
 import 'package:miniauto_keeper/models/brand_model.dart';
 import 'package:miniauto_keeper/models/car_model.dart';
 import 'package:miniauto_keeper/models/catalog_brand.dart';
+import 'package:miniauto_keeper/models/series.dart';
 
 import 'package:miniauto_keeper/models/wishlist_item.dart';
 
@@ -31,6 +32,21 @@ class BrandDetailController extends GetxController {
   final selectedSeries = '全部'.obs;
   final selectedScale = '全部'.obs;
   final selectedSort = '默认'.obs;
+
+  // 系列列表（本品牌下，用于系列筛选层）
+  final seriesList = <Series>[].obs;
+  final selectedSeriesId = Rx<int?>(null);
+
+  /// 系列筛选项（首个为「全部」，选中它表示不按系列过滤）
+  List<String> get seriesOptions =>
+      ['全部', ...seriesList.map((s) => s.name)];
+
+  int? _seriesIdByName(String name) {
+    for (final s in seriesList) {
+      if (s.name == name) return s.id;
+    }
+    return null;
+  }
 
   // 搜索关键词
   final keyword = ''.obs;
@@ -84,7 +100,18 @@ class BrandDetailController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _loadSeries();
     _loadFirstPage();
+  }
+
+  /// 加载本品牌下的系列列表（失败时降级为仅有「全部」）
+  Future<void> _loadSeries() async {
+    try {
+      final envelope = await _api.getSeries(brand.id, 1, 100, '', '');
+      seriesList.assignAll(envelope.data);
+    } catch (_) {
+      seriesList.clear();
+    }
   }
 
   void toggleDescription() => isDescriptionExpanded.toggle();
@@ -102,7 +129,7 @@ class BrandDetailController extends GetxController {
         _page,
         _pageSize,
         brand.id, // brandId
-        null, // seriesId：暂无系列筛选映射
+        selectedSeriesId.value, // seriesId：系列筛选
         null, // tagId：暂无标签筛选映射
         keyword.value.isEmpty ? null : keyword.value, // search
       );
@@ -129,7 +156,7 @@ class BrandDetailController extends GetxController {
         nextPage,
         _pageSize,
         brand.id, // brandId
-        null, // seriesId：暂无系列筛选映射
+        selectedSeriesId.value, // seriesId：系列筛选
         null, // tagId：暂无标签筛选映射
         keyword.value.isEmpty ? null : keyword.value, // search
       );
@@ -156,6 +183,9 @@ class BrandDetailController extends GetxController {
         break;
       case 'series':
         selectedSeries.value = value;
+        // 「全部」映射为 null（不按系列过滤），否则解析为系列 id
+        selectedSeriesId.value =
+            value == '全部' ? null : _seriesIdByName(value);
         break;
       case 'scale':
         selectedScale.value = value;

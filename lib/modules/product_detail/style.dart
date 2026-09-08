@@ -1,4 +1,4 @@
-import 'dart:ui';
+﻿import 'dart:ui';
 
 import 'package:mix/mix.dart';
 
@@ -34,42 +34,45 @@ class ProductDetailStyle {
   static Style get productTitle => Style(
     $text.color.ref(mxt.color.onSurface),
     $text.style.ref(mxt.textStyle.headline3),
+    $text.fontWeight.bold(),
     $text.textAlign.start(),
   );
 
-  // ── 参数面板 ──
 
-  static Style get paramRow => Style(
-    $flex.mainAxisAlignment.spaceBetween(),
-    $flex.crossAxisAlignment.center(),
-    $box.padding.horizontal.ref(mxt.space.medium),
+  // ── 限量徽章 ──
+  static Style get limitedBadge => Style(
+    $text.color(accent),
+    $text.style.ref(mxt.textStyle.caption),
+    $text.fontWeight.w700(),
+    $text.letterSpacing(0.5),
   );
 
-  static Style get paramLabel => Style(
+  // 副标题（品牌 · 系列 · 货号）
+  static Style get subtitle => Style(
     $text.color.ref(mxt.color.onSurfaceVariant),
     $text.style.ref(mxt.textStyle.caption),
   );
 
-  static Style get paramValue => Style(
+  // ── 规格分组标题 ──
+  static Style get specGroupTitle => Style(
     $text.color.ref(mxt.color.onSurface),
     $text.style.ref(mxt.textStyle.caption),
-    $text.fontWeight.w600(),
+    $text.fontWeight.w700(),
+    $box.margin.bottom(6),
   );
 
-  static Style get expandBtn => Style(
-    $flex.mainAxisAlignment.center(),
-    $flex.crossAxisAlignment.center(),
+  // ── 详情描述 ──
+  static Style get descText => Style(
+    $text.color.ref(mxt.color.onSurfaceVariant),
+    $text.style.ref(mxt.textStyle.body),
   );
 
-  static Style get expandBtnText => Style(
-    $text.color.ref(mxt.color.primary),
+  // ── 人气 meta 行（并入简介区） ──
+  static Style get hotMeta => Style(
+    $text.color.ref(mxt.color.onSurfaceVariant),
     $text.style.ref(mxt.textStyle.caption),
-    $text.fontWeight.w600(),
-  );
-
-  // ── 评分卡片 ──
-  static Style get ratingValue => Style(
-    $text.color.ref(mxt.color.onSurface),
-    $text.style.ref(mxt.textStyle.headline3),
+    $text.fontWeight.normal(),
+    $text.letterSpacing(0.3),
   );
 }
+

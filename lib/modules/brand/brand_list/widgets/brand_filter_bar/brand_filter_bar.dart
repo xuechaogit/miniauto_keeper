@@ -12,39 +12,6 @@ class BrandFilterBar extends GetView<BrandDetailController> {
   const BrandFilterBar({super.key});
 
   static const _sortOptions = ['综合', '销量', '价格升', '价格降', '新品'];
-  static const _categoryOptions = [
-    '全部',
-    'JDM / Custom',
-    'Global Edition',
-    'Motorsport',
-    'Premium Diecast',
-    'Classic Euro',
-    'High-End Resin',
-  ];
-  static const _brandOptions = [
-    '全部',
-    'Porsche',
-    'Ferrari',
-    'Lamborghini',
-    'BMW',
-    'Audi',
-    'Mercedes',
-    'McLaren',
-    'Nissan',
-    'Toyota',
-    'Honda',
-    'Bugatti',
-    'Aston Martin',
-    'Ford',
-    'Chevrolet',
-    'Koenigsegg',
-    'Lexus',
-    'Mazda',
-    'Subaru',
-    'Alpine',
-    'Mitsubishi',
-  ];
-  static const _specOptions = ['全部', '1:18', '1:43', '1:64'];
 
   void _onFilterChanged(String uiKey, String value) {
     if (_currentFilterValue(uiKey) == value) return;
@@ -64,12 +31,6 @@ class BrandFilterBar extends GetView<BrandDetailController> {
       case 'category':
         controller.selectedSeries.value = value;
         controller.applyFilter('series', value);
-      case 'brand':
-        controller.selectedYear.value = value;
-        controller.applyFilter('year', value);
-      case 'spec':
-        controller.selectedScale.value = value;
-        controller.applyFilter('scale', value);
     }
   }
 
@@ -81,10 +42,6 @@ class BrandFilterBar extends GetView<BrandDetailController> {
             controller.selectedSort.value;
       case 'category':
         return controller.selectedSeries.value;
-      case 'brand':
-        return controller.selectedYear.value;
-      case 'spec':
-        return controller.selectedScale.value;
       default:
         return '';
     }
@@ -104,28 +61,15 @@ class BrandFilterBar extends GetView<BrandDetailController> {
                 context,
                 label: '排序',
                 uiKey: 'sort',
-                options: _sortOptions,
+                options: () => _sortOptions,
               ),
               SizedBox(width: BrandFilterBarStyle.chipGap),
               _buildChip(
                 context,
-                label: '品类',
+                label: '系列',
                 uiKey: 'category',
-                options: _categoryOptions,
-              ),
-              SizedBox(width: BrandFilterBarStyle.chipGap),
-              _buildChip(
-                context,
-                label: '品牌',
-                uiKey: 'brand',
-                options: _brandOptions,
-              ),
-              SizedBox(width: BrandFilterBarStyle.chipGap),
-              _buildChip(
-                context,
-                label: '规格',
-                uiKey: 'spec',
-                options: _specOptions,
+                // 动态读取 controller.seriesOptions，系列加载完自动刷新
+                options: () => controller.seriesOptions,
               ),
             ],
           ),
@@ -138,17 +82,15 @@ class BrandFilterBar extends GetView<BrandDetailController> {
     BuildContext context, {
     required String label,
     required String uiKey,
-    required List<String> options,
+    required List<String> Function() options,
   }) {
     return Obx(() {
       final currentValue = _currentFilterValue(uiKey);
       final isActive =
           (uiKey == 'sort' && controller.selectedSort.value != '默认') ||
-          (uiKey == 'category' && controller.selectedSeries.value != '全部') ||
-          (uiKey == 'brand' && controller.selectedYear.value != '全部') ||
-          (uiKey == 'spec' && controller.selectedScale.value != '全部');
+          (uiKey == 'category' && controller.selectedSeries.value != '全部');
 
-      final choiceItems = options
+      final choiceItems = options()
           .map((o) => S2Choice<String>(value: o, title: o))
           .toList();
 
