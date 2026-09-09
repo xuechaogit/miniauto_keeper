@@ -1,13 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:miniauto_keeper/models/car_model.dart';
 import 'package:miniauto_keeper/models/catalog_brand.dart';
-import 'package:miniauto_keeper/models/envelope/car_list_envelope.dart';
-import 'package:miniauto_keeper/models/envelope/series_list_envelope.dart';
 import 'package:miniauto_keeper/models/result.dart';
 import 'package:miniauto_keeper/models/series.dart';
 import 'package:retrofit/retrofit.dart';
-
-import '../../../models/envelope/brand_list_envelope.dart';
 
 part 'catalog_api.g.dart';
 

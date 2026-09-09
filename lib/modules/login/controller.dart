@@ -1,8 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:miniauto_keeper/core/network/api/auth_api.dart';
+import 'package:miniauto_keeper/core/network/http_service.dart';
+import 'package:miniauto_keeper/core/utils/snackbar_util.dart';
 
 import '../../core/services/user_service.dart';
-import 'repository.dart';
 
 class LoginController extends GetxController {
   // 1. 输入控制器
@@ -13,7 +16,8 @@ class LoginController extends GetxController {
   var isPasswordVisible = false.obs;
   var isLoading = false.obs;
 
-  final _repo = LoginRepository();
+  //2.api接口：
+  final _api = AuthApi(HttpService.to.dio);
 
   // 切换密码显示/隐藏
   void togglePasswordVisibility() {
@@ -28,10 +32,10 @@ class LoginController extends GetxController {
       }
       isLoading.value = true;
 
-      final response = await _repo.login(
-        email: emailController.text.trim(),
-        password: passwordController.text,
-      );
+      final response = await _api.login({
+        "email": emailController.text.trim(),
+        "password": passwordController.text,
+      });
 
       final result = response.data!;
 
@@ -46,10 +50,17 @@ class LoginController extends GetxController {
       );
 
       Get.offAllNamed('/main');
+    } on DioException catch (e) {
+      final body = e.response?.data;
+      var msg = body is Map ? (body['message']?.toString() ?? '') : '';
+      if (msg.isEmpty) {
+        msg = (e.error ?? e.message)?.toString() ?? '注册失败';
+      }
+      SnackBarUtil.error(msg);
     } catch (e) {
+      print(e);
+    } finally {
       isLoading.value = false;
-      final msg = e.toString().replaceFirst(RegExp(r'^Exception: '), '');
-      Get.snackbar('Login Error', msg);
     }
   }
 

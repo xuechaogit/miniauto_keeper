@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:miniauto_keeper/models/result.dart';
 import 'package:miniauto_keeper/models/auth_result.dart';
-import 'package:miniauto_keeper/models/envelope/send_code_envelope.dart';
 import 'package:miniauto_keeper/models/verification.dart';
 import 'package:retrofit/retrofit.dart';
 
