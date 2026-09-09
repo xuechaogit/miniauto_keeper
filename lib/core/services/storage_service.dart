@@ -3,7 +3,6 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:get/get.dart';
 
 import '../../models/brand_model.dart';
-import '../../models/wishlist_item.dart';
 
 class StorageService extends GetxService {
   // 静态初始化方法，在 main.dart 中调用
@@ -12,7 +11,6 @@ class StorageService extends GetxService {
 
     // 注册 TypeAdapter
     Hive.registerAdapter(BrandModelAdapter());
-    Hive.registerAdapter(WishlistItemAdapter());
 
     // 在这里预开常用的 Box
     await Hive.openBox('settings');

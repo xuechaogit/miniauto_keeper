@@ -4,17 +4,15 @@ import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/network/api/catalog_api.dart';
 import 'package:miniauto_keeper/core/network/http_service.dart';
 import 'package:miniauto_keeper/core/router/app_routes.dart';
-import 'package:miniauto_keeper/core/services/wishlist_service.dart';
+import 'package:miniauto_keeper/core/services/wishlist_repository.dart';
 import 'package:miniauto_keeper/core/services/garage_repository.dart';
 import 'package:miniauto_keeper/core/utils/snackbar_util.dart';
 import 'package:miniauto_keeper/core/widgets/form/form_builder/form_builder.dart';
-import 'package:miniauto_keeper/models/brand_model.dart';
 import 'package:miniauto_keeper/models/car_model.dart';
 import 'package:miniauto_keeper/models/catalog_brand.dart';
 import 'package:miniauto_keeper/models/garage_item.dart';
 import 'package:miniauto_keeper/models/series.dart';
-
-import 'package:miniauto_keeper/models/wishlist_item.dart';
+import 'package:miniauto_keeper/models/wishlist_entry.dart';
 
 import 'package:miniauto_keeper/core/widgets/brand_selector/brand_selector.dart';
 import 'package:miniauto_keeper/modules/brand/brand_list/widgets/add_garage_sheet/add_garage_sheet.dart';
@@ -59,19 +57,35 @@ class BrandDetailController extends GetxController {
   // 滚动状态（AppBar 透明 ↔ 实色切换）
   final isScrolled = false.obs;
 
-  // 收藏状态
-  final favIds = <String>{}.obs;
-  final favService = Get.find<WishlistService>();
+  // 收藏状态：以全局 WishlistRepository 的服务端收藏态为准
+  final favRepo = Get.find<WishlistRepository>();
 
-  bool isFav(CarModel product) => favService.exists(product.id.toString());
+  bool isFav(CarModel product) => favRepo.containsModel(product.id);
 
-  void toggleFav(CarModel product) {
-    if (favService.exists(product.id.toString())) {
-      favService.removeItem(product.id.toString());
-    } else {
-      // favService.addItem(product.toWishlistItem());
+  Future<void> toggleFav(CarModel product) async {
+    try {
+      if (favRepo.containsModel(product.id)) {
+        // remove 需条目 id：本地映射缺失（如 add 后未重同步）时先全量刷新兜底
+        var wishlistId = favRepo.wishlistIdOf(product.id);
+        if (wishlistId == null) {
+          await favRepo.syncFavSet();
+          wishlistId = favRepo.wishlistIdOf(product.id);
+        }
+        if (wishlistId == null) {
+          SnackBarUtil.error('收藏记录异常，请稍后重试');
+          return;
+        }
+        await favRepo.removeFromWishlist(wishlistId);
+        SnackBarUtil.success('已取消收藏');
+      } else {
+        print('add to fav ${product.id} ');
+        await favRepo.addToWishlist(WishlistAddRequest(modelId: product.id));
+
+        SnackBarUtil.success('已加入心愿单');
+      }
+    } catch (e) {
+      SnackBarUtil.error(_extractApiMessage(e));
     }
-    favIds.refresh();
   }
 
   void showAddGarageSheet(CarModel product) {
@@ -108,8 +122,7 @@ class BrandDetailController extends GetxController {
         purchaseDate: values['purchaseDate']?.toString() ?? '',
         purchasePrice: double.tryParse('${values['purchasePrice'] ?? ''}') ?? 0,
         purchaseChannel: values['purchaseChannel']?.toString().trim() ?? '',
-        condition:
-            _conditionMap[values['condition']?.toString()] ?? 1, // 默认全新
+        condition: _conditionMap[values['condition']?.toString()] ?? 1, // 默认全新
         notes: _emptyToNull(values['notes']),
         isPublic: true, // 表单未录入公开状态，默认公开
       );
@@ -150,6 +163,8 @@ class BrandDetailController extends GetxController {
     super.onInit();
     _loadSeries();
     _loadFirstPage();
+    // 进入品牌页即静默同步收藏态，❤️ 按钮显示真正的服务端状态（失败静默，不打扰浏览）
+    favRepo.syncFavSet();
   }
 
   /// 加载本品牌下的系列列表（失败时降级为仅有「全部」）

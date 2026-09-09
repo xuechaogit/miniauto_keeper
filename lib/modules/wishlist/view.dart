@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/widgets/product/product.style.dart';
-import 'package:miniauto_keeper/models/car_model.dart';
-import 'package:miniauto_keeper/models/catalog_brand.dart';
 
 import 'package:mix/mix.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/app_theme_tool.dart';
 import '../../core/utils/screen_adapter.dart';
-import '../../core/widgets/custom_shimmer/custom_shimmer.dart';
 import '../../core/widgets/product/product.dart';
 
-import '../../models/wishlist_item.dart';
+import '../../models/wishlist_entry.dart';
 import 'controller.dart';
 
 class WishlistView extends GetView<WishlistController> {
@@ -42,10 +39,7 @@ class WishlistView extends GetView<WishlistController> {
     return Padding(
       padding: EdgeInsets.fromLTRB(w(12), h(8), w(12), h(4)),
       child: TextField(
-        controller: TextEditingController(text: controller.keyword.value)
-          ..selection = TextSelection.fromPosition(
-            TextPosition(offset: controller.keyword.value.length),
-          ),
+        controller: controller.searchCtrl,
         onChanged: (v) => controller.keyword.value = v,
         decoration: InputDecoration(
           hintText: '搜索商品名称或品牌',
@@ -62,7 +56,7 @@ class WishlistView extends GetView<WishlistController> {
             () => controller.keyword.value.isNotEmpty
                 ? IconButton(
                     icon: Icon(Icons.clear_rounded, size: w(18)),
-                    onPressed: () => controller.keyword.value = '',
+                    onPressed: controller.clearSearch,
                   )
                 : const SizedBox.shrink(),
           ),
@@ -80,7 +74,11 @@ class WishlistView extends GetView<WishlistController> {
 
   Widget _buildBrandChips(BuildContext context) {
     return Obx(() {
-      final brands = controller.items.map((e) => e.brandName).toSet().toList();
+      final brands = controller.items
+          .map((e) => e.model.brand.name)
+          .where((n) => n.isNotEmpty)
+          .toSet()
+          .toList();
       if (brands.isEmpty) return const SizedBox.shrink();
 
       return SizedBox(
@@ -133,6 +131,9 @@ class WishlistView extends GetView<WishlistController> {
 
   Widget _buildBody(BuildContext context) {
     return Obx(() {
+      if (controller.isLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
       if (controller.isEmpty) {
         return _buildEmptyState(context);
       }
@@ -144,61 +145,88 @@ class WishlistView extends GetView<WishlistController> {
   }
 
   Widget _buildGrid(BuildContext context) {
-    return Obx(
-      () => MasonryGridView.count(
-        padding: EdgeInsets.all(w(12)),
-        crossAxisCount: 2,
-        mainAxisSpacing: w(12),
-        crossAxisSpacing: w(12),
-        itemCount: controller.displayItems.length,
-        itemBuilder: (context, index) {
-          final item = controller.displayItems[index];
-          return Dismissible(
-            key: Key(item.id),
-            direction: DismissDirection.endToStart,
-            background: Container(
-              alignment: Alignment.centerRight,
-              padding: EdgeInsets.only(right: w(24)),
-              decoration: BoxDecoration(
-                color: Colors.red.withOpacity(0.8),
-                borderRadius: BorderRadius.circular(r(12)),
+    return NotificationListener<ScrollNotification>(
+      onNotification: (notification) {
+        // 接近底部时触发分页加载更多
+        if (notification.metrics.pixels >=
+            notification.metrics.maxScrollExtent - 200) {
+          controller.loadMore();
+        }
+        return false;
+      },
+      child: Obx(
+        () => MasonryGridView.count(
+          padding: EdgeInsets.all(w(12)),
+          crossAxisCount: 2,
+          mainAxisSpacing: w(12),
+          crossAxisSpacing: w(12),
+          itemCount:
+              controller.displayItems.length +
+              (controller.isLoadingMore ? 1 : 0),
+          itemBuilder: (context, index) {
+            if (index >= controller.displayItems.length) {
+              return const Padding(
+                padding: EdgeInsets.all(16),
+                child: Center(
+                  child: SizedBox(
+                    width: 24,
+                    height: 24,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                ),
+              );
+            }
+            final item = controller.displayItems[index];
+            final title = item.model.name.isNotEmpty
+                ? item.model.name
+                : item.model.modelNumber;
+            return Dismissible(
+              key: ValueKey(item.id),
+              direction: DismissDirection.endToStart,
+              background: Container(
+                alignment: Alignment.centerRight,
+                padding: EdgeInsets.only(right: w(24)),
+                decoration: BoxDecoration(
+                  color: Colors.red.withOpacity(0.8),
+                  borderRadius: BorderRadius.circular(r(12)),
+                ),
+                child: Icon(
+                  Icons.delete_outline,
+                  color: Colors.white,
+                  size: w(28),
+                ),
               ),
-              child: Icon(
-                Icons.delete_outline,
-                color: Colors.white,
-                size: w(28),
+              confirmDismiss: (_) async {
+                return await Get.defaultDialog<bool>(
+                      title: '移除心愿',
+                      middleText: '确定要移除「$title」吗？',
+                      textConfirm: '确定',
+                      textCancel: '取消',
+                      confirmTextColor: Colors.white,
+                      onConfirm: () => Get.back(result: true),
+                      onCancel: () => Get.back(result: false),
+                    ) ??
+                    false;
+              },
+              onDismissed: (_) => controller.removeItem(item),
+              child: ProductItem(
+                item.model,
+                onTap: () => controller.openProductDetail(item),
+                actionBar: _buildActionBar(item),
               ),
-            ),
-            confirmDismiss: (_) async {
-              return await Get.defaultDialog<bool>(
-                    title: '移除心愿',
-                    middleText: '确定要移除「${item.title}」吗？',
-                    textConfirm: '确定',
-                    textCancel: '取消',
-                    confirmTextColor: Colors.white,
-                    onConfirm: () => Get.back(result: true),
-                    onCancel: () => Get.back(result: false),
-                  ) ??
-                  false;
-            },
-            onDismissed: (_) => controller.removeItem(item.productId),
-            child: ProductItem(
-              _toCarModel(item),
-              onTap: () => controller.openProductDetail(item.productId),
-              actionBar: _buildActionBar(item),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildActionBar(WishlistItem item) {
+  Widget _buildActionBar(WishlistEntry item) {
     return HBox(
       style: ProductStyle.gridActionBar,
       children: [
         PressableBox(
-          onPress: () => controller.removeItem(item.productId),
+          onPress: () => controller.removeItem(item),
           child: StyledIcon(
             Icons.favorite_outline,
             style: Style(
@@ -273,15 +301,6 @@ class WishlistView extends GetView<WishlistController> {
           ),
         ],
       ),
-    );
-  }
-
-  CarModel _toCarModel(WishlistItem item) {
-    return CarModel(
-      id: int.parse(item.productId),
-      name: item.title,
-      brand: CatalogBrand(name: item.brandName),
-      description: item.note ?? '',
     );
   }
 }
