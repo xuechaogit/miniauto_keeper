@@ -1,9 +1,6 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:miniauto_keeper/core/network/api/garage_api.dart';
-import 'package:miniauto_keeper/core/network/http_service.dart';
-import 'package:miniauto_keeper/core/utils/snackbar_util.dart';
+import 'package:miniauto_keeper/core/services/garage_repository.dart';
 import 'package:miniauto_keeper/models/garage_item.dart';
 
 /// 排序维度枚举
@@ -14,30 +11,21 @@ enum SortType {
   dateDesc, // 购入时间从新到旧
 }
 
+/// 车库页控制器：只保留 UI 状态（视图模式/搜索/排序/筛选）。
+/// 原始数据与分页/写操作全部收敛于 GarageRepository（MainBinding 常驻）。
 class GarageController extends GetxController {
+  /// 全局仓库：唯一数据源
+  final repo = Get.find<GarageRepository>();
+
   final isListMode = false.obs;
 
-  // --- 原始数据源（真实车库条目） ---
-  final RxList<GarageItem> _allModels = <GarageItem>[].obs;
-
-  // --- 状态变量 ---
+  // --- UI 状态 ---
   final searchQuery = ''.obs; // 搜索关键字（本地过滤：仅作用于已加载数据）
   final currentSort = SortType.priceDesc.obs; // 当前排序方式
   final selectedBrands = <String>[].obs; // 选中的品牌过滤（本地）
-
-  // --- 分页状态 ---
-  final isLoading = false.obs;
-  final isLoadingMore = false.obs;
-  final hasMore = true.obs;
-  final total = 0.obs; // 服务端总条数（meta.total）
-  int _page = 1;
-  static const _pageSize = 10;
-
-  // retrofit 接口实例：复用 HttpService 的 dio（baseUrl 与响应处理已收敛于 HttpService）
-  final GarageApi _api = GarageApi(HttpService.to.dio);
+  final selectedFilter = 'All'.obs;
 
   // 筛选标签状态
-  final selectedFilter = 'All'.obs;
   final List<Map<String, dynamic>> filters = [
     {'label': 'ALL', 'value': 'ALL'},
     {'label': 'MINI GT', 'value': 'MINI GT'},
@@ -65,9 +53,14 @@ class GarageController extends GetxController {
     {'label': 'DATE: OLDEST', 'value': SortType.dateAsc, 'icon': Icons.history},
   ];
 
-  // --- 界面展示用的流 (计算属性) ---
+  // --- 请求状态转发（仓库持有，页面只读） ---
+  bool get isLoading => repo.isLoading.value;
+  bool get isLoadingMore => repo.isLoadingMore.value;
+  bool get hasMore => repo.hasMore.value;
+
+  // --- 界面展示用的流 (计算属性，底层数据来自仓库) ---
   List<GarageItem> get filteredModels {
-    List<GarageItem> list = _allModels.where((item) {
+    List<GarageItem> list = repo.models.where((item) {
       final name =
           '${item.model.name} ${item.model.brand.name}'.toLowerCase();
       final query = searchQuery.value.toLowerCase();
@@ -75,7 +68,8 @@ class GarageController extends GetxController {
 
       // 品牌多选过滤（本地）
       final matchesBrand =
-          selectedBrands.isEmpty || selectedBrands.contains(item.model.brand.name);
+          selectedBrands.isEmpty ||
+              selectedBrands.contains(item.model.brand.name);
 
       return matchesSearch && matchesBrand;
     }).toList();
@@ -114,22 +108,22 @@ class GarageController extends GetxController {
 
   // 获取所有可用的品牌（去重，用于筛选面板）
   List<String> get availableBrands =>
-      _allModels.map((e) => e.model.brand.name).toSet().toList()..sort();
+      repo.models.map((e) => e.model.brand.name).toSet().toList()..sort();
 
-  // --- 统计真实值 ---
+  // --- 统计真实值（派生自仓库已加载数据） ---
   /// 车库总条数（服务端 meta.total，前端按已加载数据兜底）
   int get totalModels =>
-      total.value > 0 ? total.value : _allModels.length;
+      repo.total.value > 0 ? repo.total.value : repo.models.length;
 
   /// 已加载数据中的去重品牌数
   int get brandModelsCount =>
-      _allModels.map((e) => e.model.brand.name).toSet().length;
+      repo.models.map((e) => e.model.brand.name).toSet().length;
 
   /// 车库总估值（purchasePrice 求和，前端展示用）
-  double get totalValuation => _allModels.fold(
-        0,
-        (sum, e) => sum + (double.tryParse(e.purchasePrice) ?? 0),
-      );
+  double get totalValuation => repo.models.fold(
+    0,
+    (sum, e) => sum + (double.tryParse(e.purchasePrice) ?? 0),
+  );
 
   /// 估值展示文案：>=1000 缩写为 K（保留 1 位）
   String get valuationLabel {
@@ -138,85 +132,14 @@ class GarageController extends GetxController {
     return '\$${v.toStringAsFixed(0)}';
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-    _loadFirstPage();
-  }
+  // --- 数据操作方法：委托仓库 ---
 
-  // --- 真实接口加载 ---
-  Future<void> _loadFirstPage() async {
-    isLoading.value = true;
-    _page = 1;
-    hasMore.value = true;
-    try {
-      final envelope = await _api.getMyGarage(
-        _page,
-        _pageSize,
-        null, // brandId：暂不接接口筛选，本地按名字过滤
-        null, // condition：暂不接接口筛选
-      );
-      final items = envelope.data ?? [];
-      _allModels.assignAll(items);
-      total.value = envelope.meta?.total ?? items.length;
-      hasMore.value =
-          (envelope.meta?.lastPage ?? (_page + 1)) > _page && items.isNotEmpty;
-    } on DioException catch (e) {
-      _allModels.clear();
-      total.value = 0;
-      SnackBarUtil.error(_extractApiMessage(e));
-    } catch (e) {
-      _allModels.clear();
-      total.value = 0;
-      SnackBarUtil.error(_extractApiMessage(e));
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  /// 下拉刷新：回到第一页
+  /// 下拉刷新：强制回到第一页
   @override
-  Future<void> refresh() => _loadFirstPage();
+  Future<void> refresh() => repo.refresh();
 
   /// 触底加载更多
-  Future<void> loadMore() async {
-    if (isLoadingMore.value || !hasMore.value || isLoading.value) return;
-    isLoadingMore.value = true;
-    try {
-      final nextPage = _page + 1;
-      final envelope = await _api.getMyGarage(
-        nextPage,
-        _pageSize,
-        null,
-        null,
-      );
-      final items = envelope.data ?? [];
-      if (items.isEmpty) {
-        hasMore.value = false;
-      } else {
-        _page = envelope.meta?.currentPage ?? nextPage;
-        _allModels.addAll(items);
-        total.value = envelope.meta?.total ?? total.value;
-        hasMore.value = (envelope.meta?.lastPage ?? _page) > _page;
-      }
-    } catch (e) {
-      // 保持现有数据不变
-    } finally {
-      isLoadingMore.value = false;
-    }
-  }
-
-  /// 提取接口错误信息：优先响应体 message，兜底 e.error
-  String _extractApiMessage(Object e) {
-    if (e is DioException) {
-      final body = e.response?.data;
-      if (body is Map && body['message'] != null) {
-        return '${body['message']}';
-      }
-      return '${e.error ?? '请求失败，请稍后重试'}';
-    }
-    return '$e';
-  }
+  Future<void> loadMore() => repo.loadMore();
 
   // --- 交互方法 ---
   void updateSortWithoutPop(SortType type) {

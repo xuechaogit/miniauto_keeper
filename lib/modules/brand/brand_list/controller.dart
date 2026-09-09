@@ -2,10 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/network/api/catalog_api.dart';
-import 'package:miniauto_keeper/core/network/api/garage_api.dart';
 import 'package:miniauto_keeper/core/network/http_service.dart';
 import 'package:miniauto_keeper/core/router/app_routes.dart';
 import 'package:miniauto_keeper/core/services/wishlist_service.dart';
+import 'package:miniauto_keeper/core/services/garage_repository.dart';
 import 'package:miniauto_keeper/core/utils/snackbar_util.dart';
 import 'package:miniauto_keeper/core/widgets/form/form_builder/form_builder.dart';
 import 'package:miniauto_keeper/models/brand_model.dart';
@@ -90,9 +90,6 @@ class BrandDetailController extends GetxController {
     );
   }
 
-  /// retrofit 接口实例：复用 HttpService 的 dio（baseUrl 与剥壳拦截器已收敛于 HttpService）
-  final GarageApi _garageApi = GarageApi(HttpService.to.dio);
-
   bool _isSubmitting = false;
 
   /// 车模状况(表单中文枚举) → 后端 condition 数值
@@ -116,7 +113,7 @@ class BrandDetailController extends GetxController {
         notes: _emptyToNull(values['notes']),
         isPublic: true, // 表单未录入公开状态，默认公开
       );
-      await _garageApi.addToGarage(req);
+      await Get.find<GarageRepository>().addToGarage(req);
       SnackBarUtil.success('已加入车库');
       if (Get.isBottomSheetOpen ?? false) Get.back();
     } catch (e) {

@@ -27,11 +27,14 @@ class MainView extends GetView<MainController> {
         () => IndexedStack(
           index: controller.currentIndex,
           children: [
-            HomeView(), // Index 0
-            BrandView(), // Index 1
-            GarageView(), // Index 2 (收藏页占位)
-            StatsView(), // Index 3 (收藏页占位)
-            ProfileView(), // Index 3 (个人页占位)
+            // 惰性创建：首次进入对应 tab 才实例化该页（GetView 内部 Get.find
+            // 随之触发 lazyPut 实例化 controller 并拉数据），创建后保活不销毁。
+            // 未创建的槽位用 SizedBox 占位，保证 children 数量与位置恒定。
+            controller.isCreated(0) ? HomeView() : const SizedBox.shrink(), // Index 0
+            controller.isCreated(1) ? BrandView() : const SizedBox.shrink(), // Index 1
+            controller.isCreated(2) ? GarageView() : const SizedBox.shrink(), // Index 2 车库
+            controller.isCreated(3) ? StatsView() : const SizedBox.shrink(), // Index 3
+            controller.isCreated(4) ? ProfileView() : const SizedBox.shrink(), // Index 4
           ],
         ),
       ),
