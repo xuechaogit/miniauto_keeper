@@ -1,4 +1,3 @@
-import 'package:miniauto_keeper/core/utils/screen_adapter.dart';
 import 'package:mix/mix.dart';
 
 import '../../theme/app_theme.dart';
@@ -21,17 +20,25 @@ class CustomTagStyle {
     CustomTagType.info($box.color.ref(mxt.color.infoContainer)),
     CustomTagType.warning($box.color.ref(mxt.color.warningContainer)),
     CustomTagType.error($box.color.ref(mxt.color.errorContainer)),
-    CustomTagShape.rounded($box.borderRadius(100)),
+    // 圆角走 radius token：capsule 用 large(999)，方形用 small(4)，square+large 用 medium(12)
+    CustomTagShape.rounded($box.borderRadius.all.ref(mxt.radius.large)),
     CustomTagShape.square(
-      $box.borderRadius(8), // 默认方角值
-      // 嵌套判定：如果是 square 且是 small
-      CustomTagSize.small($box.borderRadius(w(4))),
-      // 嵌套判定：如果是 square 且是 large
-      CustomTagSize.large($box.borderRadius(w(12))),
+      $box.borderRadius.all.ref(mxt.radius.small),
+      CustomTagSize.large($box.borderRadius.all.ref(mxt.radius.medium)),
     ),
-    CustomTagSize.small($box.padding(w(4), w(8))),
-    CustomTagSize.medium($box.padding(w(6), w(12))),
-    CustomTagSize.large($box.padding(w(8), w(16))),
+    // padding 走 space token：垂直:水平 ≈ 1:2
+    CustomTagSize.small(
+      $box.padding.vertical.ref(mxt.space.xs),
+      $box.padding.horizontal.ref(mxt.space.small),
+    ),
+    CustomTagSize.medium(
+      $box.padding.vertical.ref(mxt.space.tiny),
+      $box.padding.horizontal.ref(mxt.space.medium),
+    ),
+    CustomTagSize.large(
+      $box.padding.vertical.ref(mxt.space.small),
+      $box.padding.horizontal.ref(mxt.space.large),
+    ),
   ).applyVariants([type, size, shape]);
 
   Style label() => Style(
@@ -42,6 +49,6 @@ class CustomTagStyle {
     CustomTagType.error($text.color.ref(mxt.color.onErrorContainer)),
     CustomTagSize.small($text.style.ref(mxt.textStyle.caption)),
     CustomTagSize.medium($text.style.ref(mxt.textStyle.body)),
-    CustomTagSize.large($text.style.ref(mxt.textStyle.headline3)),
-  ).applyVariants([type, size, shape]);
+    CustomTagSize.large($text.style.ref(mxt.textStyle.subTitle)),
+  ).applyVariants([type, size]);
 }

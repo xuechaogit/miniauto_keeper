@@ -1,6 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:miniauto_keeper/core/network/api/catalog_api.dart';
+import 'package:miniauto_keeper/core/network/api/garage_api.dart';
 import 'package:miniauto_keeper/core/network/http_service.dart';
 import 'package:miniauto_keeper/core/router/app_routes.dart';
 import 'package:miniauto_keeper/core/services/wishlist_service.dart';
@@ -9,6 +11,7 @@ import 'package:miniauto_keeper/core/widgets/form/form_builder/form_builder.dart
 import 'package:miniauto_keeper/models/brand_model.dart';
 import 'package:miniauto_keeper/models/car_model.dart';
 import 'package:miniauto_keeper/models/catalog_brand.dart';
+import 'package:miniauto_keeper/models/garage_item.dart';
 import 'package:miniauto_keeper/models/series.dart';
 
 import 'package:miniauto_keeper/models/wishlist_item.dart';
@@ -87,9 +90,58 @@ class BrandDetailController extends GetxController {
     );
   }
 
-  void _submitGarageEntry(CarModel product, Map<String, dynamic> values) {
-    // TODO: 接入车库 API
-    SnackBarUtil.primary('已加入车库');
+  /// retrofit 接口实例：复用 HttpService 的 dio（baseUrl 与剥壳拦截器已收敛于 HttpService）
+  final GarageApi _garageApi = GarageApi(HttpService.to.dio);
+
+  bool _isSubmitting = false;
+
+  /// 车模状况(表单中文枚举) → 后端 condition 数值
+  static const _conditionMap = {'全新': 1, '近新': 2, '有瑕疵': 3, '破损': 4};
+
+  /// 提交加入车库
+  Future<void> _submitGarageEntry(
+    CarModel product,
+    Map<String, dynamic> values,
+  ) async {
+    if (_isSubmitting) return;
+    _isSubmitting = true;
+    try {
+      final req = GarageAddRequest(
+        modelId: product.id,
+        purchaseDate: values['purchaseDate']?.toString() ?? '',
+        purchasePrice: double.tryParse('${values['purchasePrice'] ?? ''}') ?? 0,
+        purchaseChannel: values['purchaseChannel']?.toString().trim() ?? '',
+        condition:
+            _conditionMap[values['condition']?.toString()] ?? 1, // 默认全新
+        notes: _emptyToNull(values['notes']),
+        isPublic: true, // 表单未录入公开状态，默认公开
+      );
+      await _garageApi.addToGarage(req);
+      SnackBarUtil.success('已加入车库');
+      if (Get.isBottomSheetOpen ?? false) Get.back();
+    } catch (e) {
+      SnackBarUtil.error(_extractApiMessage(e));
+    } finally {
+      _isSubmitting = false;
+    }
+  }
+
+  /// 提取接口错误信息：优先响应体 message（覆盖 HTTP 200 剥壳 reject 与
+  /// HTTP 422 两种情形），兜底拦截器 reject 场景塞入的 e.error。
+  String _extractApiMessage(Object e) {
+    if (e is DioException) {
+      final body = e.response?.data;
+      if (body is Map && body['message'] != null) {
+        return '${body['message']}';
+      }
+      return '${e.error ?? '请求失败，请稍后重试'}';
+    }
+    return '$e';
+  }
+
+  static String? _emptyToNull(dynamic v) {
+    final s = v?.toString().trim() ?? '';
+    return s.isEmpty ? null : s;
   }
 
   static const _pageSize = 10;

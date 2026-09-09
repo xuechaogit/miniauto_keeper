@@ -1,8 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:miniauto_keeper/models/car_model.dart';
-import 'package:miniauto_keeper/models/catalog_brand.dart';
-import 'package:miniauto_keeper/models/series.dart';
+import 'package:miniauto_keeper/core/network/api/garage_api.dart';
+import 'package:miniauto_keeper/core/network/http_service.dart';
+import 'package:miniauto_keeper/core/utils/snackbar_util.dart';
+import 'package:miniauto_keeper/models/garage_item.dart';
 
 /// 排序维度枚举
 enum SortType {
@@ -12,18 +14,27 @@ enum SortType {
   dateDesc, // 购入时间从新到旧
 }
 
-/// 模型数据结构
-
 class GarageController extends GetxController {
   final isListMode = false.obs;
 
-  // --- 原始数据源 ---
-  final RxList<CarModel> _allModels = <CarModel>[].obs;
+  // --- 原始数据源（真实车库条目） ---
+  final RxList<GarageItem> _allModels = <GarageItem>[].obs;
 
   // --- 状态变量 ---
-  final searchQuery = ''.obs; // 搜索关键字
+  final searchQuery = ''.obs; // 搜索关键字（本地过滤：仅作用于已加载数据）
   final currentSort = SortType.priceDesc.obs; // 当前排序方式
-  final selectedBrands = <String>[].obs; // 选中的品牌过滤
+  final selectedBrands = <String>[].obs; // 选中的品牌过滤（本地）
+
+  // --- 分页状态 ---
+  final isLoading = false.obs;
+  final isLoadingMore = false.obs;
+  final hasMore = true.obs;
+  final total = 0.obs; // 服务端总条数（meta.total）
+  int _page = 1;
+  static const _pageSize = 10;
+
+  // retrofit 接口实例：复用 HttpService 的 dio（baseUrl 与响应处理已收敛于 HttpService）
+  final GarageApi _api = GarageApi(HttpService.to.dio);
 
   // 筛选标签状态
   final selectedFilter = 'All'.obs;
@@ -55,36 +66,47 @@ class GarageController extends GetxController {
   ];
 
   // --- 界面展示用的流 (计算属性) ---
-  // 当搜索、排序或筛选发生变化时，filteredModels 会自动更新
-  List<CarModel> get filteredModels {
-    List<CarModel> list = _allModels.where((item) {
-      // 1. 搜索过滤 (名称或品牌)
-      final matchesSearch =
-          item.name.toLowerCase().contains(searchQuery.value.toLowerCase()) ||
-          item.brand.name.toLowerCase().contains(
-            searchQuery.value.toLowerCase(),
-          );
+  List<GarageItem> get filteredModels {
+    List<GarageItem> list = _allModels.where((item) {
+      final name =
+          '${item.model.name} ${item.model.brand.name}'.toLowerCase();
+      final query = searchQuery.value.toLowerCase();
+      final matchesSearch = query.isEmpty || name.contains(query);
 
-      // 2. 品牌多选过滤
+      // 品牌多选过滤（本地）
       final matchesBrand =
-          selectedBrands.isEmpty || selectedBrands.contains(item.brand.name);
+          selectedBrands.isEmpty || selectedBrands.contains(item.model.brand.name);
 
       return matchesSearch && matchesBrand;
     }).toList();
 
-    // 3. 排序逻辑
+    // 排序（价格/购入日期均来自真实车库字段）
     switch (currentSort.value) {
       case SortType.priceAsc:
-        // list.sort((a, b) => a.price.compareTo(b.price));
+        list.sort(
+          (a, b) =>
+              (double.tryParse(a.purchasePrice) ?? 0)
+                  .compareTo(double.tryParse(b.purchasePrice) ?? 0),
+        );
         break;
       case SortType.priceDesc:
-        // list.sort((a, b) => b.price.compareTo(a.price));
+        list.sort(
+          (a, b) =>
+              (double.tryParse(b.purchasePrice) ?? 0)
+                  .compareTo(double.tryParse(a.purchasePrice) ?? 0),
+        );
         break;
       case SortType.dateAsc:
-        // list.sort((a, b) => a.purchaseDate.compareTo(b.purchaseDate));
+        list.sort(
+          (a, b) => (DateTime.tryParse(a.purchaseDate) ?? DateTime(0))
+              .compareTo(DateTime.tryParse(b.purchaseDate) ?? DateTime(0)),
+        );
         break;
       case SortType.dateDesc:
-        // list.sort((a, b) => b.purchaseDate.compareTo(a.purchaseDate));
+        list.sort(
+          (a, b) => (DateTime.tryParse(b.purchaseDate) ?? DateTime(0))
+              .compareTo(DateTime.tryParse(a.purchaseDate) ?? DateTime(0)),
+        );
         break;
     }
     return list;
@@ -92,12 +114,108 @@ class GarageController extends GetxController {
 
   // 获取所有可用的品牌（去重，用于筛选面板）
   List<String> get availableBrands =>
-      _allModels.map((e) => e.brand.name).toSet().toList()..sort();
+      _allModels.map((e) => e.model.brand.name).toSet().toList()..sort();
+
+  // --- 统计真实值 ---
+  /// 车库总条数（服务端 meta.total，前端按已加载数据兜底）
+  int get totalModels =>
+      total.value > 0 ? total.value : _allModels.length;
+
+  /// 已加载数据中的去重品牌数
+  int get brandModelsCount =>
+      _allModels.map((e) => e.model.brand.name).toSet().length;
+
+  /// 车库总估值（purchasePrice 求和，前端展示用）
+  double get totalValuation => _allModels.fold(
+        0,
+        (sum, e) => sum + (double.tryParse(e.purchasePrice) ?? 0),
+      );
+
+  /// 估值展示文案：>=1000 缩写为 K（保留 1 位）
+  String get valuationLabel {
+    final v = totalValuation;
+    if (v >= 1000) return '\$${(v / 1000).toStringAsFixed(1)}K';
+    return '\$${v.toStringAsFixed(0)}';
+  }
 
   @override
   void onInit() {
     super.onInit();
-    _loadMockData();
+    _loadFirstPage();
+  }
+
+  // --- 真实接口加载 ---
+  Future<void> _loadFirstPage() async {
+    isLoading.value = true;
+    _page = 1;
+    hasMore.value = true;
+    try {
+      final envelope = await _api.getMyGarage(
+        _page,
+        _pageSize,
+        null, // brandId：暂不接接口筛选，本地按名字过滤
+        null, // condition：暂不接接口筛选
+      );
+      final items = envelope.data ?? [];
+      _allModels.assignAll(items);
+      total.value = envelope.meta?.total ?? items.length;
+      hasMore.value =
+          (envelope.meta?.lastPage ?? (_page + 1)) > _page && items.isNotEmpty;
+    } on DioException catch (e) {
+      _allModels.clear();
+      total.value = 0;
+      SnackBarUtil.error(_extractApiMessage(e));
+    } catch (e) {
+      _allModels.clear();
+      total.value = 0;
+      SnackBarUtil.error(_extractApiMessage(e));
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /// 下拉刷新：回到第一页
+  @override
+  Future<void> refresh() => _loadFirstPage();
+
+  /// 触底加载更多
+  Future<void> loadMore() async {
+    if (isLoadingMore.value || !hasMore.value || isLoading.value) return;
+    isLoadingMore.value = true;
+    try {
+      final nextPage = _page + 1;
+      final envelope = await _api.getMyGarage(
+        nextPage,
+        _pageSize,
+        null,
+        null,
+      );
+      final items = envelope.data ?? [];
+      if (items.isEmpty) {
+        hasMore.value = false;
+      } else {
+        _page = envelope.meta?.currentPage ?? nextPage;
+        _allModels.addAll(items);
+        total.value = envelope.meta?.total ?? total.value;
+        hasMore.value = (envelope.meta?.lastPage ?? _page) > _page;
+      }
+    } catch (e) {
+      // 保持现有数据不变
+    } finally {
+      isLoadingMore.value = false;
+    }
+  }
+
+  /// 提取接口错误信息：优先响应体 message，兜底 e.error
+  String _extractApiMessage(Object e) {
+    if (e is DioException) {
+      final body = e.response?.data;
+      if (body is Map && body['message'] != null) {
+        return '${body['message']}';
+      }
+      return '${e.error ?? '请求失败，请稍后重试'}';
+    }
+    return '$e';
   }
 
   // --- 交互方法 ---
@@ -107,21 +225,18 @@ class GarageController extends GetxController {
   }
 
   void toggleViewMode() {
-    print('isListMode.value ${isListMode.value}');
     isListMode.value = !isListMode.value;
   }
 
   void changeFilter(Map<String, dynamic> brandItem) {
     selectedFilter.value = brandItem['value']!;
-    print('brandItem ${brandItem}');
-    print(' selectedFilter.value ${selectedFilter.value}');
   }
 
   void updateSearch(String value) => searchQuery.value = value;
 
   void updateSort(SortType type) {
     currentSort.value = type;
-    if (Get.isBottomSheetOpen ?? false) Get.back(); // 选完自动关闭菜单
+    if (Get.isBottomSheetOpen ?? false) Get.back();
   }
 
   void toggleBrand(String brand) {
@@ -136,49 +251,6 @@ class GarageController extends GetxController {
     selectedBrands.clear();
     searchQuery.value = '';
     currentSort.value = SortType.priceDesc;
-  }
-
-  // --- 模拟数据填充 ---
-  void _loadMockData() {
-    _allModels.assignAll([
-      CarModel(
-        id: 1,
-        name: 'Porsche 911 (992) GT3 RS - Ice Grey',
-        brand: CatalogBrand(name: 'Porsche'),
-      ),
-      CarModel(
-        id: 2,
-        name: 'Ferrari SF90 Stradale Assetto Fiorano',
-        brand: CatalogBrand(name: 'Ferrari'),
-      ),
-      CarModel(
-        id: 3,
-        name: 'Lamborghini Huracán STO - Blue Laufey',
-        brand: CatalogBrand(name: 'Lamborghini'),
-      ),
-      CarModel(
-        id: 4,
-        name:
-            'Lamborghini Huracán STO - Blue Laufey Lamborghini Huracán STO - Blue Laufey',
-        brand: CatalogBrand(name: 'Lamborghini'),
-      ),
-      CarModel(
-        id: 5,
-        name:
-            'Lamborghini Huracán STO - Blue Laufey Lamborghini Huracán STO - Blue Laufey',
-        brand: CatalogBrand(name: 'Lamborghini'),
-      ),
-      CarModel(
-        id: 6,
-        name: 'BMW M4 CSL (G82) - Frozen Grey',
-        brand: CatalogBrand(name: 'BMW'),
-      ),
-      CarModel(
-        id: 7,
-        name: 'Audi RS6 Avant - Nardo Grey Custom',
-        brand: CatalogBrand(name: 'Audi'),
-      ),
-    ]);
   }
 
   // 格式化当前排序显示的文字

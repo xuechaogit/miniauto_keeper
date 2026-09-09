@@ -8,7 +8,7 @@ typedef TagChildBuilder =
     Widget Function(BuildContext context, CustomTagStyle style);
 
 class CustomTag extends StatelessWidget {
-  CustomTag({
+  const CustomTag({
     super.key,
     required this.label,
     this.type = CustomTagType.primary,
@@ -16,7 +16,7 @@ class CustomTag extends StatelessWidget {
     this.shape = CustomTagShape.rounded,
   }) : builder = null;
 
-  CustomTag.builder({
+  const CustomTag.builder({
     super.key,
     required this.builder, // 必填
     this.type = CustomTagType.primary,
@@ -25,10 +25,10 @@ class CustomTag extends StatelessWidget {
   }) : label = null;
 
   final String? label;
-  CustomTagType type = CustomTagType.primary;
-  CustomTagSize size = CustomTagSize.medium;
-  CustomTagShape shape = CustomTagShape.rounded;
-  final TagChildBuilder? builder; // 新增 builder 回调
+  final CustomTagType type;
+  final CustomTagSize size;
+  final CustomTagShape shape;
+  final TagChildBuilder? builder;
 
   @override
   Widget build(BuildContext context) {

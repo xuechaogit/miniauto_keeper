@@ -62,23 +62,32 @@ class GarageView extends GetView<GarageController> {
       ),
       body: Stack(
         children: [
-          CustomScrollView(
-            slivers: [
-              // 1. 统计面板
-              SliverToBoxAdapter(child: SizedBox(height: h(16))),
-              SliverToBoxAdapter(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: w(16)),
-                  child: Obx(
-                    () => StatsDashboard(
-                      modelsCount:
-                          "${controller.filteredModels.length}", // 举例：动态拿到当前的长度
-                      brandsCount: "32",
-                      valuation: "\$14.2K",
+          NotificationListener<ScrollNotification>(
+            onNotification: (notification) {
+              if (notification.metrics.pixels >=
+                  notification.metrics.maxScrollExtent - 200) {
+                controller.loadMore();
+              }
+              return false;
+            },
+            child: RefreshIndicator(
+              onRefresh: controller.refresh,
+              child: CustomScrollView(
+                slivers: [
+                  // 1. 统计面板
+                  SliverToBoxAdapter(child: SizedBox(height: h(16))),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: w(16)),
+                      child: Obx(
+                        () => StatsDashboard(
+                          modelsCount: "${controller.totalModels}",
+                          brandsCount: "${controller.brandModelsCount}",
+                          valuation: controller.valuationLabel,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
 
               // 2. The Vault 展示
               // _buildTheVaultHeader(),
@@ -95,8 +104,10 @@ class GarageView extends GetView<GarageController> {
                     ? _buildListView()
                     : _buildGridView();
               }),
-              SliverToBoxAdapter(child: SizedBox(height: h(100))),
-            ],
+                  SliverToBoxAdapter(child: SizedBox(height: h(100))),
+                ],
+              ),
+            ),
           ),
         ],
       ),
@@ -119,7 +130,7 @@ class GarageView extends GetView<GarageController> {
                 height: h(40),
                 child: TextField(
                   style: context.textStyle(mxt.textStyle.body),
-                  onChanged: (value) {},
+                  onChanged: controller.updateSearch,
                   decoration: InputDecoration(
                     hintText: 'Search products...',
                     filled: true,
@@ -173,8 +184,10 @@ class GarageView extends GetView<GarageController> {
       sliver: SliverList.separated(
         itemCount: controller.filteredModels.length,
         separatorBuilder: (context, index) => SizedBox(height: h(12)),
-        itemBuilder: (context, index) =>
-            ProductItem(controller.filteredModels[index], isListMode: true),
+        itemBuilder: (context, index) => ProductItem(
+          controller.filteredModels[index].model,
+          isListMode: true,
+        ),
       ),
     );
   }
@@ -189,8 +202,10 @@ class GarageView extends GetView<GarageController> {
           mainAxisSpacing: h(16),
           crossAxisSpacing: w(16),
           childCount: controller.filteredModels.length,
-          itemBuilder: (context, index) =>
-              ProductItem(controller.filteredModels[index], isListMode: false),
+          itemBuilder: (context, index) => ProductItem(
+            controller.filteredModels[index].model,
+            isListMode: false,
+          ),
         ),
       ),
     );

@@ -22,7 +22,6 @@ abstract class AuthApi {
   /// 开发模式下验证码在后端 message 字段；keepEnvelope 标记保留完整响应，
   /// 拦截器不剥壳，DTO 可读取 { code, message, data } 中的 message。
   @POST('/auth/send-verification-code')
-  @Extra({'keepEnvelope': true})
   Future<Result<Verification>> sendVerificationCode(
     @Body() Map<String, dynamic> body,
   );

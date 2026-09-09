@@ -22,56 +22,42 @@ class AddGarageSheet extends StatelessWidget {
     required this.onSubmit,
   });
 
-  static const _channelOptions = ['线上商城', '线下门店', '二手平台', '海外代购', '私人收藏', '其他'];
-
-  static const _limitedOptions = [
-    '不限量',
-    '限量500台',
-    '限量1000台',
-    '限量3000台',
-    '限量5000台',
-    '其他限量',
-  ];
+  static const _conditionOptions = ['全新', '近新', '有瑕疵', '破损'];
 
   static final _fields = const [
+    // FormFieldConfig(
+    //   type: FormFieldType.number,
+    //   key: 'quantity',
+    //   label: '数量',
+    //   hint: '请输入数量',
+    //   stepperMin: 1,
+    //   stepperMax: 999,
+    //   stepperStep: 1,
+    // ),
     FormFieldConfig(
-      type: FormFieldType.number,
-      key: 'quantity',
-      label: '数量',
-      hint: '请输入数量',
-      stepperMin: 1,
-      stepperMax: 999,
-      stepperStep: 1,
+      type: FormFieldType.date,
+      key: 'purchaseDate',
+      label: '购买日期',
+      hint: '选择购买日期',
     ),
     FormFieldConfig(
       type: FormFieldType.price,
-      key: 'price',
-      label: '单价',
+      key: 'purchasePrice',
+      label: '购买价格',
       hint: '请输入单价',
     ),
     FormFieldConfig(
       type: FormFieldType.text,
-      key: 'nickname',
-      label: '爱车昵称',
-      hint: '为你的爱车取个名字',
-    ),
-    FormFieldConfig(
-      type: FormFieldType.date,
-      key: 'purchaseDate',
-      label: '购买时间',
-      hint: '选择购买日期',
-    ),
-    FormFieldConfig(
-      type: FormFieldType.select,
-      key: 'channel',
+      key: 'purchaseChannel',
       label: '购买渠道',
-      pickOptions: _channelOptions,
+      hint: '请输入购买渠道',
     ),
     FormFieldConfig(
       type: FormFieldType.select,
-      key: 'limitedInfo',
-      label: '限量信息',
-      pickOptions: _limitedOptions,
+      key: 'condition',
+      label: '车模状况',
+      hint: '选择车模状况',
+      pickOptions: _conditionOptions,
     ),
     FormFieldConfig(
       type: FormFieldType.textarea,
@@ -138,7 +124,7 @@ class AddGarageSheet extends StatelessWidget {
                   FormBuilder(
                     key: formKey,
                     fields: _fields,
-                    defaults: const {'quantity': '1', 'price': '0'},
+                    defaults: const {'purchasePrice': '0'},
                   ),
                 ],
               ),
@@ -161,7 +147,9 @@ class AddGarageSheet extends StatelessWidget {
       ),
       child: SocialButton(
         onTap: () {
-          final values = formKey.currentState!.collectValues();
+          final state = formKey.currentState;
+          if (state == null || !state.validate()) return;
+          final values = state.collectValues();
           Navigator.of(context).pop();
           onSubmit(values);
         },

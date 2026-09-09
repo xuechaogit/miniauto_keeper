@@ -67,6 +67,7 @@ class MyThemeTextStyleToken {
   TextStyleToken get headline1 => const TextStyleToken('headline1');
   TextStyleToken get headline2 => const TextStyleToken('headline2');
   TextStyleToken get headline3 => const TextStyleToken('headline3');
+  TextStyleToken get subTitle => const TextStyleToken('subTitle');
   TextStyleToken get body => const TextStyleToken('body');
   TextStyleToken get caption => const TextStyleToken('caption');
 }
@@ -80,9 +81,12 @@ class MyThemeRadiusToken {
 
 class MyThemeSpaceToken {
   const MyThemeSpaceToken();
-  SpaceToken get large => const SpaceToken('space-large');
-  SpaceToken get medium => const SpaceToken('space-medium');
+  SpaceToken get xs => const SpaceToken('space-xs');
+  SpaceToken get tiny => const SpaceToken('space-tiny');
   SpaceToken get small => const SpaceToken('space-small');
+  SpaceToken get medium => const SpaceToken('space-medium');
+  SpaceToken get large => const SpaceToken('space-large');
+  SpaceToken get xl => const SpaceToken('space-xl');
 }
 
 // === 共享 Token 值（亮暗主题通用，与颜色无关） ===
@@ -90,36 +94,49 @@ class MyThemeSpaceToken {
 final _sharedTextStyles = <TextStyleToken, TextStyle>{
   mxt.textStyle.headline1: TextStyle(
     fontSize: sp(20),
-    // fontWeight: FontWeight.bold,
+    fontWeight: FontWeight.normal,
+    height: 1.30,
   ),
   mxt.textStyle.headline2: TextStyle(
     fontSize: sp(18),
-    // fontWeight: FontWeight.bold,
+    fontWeight: FontWeight.normal,
+    height: 1.30,
   ),
   mxt.textStyle.headline3: TextStyle(
     fontSize: sp(16),
-    // fontWeight: FontWeight.bold,
+    fontWeight: FontWeight.normal,
+    height: 1.35,
+  ),
+  mxt.textStyle.subTitle: TextStyle(
+    fontSize: sp(16),
+    fontWeight: FontWeight.normal,
+    height: 1.40,
   ),
   mxt.textStyle.body: TextStyle(
     fontSize: sp(14),
     fontWeight: FontWeight.normal,
+    height: 1.50,
   ),
   mxt.textStyle.caption: TextStyle(
     fontSize: sp(12),
     fontWeight: FontWeight.normal,
+    height: 1.45,
   ),
 };
 
 final _sharedRadii = <RadiusToken, Radius>{
-  mxt.radius.large: Radius.circular(w(100)),
-  mxt.radius.medium: Radius.circular(w(12)),
-  mxt.radius.small: Radius.circular(w(4)),
+  mxt.radius.large: Radius.circular(999),
+  mxt.radius.medium: Radius.circular(12),
+  mxt.radius.small: Radius.circular(4),
 };
 
 final _sharedSpaces = <SpaceToken, double>{
-  mxt.space.large: w(24),
-  mxt.space.medium: w(12),
+  mxt.space.xs: w(4),
+  mxt.space.tiny: w(6),
   mxt.space.small: w(8),
+  mxt.space.medium: w(12),
+  mxt.space.large: w(16),
+  mxt.space.xl: w(24),
 };
 
 // 2. 颜色定义
@@ -130,7 +147,7 @@ Map<ColorToken, Color> _lightColors() => {
   mxt.color.success: const Color(0xFF5ac725),
   mxt.color.warning: const Color(0xFFf9ae3d),
   mxt.color.error: const Color(0xFFf56c6c),
-  mxt.color.info: const Color(0xFF909399),
+  mxt.color.info: const Color(0xFF1677FF),
   // Scaffold 底色：页面最底层背景
   mxt.color.background: const Color(0xFFF9F9F7),
   // 卡片色：Card、Dialog、Sheet、ListTile 滑出态
@@ -166,22 +183,21 @@ Map<ColorToken, Color> _lightColors() => {
   // 成功提示文字
   mxt.color.onSuccessContainer: const Color(0xFF1B7A3A),
   // 警告提示文字
-  mxt.color.onWarningContainer: const Color(0xFFB86E00),
+  mxt.color.onWarningContainer: const Color(0xFF8A5200),
   // 错误提示文字
   mxt.color.onErrorContainer: const Color(0xFFC6283A),
   // 骨架屏底色
-  mxt.color.shimmerBase: const Color(0xFFE4E8F0),
+  mxt.color.shimmerBase: const Color(0xFFE9ECEF),
   // 骨架屏高光色
   mxt.color.shimmerHighlight: const Color(0xFFF2F4F7),
 };
 
 Map<ColorToken, Color> _darkColors() => {
   mxt.color.primary: const Color(0xFF7B93FC),
-  mxt.color.primary: const Color(0xFF3B5EF5),
   mxt.color.success: const Color(0xFF5ac725),
   mxt.color.warning: const Color(0xFFf9ae3d),
   mxt.color.error: const Color(0xFFf56c6c),
-  mxt.color.info: const Color(0xFF909399),
+  mxt.color.info: const Color(0xFF86A9FF),
   mxt.color.background: const Color(0xFF13151A),
   mxt.color.surface: const Color(0xFF1C1E24),
   mxt.color.surfaceVariant: const Color(0xFF2A2D36),
@@ -232,15 +248,15 @@ const _lightColorScheme = ColorScheme(
   onSecondary: Color(0xFFFFFFFF),
   secondaryContainer: Color(0xFFE4E8F0),
   onSecondaryContainer: Color(0xFF16181D),
-  tertiary: Color(0xFF7B7A40),
+  tertiary: Color(0xFF9A6700),
   onTertiary: Color(0xFFFFFFFF),
   tertiaryContainer: Color(0xFFFFF5E6),
-  onTertiaryContainer: Color(0xFFB86E00),
-  error: Color(0xFFC6283A),
+  onTertiaryContainer: Color(0xFF8A5200),
+  error: Color(0xFFF56C6C),
   onError: Color(0xFFFFFFFF),
   errorContainer: Color(0xFFFDE8EC),
   onErrorContainer: Color(0xFFC6283A),
-  surface: Color(0xFFF2F4F7),
+  surface: Color(0xFFFFFFFF),
   onSurface: Color(0xFF16181D),
   surfaceContainerHighest: Color(0xFFE4E8F0),
   onSurfaceVariant: Color(0xFF5F6470),
@@ -263,7 +279,7 @@ const _darkColorScheme = ColorScheme(
   onTertiary: Color(0xFF332200),
   tertiaryContainer: Color(0xFF332200),
   onTertiaryContainer: Color(0xFFFFC74D),
-  error: Color(0xFFFF9E9E),
+  error: Color(0xFFF56C6C),
   onError: Color(0xFF3D1518),
   errorContainer: Color(0xFF3D1518),
   onErrorContainer: Color(0xFFFF9E9E),

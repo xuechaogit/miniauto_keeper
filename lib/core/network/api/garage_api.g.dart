@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'auth_api.dart';
+part of 'garage_api.dart';
 
 // dart format off
 
@@ -10,8 +10,8 @@ part of 'auth_api.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter,avoid_unused_constructor_parameters,unreachable_from_main,avoid_redundant_argument_values
 
-class _AuthApi implements AuthApi {
-  _AuthApi(this._dio, {this.baseUrl, this.errorLogger});
+class _GarageApi implements GarageApi {
+  _GarageApi(this._dio, {this.baseUrl, this.errorLogger});
 
   final Dio _dio;
 
@@ -20,30 +20,44 @@ class _AuthApi implements AuthApi {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<Result<Verification>> sendVerificationCode(
-    Map<String, dynamic> body,
+  Future<Result<List<GarageItem>>> getMyGarage(
+    int page,
+    int perPage,
+    int? brandId,
+    int? condition,
   ) async {
     final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'page': page,
+      r'per_page': perPage,
+      r'brand_id': brandId,
+      r'condition': condition,
+    };
+    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(body);
-    final _options = _setStreamType<Result<Verification>>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<Result<List<GarageItem>>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/auth/send-verification-code',
+            '/garage',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Result<Verification> _value;
+    late Result<List<GarageItem>> _value;
     try {
-      _value = Result<Verification>.fromJson(
+      _value = Result<List<GarageItem>>.fromJson(
         _result.data!,
-        (json) => Verification.fromJson(json as Map<String, dynamic>),
+        (json) => json is List<dynamic>
+            ? json
+                  .map<GarageItem>(
+                    (i) => GarageItem.fromJson(i as Map<String, dynamic>),
+                  )
+                  .toList()
+            : List.empty(),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
@@ -53,29 +67,26 @@ class _AuthApi implements AuthApi {
   }
 
   @override
-  Future<Result<AuthResult>> register(Map<String, dynamic> body) async {
+  Future<Result<void>> addToGarage(GarageAddRequest body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
-    _data.addAll(body);
-    final _options = _setStreamType<Result<AuthResult>>(
+    _data.addAll(body.toJson());
+    final _options = _setStreamType<Result<void>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/auth/register',
+            '/garage',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Result<AuthResult> _value;
+    late Result<void> _value;
     try {
-      _value = Result<AuthResult>.fromJson(
-        _result.data!,
-        (json) => AuthResult.fromJson(json as Map<String, dynamic>),
-      );
+      _value = Result<void>.fromJson(_result.data!, (json) => () {}());
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
@@ -84,47 +95,16 @@ class _AuthApi implements AuthApi {
   }
 
   @override
-  Future<Result<AuthResult>> login(Map<String, dynamic> body) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(body);
-    final _options = _setStreamType<Result<AuthResult>>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/auth/login',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late Result<AuthResult> _value;
-    try {
-      _value = Result<AuthResult>.fromJson(
-        _result.data!,
-        (json) => AuthResult.fromJson(json as Map<String, dynamic>),
-      );
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, response: _result);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<void> logout() async {
+  Future<void> removeFromGarage(int id) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<void>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
+      Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/auth/logout',
+            '/garage/${id}',
             queryParameters: queryParameters,
             data: _data,
           )
